@@ -1,2 +1,2 @@
 export type AppColorScheme = "light" | "dark";
-export type MessageOwner = "user" | "agent";
+export type MessageOwner = "USER" | "AI";

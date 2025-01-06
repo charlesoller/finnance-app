@@ -2,6 +2,7 @@ import { Flex } from "@mantine/core";
 import Message from "../Message/Message";
 import Chart from "../Chart/Chart";
 import UserInput from "../UserInput/UserInput";
+import NoMessages from "../NoMessages/NoMessages";
 
 export default function Chat() {
   return (
@@ -12,11 +13,12 @@ export default function Chat() {
         p={'1rem'}
         style={{ overflowY: 'auto', height: 'calc(100vh - 180px)' }}
       >
-        <Message />
-        <Message owner="user" />
+        <NoMessages />
+        {/* <Message />
+        <Message owner="USER" />
         <Chart />
-        <Message owner="user" />
-        <Message />
+        <Message owner="USER" />
+        <Message /> */}
       </Flex>
       <UserInput />
     </Flex>

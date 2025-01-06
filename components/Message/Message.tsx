@@ -9,21 +9,21 @@ interface MessageProps {
   owner?: MessageOwner
 }
 
-export default function Message({ children, owner = 'agent' }: MessageProps) {
+export default function Message({ children, owner = 'AI' }: MessageProps) {
   const theme = useMantineTheme();
   const { colorScheme } = useMantineColorScheme()
 
   return (
-    <Paper withBorder shadow="md" p="md" bg={owner === 'user' ? theme.colors.green[colorScheme === 'dark' ? 9 : 1] : undefined}>
+    <Paper withBorder shadow="md" p="md" bg={owner === 'USER' ? theme.colors.green[colorScheme === 'dark' ? 9 : 1] : undefined}>
       <Flex direction="row" gap="md">
-        { owner === 'agent' && <Avatar src="mascot.webp" />}
+        { owner === 'AI' && <Avatar src="mascot.webp" />}
         <Flex direction="column" gap="md" >
           {children}
           <Text>
             Single shot robusta con panna redeye crema acerbic con panna barista irish. Crema coffee as mocha doppio et eu crema. Frappuccino cultivar plunger pot instant cup pumpkin spice, frappuccino arabica café au lait macchiato affogato siphon. Whipped, siphon mocha viennese sit aged doppio arabica con panna viennese.
           </Text>
         </Flex>
-        {owner === 'user' && <Avatar name="Demo User" />}
+        {owner === 'USER' && <Avatar name="Demo User" />}
       </Flex>
     </Paper>
   )
