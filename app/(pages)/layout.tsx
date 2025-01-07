@@ -14,10 +14,12 @@ import {
 } from "@mantine/core";
 import { theme } from "../../theme";
 import { useDisclosure, useLocalStorage } from "@mantine/hooks";
-import { AppColorScheme } from "../../utils/types";
+import { AppColorScheme } from "../_utils/types";
 import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
 import { Oxygen } from 'next/font/google'
-import SideNav from "../../components/SideNav/SideNav";
+import SideNav from "../_components/SideNav/SideNav";
+import { QueryClientProvider } from "@tanstack/react-query";
+import queryClient from "../_services/QueryClient";
 
 
 // export const metadata = {
@@ -57,46 +59,48 @@ export default function RootLayout({ children }: { children: any }) {
         />
       </head>
       <body style={{ overflow: 'hidden' }}>
-        <MantineProvider theme={theme} forceColorScheme={colorScheme as AppColorScheme}>
-          <AppShell
-            header={{ height: 60 }}
-            navbar={{
-              width: 150,
-              breakpoint: 'sm',
-              collapsed: { mobile: !opened },
-            }}
-          >
-            <AppShell.Header>
-              <Flex align='center' justify='space-between' h='100%' p='0.5em'>
-                <Burger
-                  opened={opened}
-                  onClick={toggle}
-                  hiddenFrom="sm"
-                  size="sm"
-                />
-                <Text fw={700} size="xl">Finnance</Text>
-                <ActionIcon
-                  variant="outline"
-                  color={colorScheme === 'dark' ? 'yellow' : 'blue'}
-                  onClick={toggleColorScheme}
-                  title="Toggle color scheme"
-                >
-                  {colorScheme === 'dark' ? (
-                    <SunIcon style={{ width: 18, height: 18 }} />
-                  ) : (
-                    <MoonIcon style={{ width: 18, height: 18 }} />
-                  )}
-                </ActionIcon>
-              </Flex>
-            </AppShell.Header>
+        <QueryClientProvider client={queryClient}>
+          <MantineProvider theme={theme} forceColorScheme={colorScheme as AppColorScheme}>
+            <AppShell
+              header={{ height: 60 }}
+              navbar={{
+                width: 150,
+                breakpoint: 'sm',
+                collapsed: { mobile: !opened },
+              }}
+            >
+              <AppShell.Header>
+                <Flex align='center' justify='space-between' h='100%' p='0.5em'>
+                  <Burger
+                    opened={opened}
+                    onClick={toggle}
+                    hiddenFrom="sm"
+                    size="sm"
+                  />
+                  <Text fw={700} size="xl">Finnance</Text>
+                  <ActionIcon
+                    variant="outline"
+                    color={colorScheme === 'dark' ? 'yellow' : 'blue'}
+                    onClick={toggleColorScheme}
+                    title="Toggle color scheme"
+                  >
+                    {colorScheme === 'dark' ? (
+                      <SunIcon style={{ width: 18, height: 18 }} />
+                    ) : (
+                      <MoonIcon style={{ width: 18, height: 18 }} />
+                    )}
+                  </ActionIcon>
+                </Flex>
+              </AppShell.Header>
 
-            <AppShell.Navbar p="sm">
-              <SideNav />
-            </AppShell.Navbar>
+              <AppShell.Navbar p="sm">
+                <SideNav />
+              </AppShell.Navbar>
 
-            <AppShell.Main>{children}</AppShell.Main>
-          </AppShell>
-        </MantineProvider>
+              <AppShell.Main>{children}</AppShell.Main>
+            </AppShell>
+          </MantineProvider>
+        </QueryClientProvider>
       </body>
     </html>
   );

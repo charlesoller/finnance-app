@@ -2,7 +2,7 @@
 
 import { Avatar, Container, Flex, Paper, Text, useMantineColorScheme, useMantineTheme } from "@mantine/core";
 import { ReactElement } from "react";
-import { MessageOwner } from "../../utils/types";
+import { MessageOwner } from "../../_utils/types";
 
 interface MessageProps {
   children?: ReactElement;
@@ -16,7 +16,7 @@ export default function Message({ children, owner = 'AI' }: MessageProps) {
   return (
     <Paper withBorder shadow="md" p="md" bg={owner === 'USER' ? theme.colors.green[colorScheme === 'dark' ? 9 : 1] : undefined}>
       <Flex direction="row" gap="md">
-        { owner === 'AI' && <Avatar src="mascot.webp" />}
+        {owner === 'AI' && <Avatar src="mascot.webp" />}
         <Flex direction="column" gap="md" >
           {children}
           <Text>
