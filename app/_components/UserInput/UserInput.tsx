@@ -61,12 +61,14 @@ export default function UserInput() {
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!sessionId) return; 
-
+    console.log("TEST")
+    const chatHistory = queryClient.getQueryData<ChatMessage[]>(['session']) ?? [];
+    console.log("Chat History: ", chatHistory)
     mutation.mutate({
       user_id: "123",
       session_id: sessionId,
       message_content: message,
-      history: []
+      history: chatHistory
     })
 
     setMessage("");

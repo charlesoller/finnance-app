@@ -20,7 +20,6 @@ export default function Chat() {
     enabled: !!sessionId
   })
 
-  console.log(messages)
   return (
     <Flex direction="column" h="100vh">
       <Flex
@@ -39,11 +38,6 @@ export default function Chat() {
             }
           })
         }
-        {/* <Message />
-        <Message owner="USER" />
-        <Chart />
-        <Message owner="USER" />
-        <Message /> */}
       </Flex>
       <UserInput />
     </Flex>

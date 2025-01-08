@@ -7,6 +7,7 @@ class CompletionAPI extends APIService {
   }
 
   async createCompletion(request: GenerationRequest) {
+    console.log("REQUEST: ", request)
     return this.post('/completions', request);
   }
 
