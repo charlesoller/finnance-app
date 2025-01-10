@@ -10,7 +10,7 @@ export const useSessionId = () => {
 
   useEffect(() => {
     if (sessionId) return;
-    
+
     if (params.sessionId && typeof params.sessionId === 'string') {
       setSessionId(params.sessionId);
     } else {
@@ -20,5 +20,5 @@ export const useSessionId = () => {
     }
   }, [params, router, sessionId])
 
-  return sessionId;
+  return { sessionId }
 }

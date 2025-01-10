@@ -13,7 +13,7 @@ import { v4 } from "uuid";
 
 export default function UserInput() {
   const queryClient = useQueryClient();
-  const sessionId = useSessionId();
+  const { sessionId } = useSessionId();
 
   const theme = useMantineTheme();
   const { colorScheme } = useMantineColorScheme()

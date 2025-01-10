@@ -1,5 +1,6 @@
 import { Flex, NavLink } from "@mantine/core";
 import { ArchiveIcon, FaceIcon, GearIcon } from "@radix-ui/react-icons";
+import HistoryMenu from "../HistoryMenu/HistoryMenu";
 
 export default function SideNav() {
   return (
@@ -17,12 +18,7 @@ export default function SideNav() {
         color="green"
         leftSection={<GearIcon />}
       />
-      <NavLink
-        href="#required-for-focus"
-        label="History"
-        color="green"
-        leftSection={<ArchiveIcon />}
-      />
+      <HistoryMenu />
     </Flex>
   )
 }

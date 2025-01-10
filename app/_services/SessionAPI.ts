@@ -8,6 +8,10 @@ class SessionAPI extends APIService {
   async getSession(sessionId: string) {
     return this.get(`/sessions/${sessionId}`)
   }
+
+  async getSessionIds() {
+    return this.get('/sessions');
+  }
 }
 
 const sessionAPI = new SessionAPI(SessionAPI.getBaseURL())

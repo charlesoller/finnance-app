@@ -3053,6 +3053,7 @@ __metadata:
     postcss-simple-vars: "npm:^7.0.1"
     react: "npm:18.3.1"
     react-dom: "npm:18.3.1"
+    react-merge-refs: "npm:^2.1.1"
     recharts: "npm:2"
     typescript: "npm:5.5.2"
     uuid: "npm:^11.0.4"
