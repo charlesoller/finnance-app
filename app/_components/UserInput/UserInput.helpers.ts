@@ -1,4 +1,4 @@
-import { MantineTheme } from "@mantine/core";
+import { MantineTheme } from '@mantine/core';
 
 export const borderColor = (colorScheme: string, theme: MantineTheme) => {
   if (colorScheme === 'light') {
@@ -6,4 +6,4 @@ export const borderColor = (colorScheme: string, theme: MantineTheme) => {
   } else {
     return theme.colors.dark[4];
   }
-}
+};

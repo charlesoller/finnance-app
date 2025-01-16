@@ -1,6 +1,6 @@
-import { useParams, useRouter } from "next/navigation"
-import { useEffect, useState } from "react";
-import { v4 } from "uuid";
+import { useParams, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { v4 } from 'uuid';
 
 export const useSessionId = () => {
   const params = useParams();
@@ -16,9 +16,9 @@ export const useSessionId = () => {
     } else {
       const uuid = v4();
       setSessionId(uuid);
-      router.replace(`/chat/${uuid}`)
+      router.replace(`/chat/${uuid}`);
     }
-  }, [params, router, sessionId])
+  }, [params, router, sessionId]);
 
-  return { sessionId }
-}
+  return { sessionId };
+};

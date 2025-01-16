@@ -1,4 +1,4 @@
-import { Avatar, Flex, Paper, Text } from "@mantine/core";
+import { Avatar, Flex, Paper, Text } from '@mantine/core';
 
 export default function NoMessages() {
   return (
@@ -10,5 +10,5 @@ export default function NoMessages() {
         </Flex>
       </Paper>
     </Flex>
-  )
+  );
 }

@@ -1,5 +1,5 @@
-import { useRef, useState, useEffect, useCallback } from "react";
-import { useMergedRef } from "@mantine/hooks";
+import { useRef, useState, useEffect, useCallback } from 'react';
+import { useMergedRef } from '@mantine/hooks';
 
 export const useScrollButton = (containerRef: React.RefObject<HTMLElement>) => {
   const targetElementRef = useRef<HTMLDivElement | null>(null); // Track the target element
@@ -26,21 +26,22 @@ export const useScrollButton = (containerRef: React.RefObject<HTMLElement>) => {
     if (!containerRef.current) return;
 
     const container = containerRef.current;
+    const target = targetElementRef.current;
 
     const observer = new IntersectionObserver(
       ([entry]) => setIsInViewport(entry.isIntersecting),
       {
         root: container, // Observe within the scrollable container
-      }
+      },
     );
 
-    if (targetElementRef.current) {
-      observer.observe(targetElementRef.current);
+    if (target) {
+      observer.observe(target);
     }
 
     return () => {
-      if (targetElementRef.current) {
-        observer.unobserve(targetElementRef.current);
+      if (!!target) {
+        observer.unobserve(target);
       }
     };
   }, [containerRef]);
@@ -49,9 +50,8 @@ export const useScrollButton = (containerRef: React.RefObject<HTMLElement>) => {
     if (containerRef.current && targetElementRef.current) {
       containerRef.current.scrollTo({
         top:
-          targetElementRef.current.offsetTop -
-          containerRef.current.offsetTop,
-        behavior: "smooth",
+          targetElementRef.current.offsetTop - containerRef.current.offsetTop,
+        behavior: 'smooth',
       });
     }
   }, [containerRef]);

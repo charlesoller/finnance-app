@@ -1,24 +1,27 @@
-import { Flex, NavLink } from "@mantine/core";
-import { ArchiveIcon, FaceIcon, GearIcon } from "@radix-ui/react-icons";
-import HistoryMenu from "../HistoryMenu/HistoryMenu";
+import { Flex, NavLink } from '@mantine/core';
+import { FaceIcon } from '@radix-ui/react-icons';
+import HistoryMenu from '../HistoryMenu/HistoryMenu';
+import { usePathname } from 'next/navigation';
 
 export default function SideNav() {
+  const pathname = usePathname();
+
   return (
-    <Flex direction='column'>
+    <Flex direction="column">
       <NavLink
-        href="#required-for-focus"
+        href="/"
         label="Advisor"
         leftSection={<FaceIcon />}
         color="green"
-        active
+        active={pathname.includes('chat')}
       />
-      <NavLink
+      {/* <NavLink
         href="#required-for-focus"
-        label="Manage"
+        label="My Finances"
         color="green"
-        leftSection={<GearIcon />}
-      />
+        leftSection={<BackpackIcon />}
+      /> */}
       <HistoryMenu />
     </Flex>
-  )
+  );
 }

@@ -1,32 +1,70 @@
-"use client"
+'use client';
 
-import { Avatar, Container, Flex, Loader, Paper, Text, useMantineColorScheme, useMantineTheme } from "@mantine/core";
-import { ReactElement } from "react";
-import { MessageOwner } from "../../_utils/types";
+import {
+  Avatar,
+  Flex,
+  Loader,
+  Paper,
+  useMantineColorScheme,
+  useMantineTheme,
+} from '@mantine/core';
+import { ReactElement } from 'react';
+import { MessageOwner } from '../../_utils/types';
+import ReactMarkdown from 'react-markdown';
+import rehypeSanitize from 'rehype-sanitize';
+import 'katex/dist/katex.min.css';
 
 interface MessageProps {
   children?: ReactElement;
   owner?: MessageOwner;
   content?: string;
   loading?: boolean;
+  isGraph?: boolean;
+  fitContent?: boolean;
 }
 
-export default function Message({ children, owner = 'AI', content, loading = false }: MessageProps) {
+export default function Message({
+  children,
+  owner = 'AI',
+  content,
+  loading = false,
+  isGraph = false,
+  fitContent = true,
+}: MessageProps) {
   const theme = useMantineTheme();
-  const { colorScheme } = useMantineColorScheme()
+  const { colorScheme } = useMantineColorScheme();
 
   return (
-    <Paper withBorder shadow="md" p="md" bg={owner === 'USER' ? theme.colors.green[colorScheme === 'dark' ? 9 : 1] : undefined}>
+    <Paper
+      withBorder
+      radius="lg"
+      shadow="md"
+      p="md"
+      w={fitContent ? 'fit-content' : undefined}
+      bg={
+        owner === 'USER'
+          ? theme.colors.green[colorScheme === 'dark' ? 9 : 1]
+          : undefined
+      }
+      ml={owner === 'USER' ? 'auto' : undefined}
+    >
       <Flex direction="row" gap="md">
         {owner === 'AI' && <Avatar src="/mascot.webp" />}
-        <Flex direction="column" gap="md" >
-          {children}
-          <Text>
-            { loading ? <Loader /> : content }
-          </Text>
-        </Flex>
-        {owner === 'USER' && <Avatar name="Demo User" ml='auto' />}
+        {!isGraph ? (
+          <Flex direction="column" gap="md">
+            {loading ? (
+              <Loader color="green" />
+            ) : (
+              <ReactMarkdown rehypePlugins={[rehypeSanitize]}>
+                {content}
+              </ReactMarkdown>
+            )}
+          </Flex>
+        ) : (
+          children
+        )}
+        {owner === 'USER' && <Avatar name="Demo User" ml="auto" />}
       </Flex>
     </Paper>
-  )
+  );
 }

@@ -1,18 +1,17 @@
-"use client"
+'use client';
 
-import { ActionIcon, Button, Flex, Loader } from "@mantine/core";
-import Message from "../Message/Message";
-import Chart from "../Chart/Chart";
-import UserInput from "../UserInput/UserInput";
-import NoMessages from "../NoMessages/NoMessages";
-import { useQuery } from "@tanstack/react-query";
-import { useSessionId } from "../../_utils/hooks/useSessionId";
-import sessionAPI from "../../_services/SessionAPI";
-import { ChatMessage } from "../../_models/ChatMessage";
-import { v4 } from "uuid";
-import { useScrollButton } from "../../_utils/hooks/useScrollButton";
-import { useRef } from "react";
-import { ArrowDownIcon } from "@radix-ui/react-icons";
+import { Flex, Loader } from '@mantine/core';
+import Message from '../Message/Message';
+import Chart from '../Chart/Chart';
+import UserInput from '../UserInput/UserInput';
+import NoMessages from '../NoMessages/NoMessages';
+import { useQuery } from '@tanstack/react-query';
+import { useSessionId } from '../../_utils/hooks/useSessionId';
+import sessionAPI from '../../_services/SessionAPI';
+import { ChatMessage } from '../../_models/ChatMessage';
+import { useEffect, useRef } from 'react';
+import ScrollButton from '../ScrollButton/ScrollButton';
+import { useScrollButton } from '../../_utils/hooks/useScrollButton';
 
 export default function Chat() {
   const { sessionId } = useSessionId();
@@ -20,54 +19,63 @@ export default function Chat() {
 
   const { ref, isInViewport, scrollIntoView } = useScrollButton(scrollableRef);
 
-  const { error, data: messages, isLoading } = useQuery<ChatMessage[]>({
-    queryKey: ["session"],
+  const {
+    error,
+    data: messages,
+    isLoading = false,
+    isPending,
+  } = useQuery<ChatMessage[]>({
+    queryKey: ['session'],
     queryFn: () => sessionAPI.getSession(sessionId as string),
-    enabled: !!sessionId,
+    enabled: Boolean(sessionId),
+    retry: 3,
   });
-  console.log(isInViewport)
+
+  useEffect(() => {
+    if (messages && messages.length > 0) {
+      scrollIntoView();
+    }
+  }, [messages, scrollIntoView]);
+
   return (
     <Flex direction="column" h="100vh">
       <Flex
         direction="column"
         gap="md"
         p="1rem"
-        style={{ overflowY: "auto", height: "calc(100vh - 180px)", position: "relative" }}
+        style={{
+          overflowY: 'auto',
+          height: 'calc(100vh - 180px)',
+          position: 'relative',
+        }}
         ref={scrollableRef}
       >
-        {!isInViewport && (
-          <Button
-            color="gray"
-            onClick={() => scrollIntoView()}
-            style={{
-              position: "fixed",
-              bottom: "130px",
-              left: "50%",
-              right: "50%",
-              width: "fit-content",
-            }}
-            leftSection={
-              <ArrowDownIcon />
-            }
-          >
-            Scroll
-          </Button>
+        <ScrollButton
+          isVisible={!isLoading && !isPending && !isInViewport}
+          onClick={scrollIntoView}
+        />
+        {(isLoading || isPending) && (
+          <Loader mx="auto" my="auto" color="green" />
         )}
-        {(!messages || !messages.length) && <NoMessages />}
+        {(!messages || !messages.length) && !isLoading && !isPending && (
+          <NoMessages />
+        )}
         {!!messages &&
-          messages.map((message) => {
-            if (message.id === "LOADING") {
-              return <Message key={v4()} owner={"AI"} loading />;
-            } else {
-              return (
-                <Message
-                  key={message.id}
-                  owner={message.message_type}
-                  content={message.message_content}
+          messages.map((message, index) => (
+            <Flex key={message.message_id || index} direction="column" gap="md">
+              <Message
+                owner={message.message_type.toUpperCase()}
+                content={message.message_content}
+                loading={message.message_id === 'LOADING'}
+              />
+              {!!message.graph_data && (
+                <Chart
+                  type={message.graph_data.type}
+                  data={message.graph_data.data}
                 />
-              );
-            }
-          })}
+              )}
+            </Flex>
+          ))}
         <div ref={ref} />
       </Flex>
       <UserInput />

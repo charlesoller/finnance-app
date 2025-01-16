@@ -1,5 +1,7 @@
 # Mantine Next Template
 
-Get started with the template by clicking `Use this template` button on the top of the page.
+# Linting
 
-[Documentation](https://mantine.dev/guides/next/)
+- Uses ESLint with Prettier
+- Recommend installing ESLint and Prettier ESLint extensions
+  - Follow setup guide in Prettier ESLint

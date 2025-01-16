@@ -1,56 +1,64 @@
-"use client"
+'use client';
 
 import '@mantine/charts/styles.css';
-import { LineChart } from "@mantine/charts";
-import Message from "../Message/Message";
+import { BarChart, LineChart, PieChart, PieChartCell } from '@mantine/charts';
+import Message from '../Message/Message';
+import {
+  ChartDataPoint,
+  ChartType,
+  LineChartDataPoint,
+} from '../../_models/ChartData';
+import { formatData, getDomain } from './Chart.utils';
 
-export default function Chart() {
-  const data = [
-    {
-      date: 'Mar 22',
-      Apples: 2890,
-      Oranges: 2338,
-      Tomatoes: 2452,
-    },
-    {
-      date: 'Mar 23',
-      Apples: 2756,
-      Oranges: 2103,
-      Tomatoes: 2402,
-    },
-    {
-      date: 'Mar 24',
-      Apples: 3322,
-      Oranges: 986,
-      Tomatoes: 1821,
-    },
-    {
-      date: 'Mar 25',
-      Apples: 3470,
-      Oranges: 2108,
-      Tomatoes: 2809,
-    },
-    {
-      date: 'Mar 26',
-      Apples: 3129,
-      Oranges: 1726,
-      Tomatoes: 2290,
-    },
-  ];
+interface ChartProps {
+  type: ChartType;
+  data: ChartDataPoint[];
+}
+
+export default function Chart({ type, data }: ChartProps) {
+  const getChart = () => {
+    const formattedData = formatData(data, type);
+
+    if (type === 'line')
+      return (
+        <LineChart
+          h={300}
+          data={formattedData}
+          dataKey="date"
+          series={[{ name: 'amount', color: 'green.6' }]}
+          curveType="linear"
+          yAxisProps={{
+            domain: getDomain(formattedData as LineChartDataPoint[]),
+          }}
+        />
+      );
+
+    if (type === 'bar')
+      return (
+        <BarChart
+          h={300}
+          data={formattedData}
+          dataKey="date"
+          series={[{ name: 'amount', color: 'green.6' }]}
+        />
+      );
+
+    if (type === 'pie')
+      return (
+        <PieChart
+          h={300}
+          data={formattedData as PieChartCell[]}
+          withLabels
+          withLabelsLine={false}
+          withTooltip
+          tooltipDataSource="segment"
+        />
+      );
+  };
 
   return (
-    <Message>
-      <LineChart
-        h={300}
-        data={data}
-        dataKey="date"
-        series={[
-          { name: 'Apples', color: 'indigo.6' },
-          { name: 'Oranges', color: 'blue.6' },
-          { name: 'Tomatoes', color: 'teal.6' },
-        ]}
-        curveType="linear"
-      />
+    <Message isGraph fitContent={type === 'pie'}>
+      {getChart()}
     </Message>
-  )
+  );
 }

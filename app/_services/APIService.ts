@@ -24,8 +24,8 @@ class APIService {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
-          'Content-Type': 'application/json; charset=UTF-8'
-        }
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
       });
       return await this.handleResponse(response);
     } catch (err) {
@@ -33,11 +33,14 @@ class APIService {
     }
   }
 
-  async get<T = any>(url: string, params: Record<string, any> = {}): Promise<T> {
+  async get<T = any>(
+    url: string,
+    params: Record<string, any> = {},
+  ): Promise<T> {
     try {
       console.log(`GET to - ${this.getBaseUrl()}${url}`);
       const response = await fetch(
-        `${this.getBaseUrl()}${url}?` + new URLSearchParams(params).toString()
+        `${this.getBaseUrl()}${url}?` + new URLSearchParams(params).toString(),
       );
       return await this.handleResponse(response);
     } catch (err) {
@@ -52,8 +55,8 @@ class APIService {
         method: 'PATCH',
         body: JSON.stringify(data),
         headers: {
-          'Content-Type': 'application/json; charset=UTF-8'
-        }
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
       });
       return await this.handleResponse(response);
     } catch (err) {
@@ -65,7 +68,7 @@ class APIService {
     try {
       console.log(`DELETE to - ${this.getBaseUrl()}${url}`);
       const response = await fetch(`${this.getBaseUrl()}${url}`, {
-        method: 'DELETE'
+        method: 'DELETE',
       });
       return await this.handleResponse(response);
     } catch (err) {

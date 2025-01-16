@@ -1,109 +1,145 @@
-"use client"
+'use client';
 
-import { Checkbox, Flex, Paper, Text, TextInput, useMantineColorScheme, useMantineTheme } from "@mantine/core";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import completionAPI from "../../_services/CompletionAPI";
-import { ChangeEvent, FormEvent, useState } from "react";
-import { GenerationRequest } from "../../_models/GenerationRequest";
-import { borderColor } from "./UserInput.helpers";
-import { useRouter } from "next/navigation";
-import { useSessionId } from "../../_utils/hooks/useSessionId";
-import { ChatMessage } from "../../_models/ChatMessage";
-import { v4 } from "uuid";
+import {
+  Flex,
+  Paper,
+  Text,
+  TextInput,
+  useMantineColorScheme,
+  useMantineTheme,
+} from '@mantine/core';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { FormEvent, useState } from 'react';
+import { GenerationRequest } from '../../_models/GenerationRequest';
+import { borderColor } from './UserInput.helpers';
+import { useSessionId } from '../../_utils/hooks/useSessionId';
+import { ChatMessage } from '../../_models/ChatMessage';
+import { v4 } from 'uuid';
+import sessionAPI from '../../_services/SessionAPI';
+
+type FormField = 'message' | 'useGraph';
+type FormDataType = string | boolean;
+interface FormData {
+  message: string;
+  useGraph: boolean;
+}
+const defaultFormState: FormData = {
+  message: '',
+  useGraph: true,
+};
 
 export default function UserInput() {
   const queryClient = useQueryClient();
   const { sessionId } = useSessionId();
 
   const theme = useMantineTheme();
-  const { colorScheme } = useMantineColorScheme()
+  const { colorScheme } = useMantineColorScheme();
 
-  const [message, setMessage] = useState<string>("");
+  const [form, setForm] = useState<FormData>(defaultFormState);
 
   const mutation = useMutation({
-    mutationFn: (request: GenerationRequest) => completionAPI.createCompletion(request),
+    mutationFn: (request: GenerationRequest) =>
+      sessionAPI.createChatForSessionId(sessionId!, request),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['session'] });
     },
+    onError: () => {
+      const previousMessages =
+        queryClient.getQueryData<ChatMessage[]>(['session']) ?? [];
+
+      queryClient.setQueryData<ChatMessage[]>(
+        ['session'],
+        [
+          ...previousMessages,
+          {
+            message_id: 'ERROR',
+            user_id: '123',
+            message_type: 'AI',
+            message_content: 'Something went wrong... retrying',
+            session_id: sessionId as string,
+            timestamp: new Date().toISOString(),
+          },
+        ],
+      );
+    },
     onMutate: async (newRequest) => {
       await queryClient.cancelQueries({ queryKey: ['session', sessionId] });
-  
-      const previousMessages = queryClient.getQueryData<ChatMessage[]>(['session']) ?? [];
 
-      queryClient.setQueryData<ChatMessage[]>(['session'], [
-        ...previousMessages,
-        {
-          id: v4(),
-          user_id: '123',
-          message_content: message,
-          message_type: 'USER',
-          session_id: sessionId as string,
-          timestamp: new Date().toISOString(),
-        },
-        {
-          id: 'LOADING',
-          user_id: '123', 
-          message_type: 'USER',
-          message_content: '',
-          session_id: sessionId as string,
-          timestamp: new Date().toISOString(),
-        }
-      ]);
-  
+      const previousMessages =
+        queryClient.getQueryData<ChatMessage[]>(['session']) ?? [];
+
+      queryClient.setQueryData<ChatMessage[]>(
+        ['session'],
+        [
+          ...previousMessages,
+          {
+            message_id: v4(),
+            user_id: '123',
+            message_content: form.message,
+            message_type: 'USER',
+            session_id: sessionId as string,
+            timestamp: new Date().toISOString(),
+          },
+          {
+            message_id: 'LOADING',
+            user_id: '123',
+            message_type: 'AI',
+            message_content: '',
+            session_id: sessionId as string,
+            timestamp: new Date().toISOString(),
+          },
+        ],
+      );
+
       return { previousMessages };
     },
   });
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setMessage(e.target.value)
-  }
+  const handleForm = (field: FormField, newData: FormDataType) => {
+    setForm((prev) => ({ ...prev, [field]: newData }));
+  };
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!sessionId) return; 
-    console.log("TEST")
-    const chatHistory = queryClient.getQueryData<ChatMessage[]>(['session']) ?? [];
-    console.log("Chat History: ", chatHistory)
+    if (!sessionId) return;
+
+    const chatHistory =
+      queryClient.getQueryData<ChatMessage[]>(['session']) ?? [];
+
     mutation.mutate({
-      user_id: "123",
+      user_id: '123',
       session_id: sessionId,
-      message_content: message,
-      history: chatHistory
-    })
+      history: chatHistory,
+      message_content: form.message,
+      use_graph: form.useGraph,
+    });
 
-    setMessage("");
-  }
-
-  // On first input, an ID should be generated. This should be sent as the session ID, and added to the route as a route param
+    handleForm('message', '');
+  };
 
   return (
-    <Paper p='sm' radius={0} style={{ borderTop: `1px solid ${borderColor(colorScheme, theme)}` }}>
-      <Flex direction='column' gap='xs'>
+    <Paper
+      p="sm"
+      radius={0}
+      style={{ borderTop: `1px solid ${borderColor(colorScheme, theme)}` }}
+    >
+      <Flex direction="column" gap="xs">
         <form onSubmit={handleSubmit}>
           <TextInput
             aria-label="Ask Finn about your Finances"
             variant="filled"
             size="md"
             placeholder="Ask Finn about your finances..."
-            value={message}
-            onChange={handleChange}
+            value={form.message}
+            onChange={(e) => handleForm('message', e.target.value)}
           />
         </form>
-        <Flex justify='space-between' w='100%'>
-          <Checkbox
-            size="xs"
-            defaultChecked
-            label="Use Graphs"
-            color="green"
-          />
-          <Text
-            size="xs"
-            c="dimmed"
-          >
+        <Flex justify="space-between" w="100%">
+          <Text size="xs" c="dimmed">
             View Disclaimer
           </Text>
         </Flex>
       </Flex>
     </Paper>
-  )
+  );
 }

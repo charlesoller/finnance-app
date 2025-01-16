@@ -1,4 +1,7 @@
-import { Button } from "@mantine/core"
+import { Button } from '@mantine/core';
+import styles from './ScrollButton.module.css';
+import { ArrowDownIcon } from '@radix-ui/react-icons';
+
 interface ScrollButtonProps {
   isVisible: boolean;
   onClick: () => void;
@@ -6,21 +9,20 @@ interface ScrollButtonProps {
 
 export default function ScrollButton({
   isVisible,
-  onClick
+  onClick,
 }: ScrollButtonProps) {
-  console.log(isVisible)
   return (
     <>
-      {isVisible && <Button
-        onClick={onClick}
-        style={{ 
-          position: "fixed", 
-          bottom: "130px", 
-          right: "20px", 
-        }}
-      >
-        Scroll to Messages
-      </Button>}
+      {isVisible && (
+        <Button
+          color="gray"
+          onClick={onClick}
+          className={styles.button}
+          leftSection={<ArrowDownIcon />}
+        >
+          Scroll
+        </Button>
+      )}
     </>
-  )
+  );
 }
