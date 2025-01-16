@@ -63,7 +63,7 @@ export default function Message({
         ) : (
           children
         )}
-        {owner === 'USER' && <Avatar name="Demo User" ml="auto" />}
+        a{owner === 'USER' && <Avatar name="Demo User" ml="auto" />}
       </Flex>
     </Paper>
   );
