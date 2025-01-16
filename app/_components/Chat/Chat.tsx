@@ -37,7 +37,6 @@ export default function Chat() {
       scrollIntoView();
     }
   }, [messages, scrollIntoView]);
-
   return (
     <Flex direction="column" h="100vh">
       <Flex
