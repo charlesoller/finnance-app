@@ -4,6 +4,7 @@ import sessionAPI from '../../_services/SessionAPI';
 import Link from 'next/link';
 import { ChatMessage } from '../../_models/ChatMessage';
 import { useSessionId } from '../../_utils/hooks/useSessionId';
+import { SessionData } from '../../_models/SessionData';
 
 export default function HistoryMenu() {
   const queryClient = useQueryClient();

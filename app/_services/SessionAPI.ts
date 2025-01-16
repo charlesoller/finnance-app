@@ -1,5 +1,6 @@
 import { GenerationRequest } from '../_models/GenerationRequest';
 import APIService from './APIService';
+import { Config } from './Config';
 
 class SessionAPI extends APIService {
   static getBaseURL() {
