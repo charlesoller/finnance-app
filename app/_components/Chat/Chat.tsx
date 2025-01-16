@@ -12,6 +12,7 @@ import { ChatMessage } from '../../_models/ChatMessage';
 import { useEffect, useRef } from 'react';
 import ScrollButton from '../ScrollButton/ScrollButton';
 import { useScrollButton } from '../../_utils/hooks/useScrollButton';
+import { MessageOwner } from '../../_utils/types';
 
 export default function Chat() {
   const { sessionId } = useSessionId();
@@ -64,7 +65,7 @@ export default function Chat() {
           messages.map((message, index) => (
             <Flex key={message.message_id || index} direction="column" gap="md">
               <Message
-                owner={message.message_type.toUpperCase()}
+                owner={message.message_type.toUpperCase() as MessageOwner}
                 content={message.message_content}
                 loading={message.message_id === 'LOADING'}
               />

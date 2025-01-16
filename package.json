@@ -11,6 +11,14 @@
     "lint:only": "npx next lint",
     "format": "prettier --write ."
   },
+  "lint-staged": {
+    "*.{js, jsx,ts,tsx}": [
+      "eslint --quiet --fix"
+    ],
+    "*.{json,js,ts,jsx,tsx,html}": [
+      "prettier --write --ignore-unknown"
+    ]
+  },
   "dependencies": {
     "@mantine/charts": "^7.15.2",
     "@mantine/core": "7.15.2",
@@ -48,6 +56,8 @@
     "@types/react-dom": "18.3.0",
     "eslint": "^9.18.0",
     "eslint-config-next": "^15.1.4",
+    "husky": "^9.1.7",
+    "lint-staged": "^15.4.1",
     "postcss": "^8.4.38",
     "postcss-preset-mantine": "1.17.0",
     "postcss-simple-vars": "^7.0.1",
