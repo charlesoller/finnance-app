@@ -1,6 +1,10 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
 yarn lint-staged
 
+# Check if there are staged changes after lint-staged runs
 if ! git diff --exit-code; then
-  echo "❌ Changes were made by lint-staged. Please stage the fixes before committing."
+  echo "❌ Changes were made by lint-staged. Please review and re-stage before committing."
   exit 1
 fi
