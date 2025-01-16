@@ -29,7 +29,6 @@ export default function Chat() {
     queryKey: ['session'],
     queryFn: () => sessionAPI.getSession(sessionId as string),
     enabled: Boolean(sessionId),
-    retry: 3,
   });
 
   useEffect(() => {
