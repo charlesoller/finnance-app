@@ -48,6 +48,7 @@ export default function Message({
       }
       ml={owner === 'USER' ? 'auto' : undefined}
     >
+      dfadf
       <Flex direction="row" gap="md">
         {owner === 'AI' && <Avatar src="/mascot.webp" />}
         {!isGraph ? (
