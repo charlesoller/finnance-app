@@ -60,6 +60,7 @@ export default function Chat() {
         {(!messages || !messages.length) && !isLoading && !isPending && (
           <NoMessages />
         )}
+
         {!!messages &&
           messages.map((message, index) => (
             <Flex key={message.message_id || index} direction="column" gap="md">
