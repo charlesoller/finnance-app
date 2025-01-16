@@ -3,7 +3,7 @@ import APIService from './APIService';
 
 class SessionAPI extends APIService {
   static getBaseURL() {
-    return `http://127.0.0.1:3000`;
+    return Config.getBaseURL();
   }
 
   async getSession(sessionId: string) {
