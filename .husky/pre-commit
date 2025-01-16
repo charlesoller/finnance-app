@@ -1,1 +1,6 @@
-yarn lint-staged --no-stash
+yarn lint-staged
+
+if ! git diff --exit-code; then
+  echo "❌ Changes were made by lint-staged. Please stage the fixes before committing."
+  exit 1
+fi
