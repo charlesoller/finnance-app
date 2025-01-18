@@ -1,0 +1,7 @@
+.container {
+  position: sticky;
+  bottom: 0;
+  min-height: 90px;
+  height: fit-content;
+  flex-shrink: 0;
+}

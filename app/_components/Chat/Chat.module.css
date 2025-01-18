@@ -1,0 +1,7 @@
+.chatContainer {
+  overflow-y: auto;
+  flex: 1 1 auto;
+  position: relative;
+  min-height: 0;
+  height: calc(100vh - 90px);
+}

@@ -13,6 +13,7 @@ import { useEffect, useRef } from 'react';
 import ScrollButton from '../ScrollButton/ScrollButton';
 import { useScrollButton } from '../../_utils/hooks/useScrollButton';
 import { MessageOwner } from '../../_utils/types';
+import styles from './Chat.module.css';
 
 export default function Chat() {
   const { sessionId } = useSessionId();
@@ -39,16 +40,12 @@ export default function Chat() {
   }, [messages, scrollIntoView]);
 
   return (
-    <Flex direction="column" h="100vh">
+    <Flex direction="column" h="100vh" pos="relative">
       <Flex
         direction="column"
         gap="md"
         p="1rem"
-        style={{
-          overflowY: 'auto',
-          height: 'calc(100vh - 180px)',
-          position: 'relative',
-        }}
+        className={styles.chatContainer}
         ref={scrollableRef}
       >
         <ScrollButton

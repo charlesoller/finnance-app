@@ -16,11 +16,9 @@ interface ChartProps {
 }
 
 export default function Chart({ type, data }: ChartProps) {
-  console.log('DATA: ', data);
   if (!data || !type) return null;
   const getChart = () => {
     const formattedData = formatData(data, type);
-    console.log(formattedData);
     if (type === 'line')
       return (
         <LineChart

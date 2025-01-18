@@ -4,7 +4,7 @@ import {
   Flex,
   Paper,
   Text,
-  TextInput,
+  Textarea,
   useMantineColorScheme,
   useMantineTheme,
 } from '@mantine/core';
@@ -16,6 +16,7 @@ import { useSessionId } from '../../_utils/hooks/useSessionId';
 import { ChatMessage } from '../../_models/ChatMessage';
 import { v4 } from 'uuid';
 import sessionAPI from '../../_services/SessionAPI';
+import styles from './UserInput.module.css';
 
 type FormField = 'message' | 'useGraph';
 type FormDataType = string | boolean;
@@ -122,16 +123,20 @@ export default function UserInput() {
       p="sm"
       radius={0}
       style={{ borderTop: `1px solid ${borderColor(colorScheme, theme)}` }}
+      className={styles.container}
     >
       <Flex direction="column" gap="xs">
         <form onSubmit={handleSubmit}>
-          <TextInput
+          <Textarea
             aria-label="Ask Finn about your Finances"
             variant="filled"
             size="md"
             placeholder="Ask Finn about your finances..."
             value={form.message}
             onChange={(e) => handleForm('message', e.target.value)}
+            autosize
+            minRows={1}
+            maxRows={20}
           />
         </form>
         <Flex justify="space-between" w="100%">
