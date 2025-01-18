@@ -1,6 +1,7 @@
 'use client';
 
 import {
+  ActionIcon,
   Flex,
   Paper,
   Text,
@@ -9,7 +10,7 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { FormEvent, useState } from 'react';
+import { FormEvent, KeyboardEvent, useState } from 'react';
 import { GenerationRequest } from '../../_models/GenerationRequest';
 import { borderColor } from './UserInput.helpers';
 import { useSessionId } from '../../_utils/hooks/useSessionId';
@@ -17,6 +18,7 @@ import { ChatMessage } from '../../_models/ChatMessage';
 import { v4 } from 'uuid';
 import sessionAPI from '../../_services/SessionAPI';
 import styles from './UserInput.module.css';
+import { PaperPlaneIcon } from '@radix-ui/react-icons';
 
 type FormField = 'message' | 'useGraph';
 type FormDataType = string | boolean;
@@ -42,7 +44,7 @@ export default function UserInput() {
     mutationFn: (request: GenerationRequest) =>
       sessionAPI.createChatForSessionId(sessionId!, request),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['session'] });
+      queryClient.invalidateQueries({ queryKey: ['session', 'sessionData'] });
     },
     onError: () => {
       const previousMessages =
@@ -100,6 +102,17 @@ export default function UserInput() {
     setForm((prev) => ({ ...prev, [field]: newData }));
   };
 
+  const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      const formEvent = new Event('submit', {
+        bubbles: true,
+        cancelable: true,
+      });
+      e.currentTarget.form?.dispatchEvent(formEvent);
+    }
+  };
+
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!sessionId) return;
@@ -134,16 +147,20 @@ export default function UserInput() {
             placeholder="Ask Finn about your finances..."
             value={form.message}
             onChange={(e) => handleForm('message', e.target.value)}
+            onKeyDown={handleKeyDown}
             autosize
             minRows={1}
             maxRows={20}
+            rightSection={
+              <ActionIcon color="green" type="submit" mb="auto" mt="6px">
+                <PaperPlaneIcon />
+              </ActionIcon>
+            }
           />
         </form>
-        <Flex justify="space-between" w="100%">
-          <Text size="xs" c="dimmed">
-            View Disclaimer
-          </Text>
-        </Flex>
+        <Text size="xs" c="dimmed">
+          View Disclaimer
+        </Text>
       </Flex>
     </Paper>
   );

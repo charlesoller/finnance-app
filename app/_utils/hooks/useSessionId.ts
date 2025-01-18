@@ -20,5 +20,5 @@ export const useSessionId = () => {
     }
   }, [params, router, sessionId]);
 
-  return { sessionId };
+  return { sessionId, setSessionId };
 };

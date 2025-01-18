@@ -3,5 +3,7 @@
   flex: 1 1 auto;
   position: relative;
   min-height: 0;
-  height: calc(100vh - 90px);
+  /* padding-bottom: var(--input-height); */
+  margin-bottom: 60px;
+  /* height: calc(100vh - var(--header-height) - var(--input-height)); */
 }
