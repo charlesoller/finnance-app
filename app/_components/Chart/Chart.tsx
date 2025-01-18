@@ -8,7 +8,7 @@ import {
   ChartType,
   LineChartDataPoint,
 } from '../../_models/ChartData';
-import { formatData, getDomain } from './Chart.utils';
+import { formatCurrency, formatData, getDomain } from './Chart.utils';
 
 interface ChartProps {
   type: ChartType;
@@ -16,20 +16,23 @@ interface ChartProps {
 }
 
 export default function Chart({ type, data }: ChartProps) {
+  console.log('DATA: ', data);
+  if (!data || !type) return null;
   const getChart = () => {
     const formattedData = formatData(data, type);
-
+    console.log(formattedData);
     if (type === 'line')
       return (
         <LineChart
           h={300}
           data={formattedData}
           dataKey="date"
-          series={[{ name: 'amount', color: 'green.6' }]}
+          series={[{ name: 'amount', color: 'green.6', label: 'Amount' }]}
           curveType="linear"
           yAxisProps={{
             domain: getDomain(formattedData as LineChartDataPoint[]),
           }}
+          valueFormatter={(val) => formatCurrency(val)}
         />
       );
 
@@ -39,7 +42,8 @@ export default function Chart({ type, data }: ChartProps) {
           h={300}
           data={formattedData}
           dataKey="date"
-          series={[{ name: 'amount', color: 'green.6' }]}
+          series={[{ name: 'amount', color: 'green.6', label: 'Amount' }]}
+          valueFormatter={(val) => formatCurrency(val)}
         />
       );
 
@@ -52,6 +56,7 @@ export default function Chart({ type, data }: ChartProps) {
           withLabelsLine={false}
           withTooltip
           tooltipDataSource="segment"
+          valueFormatter={(val) => formatCurrency(val)}
         />
       );
   };

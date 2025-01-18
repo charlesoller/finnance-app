@@ -29,6 +29,7 @@ export default function Chat() {
     queryKey: ['session'],
     queryFn: () => sessionAPI.getSession(sessionId as string),
     enabled: Boolean(sessionId),
+    refetchOnWindowFocus: false,
   });
 
   useEffect(() => {
@@ -36,6 +37,7 @@ export default function Chat() {
       scrollIntoView();
     }
   }, [messages, scrollIntoView]);
+
   return (
     <Flex direction="column" h="100vh">
       <Flex
