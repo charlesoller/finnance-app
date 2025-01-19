@@ -44,7 +44,8 @@ export default function UserInput() {
     mutationFn: (request: GenerationRequest) =>
       sessionAPI.createChatForSessionId(sessionId!, request),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['session', 'sessionData'] });
+      queryClient.invalidateQueries({ queryKey: ['session'] });
+      queryClient.invalidateQueries({ queryKey: ['sessionData'] });
     },
     onError: () => {
       const previousMessages =
