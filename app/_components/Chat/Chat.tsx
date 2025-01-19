@@ -15,9 +15,11 @@ import { useScrollButton } from '../../_utils/hooks/useScrollButton';
 import { MessageOwner } from '../../_utils/types';
 import styles from './Chat.module.css';
 import ErrorState from '../ErrorState/ErrorState';
+import { useModalStore } from '../../_stores/ModalStore';
 
 export default function Chat() {
   const { sessionId } = useSessionId();
+  const { isModalOpen } = useModalStore();
   const scrollableRef = useRef<HTMLDivElement>(null);
 
   const { ref, isInViewport, scrollIntoView } = useScrollButton(scrollableRef);
@@ -49,10 +51,12 @@ export default function Chat() {
         className={styles.chatContainer}
         ref={scrollableRef}
       >
-        <ScrollButton
-          isVisible={!isLoading && !isPending && !isInViewport}
-          onClick={scrollIntoView}
-        />
+        {!isModalOpen('disclaimer') && (
+          <ScrollButton
+            isVisible={!isLoading && !isPending && !isInViewport}
+            onClick={scrollIntoView}
+          />
+        )}
         {(isLoading || isPending) && (
           <Loader mx="auto" my="auto" color="green" />
         )}

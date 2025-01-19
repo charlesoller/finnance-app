@@ -8,6 +8,7 @@ import {
   mantineHtmlProps,
   AppShell,
 } from '@mantine/core';
+import { ModalsProvider } from '@mantine/modals';
 import { theme } from '../../theme';
 import { useDisclosure, useLocalStorage } from '@mantine/hooks';
 import { AppColorScheme } from '../_utils/types';
@@ -16,6 +17,7 @@ import SideNav from '../_components/SideNav/SideNav';
 import { QueryClientProvider } from '@tanstack/react-query';
 import queryClient from '../_services/QueryClient';
 import Header from '../_components/Header/Header';
+import { MODALS } from '../_components/_modals';
 
 const oxygen = Oxygen({
   weight: ['300', '400', '700'],
@@ -49,27 +51,29 @@ export default function RootLayout({ children }: { children: any }) {
       <body style={{ overflow: 'hidden' }}>
         <QueryClientProvider client={queryClient}>
           <MantineProvider theme={theme} forceColorScheme={colorScheme}>
-            <AppShell
-              header={{ height: 60 }}
-              navbar={{
-                width: 150,
-                breakpoint: 'sm',
-                collapsed: { mobile: !opened },
-              }}
-            >
-              <AppShell.Header>
-                <Header
-                  opened={opened}
-                  toggle={toggle}
-                  colorScheme={colorScheme}
-                  toggleColorScheme={toggleColorScheme}
-                />
-              </AppShell.Header>
-              <AppShell.Navbar p="sm">
-                <SideNav />
-              </AppShell.Navbar>
-              <AppShell.Main>{children}</AppShell.Main>
-            </AppShell>
+            <ModalsProvider modals={MODALS}>
+              <AppShell
+                header={{ height: 60 }}
+                navbar={{
+                  width: 150,
+                  breakpoint: 'sm',
+                  collapsed: { mobile: !opened },
+                }}
+              >
+                <AppShell.Header>
+                  <Header
+                    opened={opened}
+                    toggle={toggle}
+                    colorScheme={colorScheme}
+                    toggleColorScheme={toggleColorScheme}
+                  />
+                </AppShell.Header>
+                <AppShell.Navbar p="sm">
+                  <SideNav />
+                </AppShell.Navbar>
+                <AppShell.Main>{children}</AppShell.Main>
+              </AppShell>
+            </ModalsProvider>
           </MantineProvider>
         </QueryClientProvider>
       </body>
