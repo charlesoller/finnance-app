@@ -1,0 +1,7 @@
+.text {
+  text-align: justify;
+}
+
+.modal {
+  z-index: 999;
+}
