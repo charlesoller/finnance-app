@@ -11,6 +11,7 @@ import { formatTabName, groupSessions } from './HistoryMenu.utils';
 import { TABS } from './HistoryMenu.consts';
 import { useMemo } from 'react';
 import { formatDate } from '../../_utils/utils';
+import ErrorState from '../ErrorState/ErrorState';
 
 export default function HistoryMenu() {
   const queryClient = useQueryClient();
@@ -96,6 +97,7 @@ export default function HistoryMenu() {
               </Tabs>
             </Flex>
           )}
+          {error && <ErrorState />}
         </Flex>
       </Menu.Dropdown>
     </Menu>

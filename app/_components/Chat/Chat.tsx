@@ -14,6 +14,7 @@ import ScrollButton from '../ScrollButton/ScrollButton';
 import { useScrollButton } from '../../_utils/hooks/useScrollButton';
 import { MessageOwner } from '../../_utils/types';
 import styles from './Chat.module.css';
+import ErrorState from '../ErrorState/ErrorState';
 
 export default function Chat() {
   const { sessionId } = useSessionId();
@@ -55,26 +56,35 @@ export default function Chat() {
         {(isLoading || isPending) && (
           <Loader mx="auto" my="auto" color="green" />
         )}
-        {(!messages || !messages.length) && !isLoading && !isPending && (
-          <NoMessages />
-        )}
+        {(!messages || !messages.length) &&
+          !isLoading &&
+          !isPending &&
+          !error && <NoMessages />}
 
         {!!messages &&
-          messages.map((message, index) => (
-            <Flex key={message.message_id || index} direction="column" gap="md">
-              <Message
-                owner={message.message_type.toUpperCase() as MessageOwner}
-                content={message.message_content}
-                loading={message.message_id === 'LOADING'}
-              />
-              {!!message.graph_data && (
-                <Chart
-                  type={message.graph_data.type}
-                  data={message.graph_data.data}
+          messages.map((message, index) => {
+            return (
+              <Flex
+                key={message.message_id || index}
+                direction="column"
+                gap="md"
+              >
+                <Message
+                  owner={message.message_type.toUpperCase() as MessageOwner}
+                  content={message.message_content}
+                  loading={message.message_id === 'LOADING'}
                 />
-              )}
-            </Flex>
-          ))}
+                {!!message.graph_data && (
+                  <Chart
+                    type={message.graph_data.type}
+                    data={message.graph_data.data}
+                  />
+                )}
+              </Flex>
+            );
+          })}
+
+        {error && <ErrorState />}
         <div ref={ref} />
       </Flex>
       <UserInput />

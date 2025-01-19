@@ -19,6 +19,7 @@ export default function Chart({ type, data }: ChartProps) {
   if (!data || !type) return null;
   const getChart = () => {
     const formattedData = formatData(data, type);
+
     if (type === 'line')
       return (
         <LineChart
@@ -54,7 +55,7 @@ export default function Chart({ type, data }: ChartProps) {
           withLabelsLine={false}
           withTooltip
           tooltipDataSource="segment"
-          valueFormatter={(val) => formatCurrency(val)}
+          // valueFormatter={(val) => formatCurrency(val)}
         />
       );
   };

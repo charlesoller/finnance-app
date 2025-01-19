@@ -2,9 +2,9 @@
 
 import {
   ActionIcon,
+  Button,
   Flex,
   Paper,
-  Text,
   Textarea,
   useMantineColorScheme,
   useMantineTheme,
@@ -19,6 +19,8 @@ import { v4 } from 'uuid';
 import sessionAPI from '../../_services/SessionAPI';
 import styles from './UserInput.module.css';
 import { PaperPlaneIcon } from '@radix-ui/react-icons';
+import DisclaimerModal from '../_modals/DisclaimerModal/DisclaimerModal';
+import { useDisclosure } from '@mantine/hooks';
 
 type FormField = 'message' | 'useGraph';
 type FormDataType = string | boolean;
@@ -39,6 +41,7 @@ export default function UserInput() {
   const { colorScheme } = useMantineColorScheme();
 
   const [form, setForm] = useState<FormData>(defaultFormState);
+  const [opened, { toggle }] = useDisclosure(false);
 
   const mutation = useMutation({
     mutationFn: (request: GenerationRequest) =>
@@ -133,36 +136,45 @@ export default function UserInput() {
   };
 
   return (
-    <Paper
-      p="sm"
-      radius={0}
-      style={{ borderTop: `1px solid ${borderColor(colorScheme, theme)}` }}
-      className={styles.container}
-    >
-      <Flex direction="column" gap="xs">
-        <form onSubmit={handleSubmit}>
-          <Textarea
-            aria-label="Ask Finn about your Finances"
-            variant="filled"
-            size="md"
-            placeholder="Ask Finn about your finances..."
-            value={form.message}
-            onChange={(e) => handleForm('message', e.target.value)}
-            onKeyDown={handleKeyDown}
-            autosize
-            minRows={1}
-            maxRows={20}
-            rightSection={
-              <ActionIcon color="green" type="submit" mb="auto" mt="6px">
-                <PaperPlaneIcon />
-              </ActionIcon>
-            }
-          />
-        </form>
-        <Text size="xs" c="dimmed">
-          View Disclaimer
-        </Text>
-      </Flex>
-    </Paper>
+    <>
+      <DisclaimerModal opened={opened} onClose={toggle} />
+      <Paper
+        p="sm"
+        radius={0}
+        style={{ borderTop: `1px solid ${borderColor(colorScheme, theme)}` }}
+        className={styles.container}
+      >
+        <Flex direction="column" gap="xs">
+          <form onSubmit={handleSubmit}>
+            <Textarea
+              aria-label="Ask Finn about your Finances"
+              variant="filled"
+              size="md"
+              placeholder="Ask Finn about your finances..."
+              value={form.message}
+              onChange={(e) => handleForm('message', e.target.value)}
+              onKeyDown={handleKeyDown}
+              autosize
+              minRows={1}
+              maxRows={20}
+              rightSection={
+                <ActionIcon color="green" type="submit" mb="auto" mt="6px">
+                  <PaperPlaneIcon />
+                </ActionIcon>
+              }
+            />
+          </form>
+          <Button
+            size="xs"
+            c="dimmed"
+            onClick={toggle}
+            variant="transparent"
+            w="fit-content"
+          >
+            View Disclaimer
+          </Button>
+        </Flex>
+      </Paper>
+    </>
   );
 }

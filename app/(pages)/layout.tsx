@@ -7,25 +7,15 @@ import {
   ColorSchemeScript,
   mantineHtmlProps,
   AppShell,
-  Burger,
-  ActionIcon,
-  Text,
-  Flex,
 } from '@mantine/core';
 import { theme } from '../../theme';
 import { useDisclosure, useLocalStorage } from '@mantine/hooks';
 import { AppColorScheme } from '../_utils/types';
-import { MoonIcon, SunIcon } from '@radix-ui/react-icons';
 import { Oxygen } from 'next/font/google';
 import SideNav from '../_components/SideNav/SideNav';
 import { QueryClientProvider } from '@tanstack/react-query';
 import queryClient from '../_services/QueryClient';
-import Link from 'next/link';
-
-// export const metadata = {
-//   title: "Mantine Next.js template",
-//   description: "I am using Mantine with Next.js!",
-// };
+import Header from '../_components/Header/Header';
 
 const oxygen = Oxygen({
   weight: ['300', '400', '700'],
@@ -36,7 +26,7 @@ const oxygen = Oxygen({
 
 export default function RootLayout({ children }: { children: any }) {
   const [opened, { toggle }] = useDisclosure();
-  const [colorScheme, setColorScheme] = useLocalStorage({
+  const [colorScheme, setColorScheme] = useLocalStorage<AppColorScheme>({
     key: 'mantine-color-scheme',
     defaultValue: 'light',
   });
@@ -50,7 +40,7 @@ export default function RootLayout({ children }: { children: any }) {
     <html lang="en" {...mantineHtmlProps} className={oxygen.className}>
       <head>
         <ColorSchemeScript forceColorScheme={colorScheme as AppColorScheme} />
-        <link rel="shortcut icon" href="/favicon.svg" />
+        <link rel="shortcut icon" href="/mascot.webp" />
         <meta
           name="viewport"
           content="minimum-scale=1, initial-scale=1, width=device-width, user-scalable=no"
@@ -58,10 +48,7 @@ export default function RootLayout({ children }: { children: any }) {
       </head>
       <body style={{ overflow: 'hidden' }}>
         <QueryClientProvider client={queryClient}>
-          <MantineProvider
-            theme={theme}
-            forceColorScheme={colorScheme as AppColorScheme}
-          >
+          <MantineProvider theme={theme} forceColorScheme={colorScheme}>
             <AppShell
               header={{ height: 60 }}
               navbar={{
@@ -71,42 +58,16 @@ export default function RootLayout({ children }: { children: any }) {
               }}
             >
               <AppShell.Header>
-                <Flex align="center" justify="space-between" h="100%" p="0.5em">
-                  <Burger
-                    opened={opened}
-                    onClick={toggle}
-                    hiddenFrom="sm"
-                    size="sm"
-                  />
-                  <Link href={'/'} style={{ textDecoration: 'none' }}>
-                    <Text
-                      fw={700}
-                      size="xl"
-                      c="green"
-                      style={{ textDecoration: 'none' }}
-                    >
-                      Finnance
-                    </Text>
-                  </Link>
-                  <ActionIcon
-                    variant="outline"
-                    color={colorScheme === 'dark' ? 'yellow' : 'blue'}
-                    onClick={toggleColorScheme}
-                    title="Toggle color scheme"
-                  >
-                    {colorScheme === 'dark' ? (
-                      <SunIcon style={{ width: 18, height: 18 }} />
-                    ) : (
-                      <MoonIcon style={{ width: 18, height: 18 }} />
-                    )}
-                  </ActionIcon>
-                </Flex>
+                <Header
+                  opened={opened}
+                  toggle={toggle}
+                  colorScheme={colorScheme}
+                  toggleColorScheme={toggleColorScheme}
+                />
               </AppShell.Header>
-
               <AppShell.Navbar p="sm">
                 <SideNav />
               </AppShell.Navbar>
-
               <AppShell.Main>{children}</AppShell.Main>
             </AppShell>
           </MantineProvider>

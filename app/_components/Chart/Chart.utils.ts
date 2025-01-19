@@ -15,10 +15,13 @@ export const getDomain = (data: LineChartDataPoint[]) => {
 
 export const formatData = (data: ChartDataPoint[], type: ChartType) => {
   if (type === 'line' || type === 'bar') {
-    return data.map((item) => ({ amount: item.amount, date: item.label }));
+    return data.map((item) => ({
+      amount: Number(item.amount),
+      date: item.label,
+    }));
   } else {
     return hydrateColors(
-      data.map((item) => ({ value: item.amount, name: item.label })),
+      data.map((item) => ({ value: Number(item.amount), name: item.label })),
     );
   }
 };
