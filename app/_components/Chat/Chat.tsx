@@ -41,7 +41,11 @@ export default function Chat() {
   }, [messages, scrollIntoView]);
 
   return (
-    <Flex direction="column" h="100vh" pos="relative">
+    <Flex
+      direction="column"
+      h={{ base: '100dvh', fallback: '100vh' }}
+      pos="relative"
+    >
       <Flex
         direction="column"
         gap="md"
