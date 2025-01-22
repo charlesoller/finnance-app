@@ -12,6 +12,7 @@ import { TABS } from './HistoryMenu.consts';
 import { useMemo } from 'react';
 import { formatDate } from '../../_utils/utils';
 import ErrorState from '../ErrorState/ErrorState';
+import { GroupedSessionData } from './HistoryMenu.types';
 
 export default function HistoryMenu() {
   const queryClient = useQueryClient();
@@ -25,8 +26,12 @@ export default function HistoryMenu() {
     queryKey: ['sessionInfo'],
     queryFn: () => sessionAPI.getSessionInfo(),
   });
+
   const groupedSessions = useMemo(
-    () => groupSessions(sessionData || []),
+    () =>
+      sessionData?.length
+        ? groupSessions(sessionData)
+        : ({} as GroupedSessionData),
     [sessionData],
   );
 
