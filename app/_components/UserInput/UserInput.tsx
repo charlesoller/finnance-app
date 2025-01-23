@@ -13,13 +13,13 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { FormEvent, KeyboardEvent, useState } from 'react';
 import { GenerationRequest } from '../../_models/GenerationRequest';
 import { borderColor } from './UserInput.helpers';
-import { useSessionId } from '../../_utils/hooks/useSessionId';
 import { ChatMessage } from '../../_models/ChatMessage';
 import { v4 } from 'uuid';
 import sessionAPI from '../../_services/SessionAPI';
 import styles from './UserInput.module.css';
 import { PaperPlaneIcon } from '@radix-ui/react-icons';
 import { useModalStore } from '../../_stores/ModalStore';
+import { useParams } from 'next/navigation';
 
 type FormField = 'message' | 'useGraph';
 type FormDataType = string | boolean;
@@ -34,7 +34,7 @@ const defaultFormState: FormData = {
 
 export default function UserInput() {
   const queryClient = useQueryClient();
-  const { sessionId } = useSessionId();
+  const { sessionId } = useParams();
   const { openModal } = useModalStore();
 
   const theme = useMantineTheme();
@@ -44,10 +44,10 @@ export default function UserInput() {
 
   const mutation = useMutation({
     mutationFn: (request: GenerationRequest) =>
-      sessionAPI.createChatForSessionId(sessionId!, request),
+      sessionAPI.createChatForSessionId(sessionId as string, request),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['session'] });
-      queryClient.invalidateQueries({ queryKey: ['sessionData'] });
+      queryClient.invalidateQueries({ queryKey: ['sessionInfo'] });
     },
     onError: () => {
       const previousMessages =
@@ -125,7 +125,7 @@ export default function UserInput() {
 
     mutation.mutate({
       user_id: '123',
-      session_id: sessionId,
+      session_id: sessionId as string,
       history: chatHistory,
       message_content: form.message,
       use_graph: form.useGraph,

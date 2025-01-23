@@ -1,4 +1,5 @@
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
+import { toZonedTime } from 'date-fns-tz';
 
 export const capitalize = (str: string): string =>
   str.charAt(0).toUpperCase() + str.slice(1);
@@ -19,9 +20,18 @@ const getOrdinalSuffix = (day: number) => {
 };
 
 export const formatDate = (date: Date) => {
-  const day = format(date, 'd');
-  const month = format(date, 'MMMM');
-  const year = format(date, 'yyyy');
+  const local = utcToLocal(date);
+
+  const day = format(local, 'd');
+  const month = format(local, 'MMMM');
+  const year = format(local, 'yyyy');
 
   return `${month} ${getOrdinalSuffix(Number(day))}, ${year}`;
+};
+
+export const utcToLocal = (date: Date): Date => {
+  const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const utc = parseISO(String(date));
+  const localTime = toZonedTime(utc, localTimezone);
+  return localTime;
 };

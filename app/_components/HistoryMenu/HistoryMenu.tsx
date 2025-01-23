@@ -2,7 +2,6 @@ import { Button, Flex, Loader, Menu, Tabs } from '@mantine/core';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import sessionAPI from '../../_services/SessionAPI';
 import { ChatMessage } from '../../_models/ChatMessage';
-import { useSessionId } from '../../_utils/hooks/useSessionId';
 import { SessionData } from '../../_models/SessionData';
 import styles from './HistoryMenu.module.css';
 import { ArrowRightIcon } from '@radix-ui/react-icons';
@@ -13,10 +12,11 @@ import { useMemo } from 'react';
 import { formatDate } from '../../_utils/utils';
 import ErrorState from '../ErrorState/ErrorState';
 import { GroupedSessionData } from './HistoryMenu.types';
+import { useParams } from 'next/navigation';
 
 export default function HistoryMenu() {
   const queryClient = useQueryClient();
-  const { sessionId, setSessionId } = useSessionId();
+  const { sessionId } = useParams();
 
   const {
     error,
@@ -36,7 +36,6 @@ export default function HistoryMenu() {
   );
 
   const handleNavigation = (id: string) => {
-    setSessionId(id);
     queryClient.setQueryData<ChatMessage[]>(
       ['session'],
       [

@@ -7,7 +7,7 @@ import {
 } from 'date-fns';
 import { SessionData } from '../../_models/SessionData';
 import { GroupedSessionData, HistoryGroup } from './HistoryMenu.types';
-import { capitalize } from '../../_utils/utils';
+import { capitalize, utcToLocal } from '../../_utils/utils';
 
 export const groupSessions = (sessions: SessionData[]): GroupedSessionData => {
   const today = new Date();
@@ -25,9 +25,9 @@ export const groupSessions = (sessions: SessionData[]): GroupedSessionData => {
 
   // Breaking into groups
   sessions.forEach((session) => {
-    const updatedAt = parseISO(String(session.updated_at));
+    const updatedAt = utcToLocal(session.updated_at);
 
-    if (isToday(updatedAt)) {
+    if (isToday(updatedAt) || updatedAt > today) {
       grouped.today.push(session);
     } else if (isYesterday(updatedAt)) {
       grouped.yesterday.push(session);
