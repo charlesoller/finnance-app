@@ -1,4 +1,4 @@
-import { Button, Flex, Loader, Menu, Tabs } from '@mantine/core';
+import { Button, Flex, Loader, Menu, Tabs, Text } from '@mantine/core';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import sessionAPI from '../../_services/SessionAPI';
 import { ChatMessage } from '../../_models/ChatMessage';
@@ -60,6 +60,20 @@ export default function HistoryMenu() {
         <Flex direction="column" justify="center">
           {isLoading && (
             <Loader color="green" m="lg" className={styles.loader} />
+          )}
+          {!isLoading && !error && !sessionData?.length && (
+            <Flex
+              p="sm"
+              gap="xs"
+              direction="column"
+              justify="center"
+              align="center"
+            >
+              <Text size="md">No Session History</Text>
+              <Text c="dimmed" size="xs">
+                Ask some questions to see your chat history here
+              </Text>
+            </Flex>
           )}
           {!isLoading && !!Object.keys(groupedSessions).length && (
             <Flex>
