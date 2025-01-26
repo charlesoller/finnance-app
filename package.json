@@ -20,6 +20,9 @@
     ]
   },
   "dependencies": {
+    "@aws-amplify/auth": "^6.10.0",
+    "@aws-amplify/cli": "^12.14.1",
+    "@aws-amplify/ui-react": "^6.9.1",
     "@mantine/charts": "^7.15.2",
     "@mantine/core": "7.15.2",
     "@mantine/hooks": "7.15.2",
@@ -28,6 +31,9 @@
     "@tanstack/react-query": "^5.62.16",
     "@typescript-eslint/eslint-plugin": "^8.20.0",
     "@typescript-eslint/parser": "^8.20.0",
+    "add": "^2.0.6",
+    "ampx": "^0.2.2",
+    "aws-amplify": "^6.12.1",
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
     "eslint-config-prettier": "^10.0.1",
@@ -53,11 +59,18 @@
     "zustand": "^5.0.3"
   },
   "devDependencies": {
+    "@aws-amplify/backend": "^1.13.0",
+    "@aws-amplify/backend-cli": "^1.4.7",
     "@tanstack/eslint-plugin-query": "^5.62.16",
+    "@types/add": "^2",
     "@types/eslint-plugin-jsx-a11y": "^6",
     "@types/node": "20.14.8",
     "@types/react": "18.3.3",
     "@types/react-dom": "18.3.0",
+    "aws-cdk": "^2",
+    "aws-cdk-lib": "^2",
+    "constructs": "^10.0.0",
+    "esbuild": "^0.24.2",
     "eslint": "^9.18.0",
     "eslint-config-next": "^15.1.4",
     "husky": "^9.1.7",
@@ -65,7 +78,8 @@
     "postcss": "^8.4.38",
     "postcss-preset-mantine": "1.17.0",
     "postcss-simple-vars": "^7.0.1",
-    "typescript": "5.5.2"
+    "tsx": "^4.19.2",
+    "typescript": "^5.0.0"
   },
   "packageManager": "yarn@4.5.3"
 }

@@ -18,6 +18,10 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import queryClient from '../_services/QueryClient';
 import Header from '../_components/Header/Header';
 import { MODALS } from '../_components/_modals';
+import { Authenticator } from '@aws-amplify/ui-react';
+import { Amplify } from 'aws-amplify';
+import outputs from '../../amplify_outputs.json';
+import '@aws-amplify/ui-react/styles.css';
 
 const oxygen = Oxygen({
   weight: ['300', '400', '700'],
@@ -25,6 +29,8 @@ const oxygen = Oxygen({
   variable: '--font-oxygen',
   display: 'swap',
 });
+
+Amplify.configure(outputs);
 
 export default function RootLayout({ children }: { children: any }) {
   const [opened, { toggle }] = useDisclosure();
@@ -48,34 +54,45 @@ export default function RootLayout({ children }: { children: any }) {
           content="minimum-scale=1, initial-scale=1, width=device-width, user-scalable=no"
         />
       </head>
-      <body style={{ overflow: 'hidden' }}>
-        <QueryClientProvider client={queryClient}>
+      <body
+        style={{
+          overflow: 'hidden',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          // height: '100vh',
+        }}
+      >
+        <Authenticator variation="modal">
           <MantineProvider theme={theme} forceColorScheme={colorScheme}>
-            <ModalsProvider modals={MODALS}>
-              <AppShell
-                header={{ height: 60 }}
-                navbar={{
-                  width: 150,
-                  breakpoint: 'sm',
-                  collapsed: { mobile: !opened },
-                }}
-              >
-                <AppShell.Header>
-                  <Header
-                    opened={opened}
-                    toggle={toggle}
-                    colorScheme={colorScheme}
-                    toggleColorScheme={toggleColorScheme}
-                  />
-                </AppShell.Header>
-                <AppShell.Navbar p="sm">
-                  <SideNav />
-                </AppShell.Navbar>
-                <AppShell.Main>{children}</AppShell.Main>
-              </AppShell>
-            </ModalsProvider>
+            <QueryClientProvider client={queryClient}>
+              <ModalsProvider modals={MODALS}>
+                <AppShell
+                  w="100%"
+                  header={{ height: 60 }}
+                  navbar={{
+                    width: 150,
+                    breakpoint: 'sm',
+                    collapsed: { mobile: !opened },
+                  }}
+                >
+                  <AppShell.Header>
+                    <Header
+                      opened={opened}
+                      toggle={toggle}
+                      colorScheme={colorScheme}
+                      toggleColorScheme={toggleColorScheme}
+                    />
+                  </AppShell.Header>
+                  <AppShell.Navbar p="sm">
+                    <SideNav />
+                  </AppShell.Navbar>
+                  <AppShell.Main>{children}</AppShell.Main>
+                </AppShell>
+              </ModalsProvider>
+            </QueryClientProvider>
           </MantineProvider>
-        </QueryClientProvider>
+        </Authenticator>
       </body>
     </html>
   );

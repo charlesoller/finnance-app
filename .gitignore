@@ -133,3 +133,8 @@ dist
 .pnp.*
 
 .DS_Store
+
+# amplify
+.amplify
+amplify_outputs*
+amplifyconfiguration*
