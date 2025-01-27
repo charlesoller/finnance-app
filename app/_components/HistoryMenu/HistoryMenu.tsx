@@ -13,10 +13,12 @@ import { formatDate } from '../../_utils/utils';
 import ErrorState from '../ErrorState/ErrorState';
 import { GroupedSessionData } from './HistoryMenu.types';
 import { useParams } from 'next/navigation';
+import { useUserStore } from '../../_stores/UserStore';
 
 export default function HistoryMenu() {
   const queryClient = useQueryClient();
   const { sessionId } = useParams();
+  const { token } = useUserStore();
 
   const {
     error,
@@ -24,7 +26,7 @@ export default function HistoryMenu() {
     data: sessionData,
   } = useQuery<SessionData[]>({
     queryKey: ['sessionInfo'],
-    queryFn: () => sessionAPI.getSessionInfo(),
+    queryFn: () => sessionAPI.getSessionInfo(token),
   });
 
   const groupedSessions = useMemo(

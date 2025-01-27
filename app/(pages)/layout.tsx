@@ -22,6 +22,7 @@ import { Authenticator } from '@aws-amplify/ui-react';
 import { Amplify } from 'aws-amplify';
 import outputs from '../../amplify_outputs.json';
 import '@aws-amplify/ui-react/styles.css';
+import { useAuth } from '../_utils/hooks/useAuth';
 
 const oxygen = Oxygen({
   weight: ['300', '400', '700'],
@@ -33,6 +34,7 @@ const oxygen = Oxygen({
 Amplify.configure(outputs);
 
 export default function RootLayout({ children }: { children: any }) {
+  useAuth();
   const [opened, { toggle }] = useDisclosure();
   const [colorScheme, setColorScheme] = useLocalStorage<AppColorScheme>({
     key: 'mantine-color-scheme',
@@ -63,7 +65,7 @@ export default function RootLayout({ children }: { children: any }) {
           // height: '100vh',
         }}
       >
-        <Authenticator variation="modal">
+        <Authenticator>
           <MantineProvider theme={theme} forceColorScheme={colorScheme}>
             <QueryClientProvider client={queryClient}>
               <ModalsProvider modals={MODALS}>

@@ -16,10 +16,12 @@ import { MessageOwner } from '../../_utils/types';
 import styles from './Chat.module.css';
 import ErrorState from '../ErrorState/ErrorState';
 import { useModalStore } from '../../_stores/ModalStore';
+import { useUserStore } from '../../_stores/UserStore';
 
 export default function Chat() {
   const { sessionId } = useSessionId();
   const { isModalOpen } = useModalStore();
+  const { token } = useUserStore();
   const scrollableRef = useRef<HTMLDivElement>(null);
 
   const { ref, isInViewport, scrollIntoView } = useScrollButton(scrollableRef);
@@ -31,7 +33,7 @@ export default function Chat() {
     isPending,
   } = useQuery<ChatMessage[]>({
     queryKey: ['session'],
-    queryFn: () => sessionAPI.getSession(sessionId as string),
+    queryFn: () => sessionAPI.getSession(sessionId as string, token),
     enabled: Boolean(sessionId),
     refetchOnWindowFocus: false,
   });

@@ -17,8 +17,14 @@ export const auth = defineAuth({
         },
         scopes: ['email', 'profile'],
       },
-      callbackUrls: ['http://localhost:3001/'],
-      logoutUrls: ['http://localhost:3001/'],
+      callbackUrls: [
+        'http://localhost:3001/',
+        'https://main.d31aw9xyzenv14.amplifyapp.com/chat/e7e36163-2571-41e7-b973-55738bfcc7ec',
+      ],
+      logoutUrls: [
+        'http://localhost:3001/',
+        'https://main.d31aw9xyzenv14.amplifyapp.com/chat/e7e36163-2571-41e7-b973-55738bfcc7ec',
+      ],
     },
   },
 });

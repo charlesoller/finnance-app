@@ -20,6 +20,7 @@ import styles from './UserInput.module.css';
 import { PaperPlaneIcon } from '@radix-ui/react-icons';
 import { useModalStore } from '../../_stores/ModalStore';
 import { useParams } from 'next/navigation';
+import { useUserStore } from '../../_stores/UserStore';
 
 type FormField = 'message' | 'useGraph';
 type FormDataType = string | boolean;
@@ -36,6 +37,7 @@ export default function UserInput() {
   const queryClient = useQueryClient();
   const { sessionId } = useParams();
   const { openModal } = useModalStore();
+  const { token } = useUserStore();
 
   const theme = useMantineTheme();
   const { colorScheme } = useMantineColorScheme();
@@ -44,7 +46,7 @@ export default function UserInput() {
 
   const mutation = useMutation({
     mutationFn: (request: GenerationRequest) =>
-      sessionAPI.createChatForSessionId(sessionId as string, request),
+      sessionAPI.createChatForSessionId(sessionId as string, token, request),
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: ['session'] });
       queryClient.invalidateQueries({ queryKey: ['sessionInfo'] });

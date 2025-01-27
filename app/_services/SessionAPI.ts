@@ -7,16 +7,20 @@ class SessionAPI extends APIService {
     return Config.getBaseURL();
   }
 
-  async getSession(sessionId: string) {
-    return this.get(`/sessions/${sessionId}`);
+  async getSession(sessionId: string, token: string) {
+    return this.get(`/sessions/${sessionId}`, token);
   }
 
-  async getSessionInfo() {
-    return this.get('/sessions');
+  async getSessionInfo(token: string) {
+    return this.get('/sessions', token);
   }
 
-  async createChatForSessionId(sessionId: string, request: GenerationRequest) {
-    return this.post(`/sessions/${sessionId}`, request);
+  async createChatForSessionId(
+    sessionId: string,
+    token: string,
+    request: GenerationRequest,
+  ) {
+    return this.post(`/sessions/${sessionId}`, token, request);
   }
 }
 
