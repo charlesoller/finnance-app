@@ -44,6 +44,7 @@ class APIService {
     try {
       console.log(`GET to - ${this.getBaseUrl()}${url}`);
       const token = await this.getToken();
+      console.log('AUTH TOKEN: ', token);
       const response = await fetch(
         `${this.getBaseUrl()}${url}?` + new URLSearchParams(params).toString(),
         {
@@ -95,9 +96,11 @@ class APIService {
   private async getToken() {
     try {
       const session = await fetchAuthSession();
+      console.log('Session: ', session);
       if (!session || !session.tokens || !session.tokens.idToken) {
         throw new Error('No authorization token found.');
       }
+      console.log('before return: ', session.tokens.idToken);
       return session.tokens.idToken.toString();
     } catch (e) {
       throw e;
