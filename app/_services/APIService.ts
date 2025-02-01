@@ -24,12 +24,13 @@ class APIService {
   ): Promise<T> {
     try {
       console.log(`POST to - ${this.getBaseUrl()}${url}`);
+      console.log('Token: ', token);
       const response = await fetch(`${this.getBaseUrl()}${url}`, {
         method: 'POST',
         body: JSON.stringify(data),
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
-          // Authorization: token,
+          Authorization: token,
         },
       });
       return await this.handleResponse(response);
@@ -45,12 +46,13 @@ class APIService {
   ): Promise<T> {
     try {
       console.log(`GET to - ${this.getBaseUrl()}${url}`);
+      console.log('Token: ', token);
       const response = await fetch(
         `${this.getBaseUrl()}${url}?` + new URLSearchParams(params).toString(),
         {
-          // headers: {
-          //   Authorization: token,
-          // },
+          headers: {
+            Authorization: token,
+          },
         },
       );
       return await this.handleResponse(response);
@@ -71,7 +73,7 @@ class APIService {
         body: JSON.stringify(data),
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
-          // Authorization: token,
+          Authorization: token,
         },
       });
       return await this.handleResponse(response);
@@ -86,7 +88,7 @@ class APIService {
       const response = await fetch(`${this.getBaseUrl()}${url}`, {
         method: 'DELETE',
         headers: {
-          // Authorization: token,
+          Authorization: token,
         },
       });
       return await this.handleResponse(response);
