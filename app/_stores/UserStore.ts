@@ -7,7 +7,7 @@ interface UserStore {
   getToken: () => string;
 }
 
-export const useUserStore = create<UserStore>((set, get) => ({
+export const useUserStore = create<UserStore>((set: any, get: any) => ({
   token: '',
 
   fetchToken: async () => {
@@ -21,7 +21,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
     set(() => {
       return { token: authToken };
     });
-    console.log(authToken);
+
     return authToken;
   },
   getToken: () => {

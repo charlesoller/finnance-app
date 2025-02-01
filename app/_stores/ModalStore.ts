@@ -11,11 +11,11 @@ interface ModalStore {
   isModalOpen: (id: string) => boolean;
 }
 
-export const useModalStore = create<ModalStore>((set, get) => ({
+export const useModalStore = create<ModalStore>((set: any, get: any) => ({
   openModals: new Set(),
 
-  openModal: (options) => {
-    set((state) => {
+  openModal: (options: any) => {
+    set((state: any) => {
       const newModals = new Set(state.openModals);
       newModals.add(options.modal);
       return { openModals: newModals };
@@ -25,7 +25,7 @@ export const useModalStore = create<ModalStore>((set, get) => ({
       ...options,
       onClose: () => {
         setTimeout(() => {
-          set((state) => {
+          set((state: any) => {
             const newModals = new Set(state.openModals);
             newModals.delete(options.modal);
             return { openModals: newModals };
@@ -37,7 +37,7 @@ export const useModalStore = create<ModalStore>((set, get) => ({
 
   closeModal: (id) => {
     modals.close(id);
-    set((state) => {
+    set((state: any) => {
       const newModals = new Set(state.openModals);
       newModals.delete(id);
       return { openModals: newModals };
