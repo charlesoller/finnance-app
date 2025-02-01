@@ -29,7 +29,7 @@ class APIService {
         body: JSON.stringify(data),
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
-          Authorization: token,
+          // Authorization: token,
         },
       });
       return await this.handleResponse(response);
@@ -48,9 +48,9 @@ class APIService {
       const response = await fetch(
         `${this.getBaseUrl()}${url}?` + new URLSearchParams(params).toString(),
         {
-          headers: {
-            Authorization: token,
-          },
+          // headers: {
+          //   Authorization: token,
+          // },
         },
       );
       return await this.handleResponse(response);
@@ -71,7 +71,7 @@ class APIService {
         body: JSON.stringify(data),
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
-          Authorization: token,
+          // Authorization: token,
         },
       });
       return await this.handleResponse(response);
@@ -85,9 +85,9 @@ class APIService {
       console.log(`DELETE to - ${this.getBaseUrl()}${url}`);
       const response = await fetch(`${this.getBaseUrl()}${url}`, {
         method: 'DELETE',
-        headers: {
-          Authorization: token,
-        },
+        // headers: {
+        //   Authorization: token,
+        // },
       });
       return await this.handleResponse(response);
     } catch (err) {
