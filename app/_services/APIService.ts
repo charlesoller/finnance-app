@@ -24,7 +24,6 @@ class APIService {
   ): Promise<T> {
     try {
       console.log(`POST to - ${this.getBaseUrl()}${url}`);
-      console.log('Token: ', token);
       const response = await fetch(`${this.getBaseUrl()}${url}`, {
         method: 'POST',
         body: JSON.stringify(data),
@@ -46,7 +45,6 @@ class APIService {
   ): Promise<T> {
     try {
       console.log(`GET to - ${this.getBaseUrl()}${url}`);
-      console.log('Token: ', token);
       const response = await fetch(
         `${this.getBaseUrl()}${url}?` + new URLSearchParams(params).toString(),
         {
