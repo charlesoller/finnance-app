@@ -13,10 +13,11 @@ export const useUserStore = create<UserStore>((set: any, get: any) => ({
   fetchToken: async () => {
     const session = await fetchAuthSession();
     if (!session || !session.tokens || !session.tokens.idToken) {
-      throw new Error('No authorization token found.');
+      console.log('No authorization token found.');
+      return '';
     }
     const authToken = session.tokens.idToken.toString();
-    console.log('tok: ', authToken);
+
     set(() => {
       return { token: authToken };
     });

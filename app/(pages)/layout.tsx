@@ -56,45 +56,47 @@ export default function RootLayout({ children }: { children: any }) {
           content="minimum-scale=1, initial-scale=1, width=device-width, user-scalable=no"
         />
       </head>
-      <body
-        style={{
-          overflow: 'hidden',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          // height: '100vh',
-        }}
-      >
-        <Authenticator>
-          <MantineProvider theme={theme} forceColorScheme={colorScheme}>
-            <QueryClientProvider client={queryClient}>
-              <ModalsProvider modals={MODALS}>
-                <AppShell
-                  w="100%"
-                  header={{ height: 60 }}
-                  navbar={{
-                    width: 150,
-                    breakpoint: 'sm',
-                    collapsed: { mobile: !opened },
-                  }}
-                >
-                  <AppShell.Header>
-                    <Header
-                      opened={opened}
-                      toggle={toggle}
-                      colorScheme={colorScheme}
-                      toggleColorScheme={toggleColorScheme}
-                    />
-                  </AppShell.Header>
-                  <AppShell.Navbar p="sm">
-                    <SideNav />
-                  </AppShell.Navbar>
-                  <AppShell.Main>{children}</AppShell.Main>
-                </AppShell>
-              </ModalsProvider>
-            </QueryClientProvider>
-          </MantineProvider>
-        </Authenticator>
+      <body>
+        <MantineProvider theme={theme} forceColorScheme={colorScheme}>
+          <QueryClientProvider client={queryClient}>
+            <ModalsProvider modals={MODALS}>
+              <div
+                style={{
+                  overflow: 'hidden',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  height: '100vh',
+                }}
+              >
+                <Authenticator>
+                  <AppShell
+                    w="100%"
+                    header={{ height: 60 }}
+                    navbar={{
+                      width: 150,
+                      breakpoint: 'sm',
+                      collapsed: { mobile: !opened },
+                    }}
+                  >
+                    <AppShell.Header>
+                      <Header
+                        opened={opened}
+                        toggle={toggle}
+                        colorScheme={colorScheme}
+                        toggleColorScheme={toggleColorScheme}
+                      />
+                    </AppShell.Header>
+                    <AppShell.Navbar p="sm">
+                      <SideNav />
+                    </AppShell.Navbar>
+                    <AppShell.Main>{children}</AppShell.Main>
+                  </AppShell>
+                </Authenticator>
+              </div>
+            </ModalsProvider>
+          </QueryClientProvider>
+        </MantineProvider>
       </body>
     </html>
   );
