@@ -30,7 +30,7 @@ class APIService {
         body: JSON.stringify(data),
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
-          Authorization: token,
+          Authorization: `Bearer ${token}`,
         },
       });
       return await this.handleResponse(response);
@@ -51,7 +51,7 @@ class APIService {
         `${this.getBaseUrl()}${url}?` + new URLSearchParams(params).toString(),
         {
           headers: {
-            Authorization: token,
+            Authorization: `Bearer ${token}`,
           },
         },
       );
@@ -73,7 +73,7 @@ class APIService {
         body: JSON.stringify(data),
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
-          Authorization: token,
+          Authorization: `Bearer ${token}`,
         },
       });
       return await this.handleResponse(response);
@@ -88,7 +88,7 @@ class APIService {
       const response = await fetch(`${this.getBaseUrl()}${url}`, {
         method: 'DELETE',
         headers: {
-          Authorization: token,
+          Authorization: `Bearer ${token}`,
         },
       });
       return await this.handleResponse(response);
