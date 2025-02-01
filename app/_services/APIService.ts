@@ -27,7 +27,6 @@ class APIService {
       const response = await fetch(`${this.getBaseUrl()}${url}`, {
         method: 'POST',
         body: JSON.stringify(data),
-        mode: 'cors',
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           // Authorization: token,
@@ -52,7 +51,6 @@ class APIService {
           // headers: {
           //   Authorization: token,
           // },
-          mode: 'cors',
         },
       );
       return await this.handleResponse(response);
@@ -74,7 +72,6 @@ class APIService {
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',
           // Authorization: token,
-          mode: 'cors',
         },
       });
       return await this.handleResponse(response);
@@ -90,7 +87,6 @@ class APIService {
         method: 'DELETE',
         headers: {
           // Authorization: token,
-          mode: 'cors',
         },
       });
       return await this.handleResponse(response);
