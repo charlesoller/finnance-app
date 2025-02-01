@@ -16,7 +16,7 @@ export const useUserStore = create<UserStore>((set: any, get: any) => ({
       throw new Error('No authorization token found.');
     }
 
-    const authToken = session.tokens.idToken.toString();
+    const authToken = session.tokens.accessToken.toString();
 
     set(() => {
       return { token: authToken };
