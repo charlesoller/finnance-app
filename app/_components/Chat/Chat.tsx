@@ -71,7 +71,7 @@ export default function Chat() {
           !isPending &&
           !error && <NoMessages />}
 
-        {!!messages &&
+        {!!messages?.length &&
           messages.map((message, index) => {
             return (
               <Flex

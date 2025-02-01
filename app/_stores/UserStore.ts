@@ -12,7 +12,7 @@ export const useUserStore = create<UserStore>((set: any, get: any) => ({
 
   fetchToken: async () => {
     const session = await fetchAuthSession();
-    if (!session || !session.tokens || !session.tokens.idToken) {
+    if (!session || !session.tokens || !session.tokens.accessToken) {
       throw new Error('No authorization token found.');
     }
 
