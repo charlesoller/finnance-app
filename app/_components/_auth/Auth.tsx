@@ -36,7 +36,7 @@ export default function Auth() {
           <Button
             color="dimmed"
             size="xs"
-            variant="transparent"
+            variant="subtle"
             onClick={handleSISUClick}
           >
             {getSISUText()}
@@ -46,7 +46,7 @@ export default function Auth() {
           <Button
             color="dimmed"
             size="xs"
-            variant="transparent"
+            variant="subtle"
             onClick={() => setAuthState('forgotPassword')}
           >
             Forgot Password?

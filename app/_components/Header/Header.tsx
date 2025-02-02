@@ -1,25 +1,16 @@
-import { ActionIcon, Burger, Flex, Text } from '@mantine/core';
-import { MoonIcon, SunIcon } from '@radix-ui/react-icons';
+import { Burger, Flex, Text } from '@mantine/core';
 import Link from 'next/link';
-import { AppColorScheme } from '../../_utils/types';
 import queryClient from '../../_services/QueryClient';
 import { useSessionId } from '../../_utils/hooks/useSessionId';
 import { ChatMessage } from '../../_models/ChatMessage';
-import styles from './Header.module.css';
+import UserInfoMenu from '../UserInfoMenu/UserInfoMenu';
 
 interface HeaderProps {
   opened: boolean;
   toggle: () => void;
-  colorScheme: AppColorScheme;
-  toggleColorScheme: () => void;
 }
 
-export default function Header({
-  opened,
-  toggle,
-  colorScheme,
-  toggleColorScheme,
-}: HeaderProps) {
+export default function Header({ opened, toggle }: HeaderProps) {
   const { setSessionId } = useSessionId();
 
   const handleNavigation = () => {
@@ -51,18 +42,7 @@ export default function Header({
           Finnance
         </Text>
       </Link>
-      <ActionIcon
-        variant="outline"
-        color={colorScheme === 'dark' ? 'yellow' : 'blue'}
-        onClick={toggleColorScheme}
-        title="Toggle color scheme"
-      >
-        {colorScheme === 'dark' ? (
-          <SunIcon className={styles.sun} />
-        ) : (
-          <MoonIcon className={styles.moon} />
-        )}
-      </ActionIcon>
+      <UserInfoMenu />
     </Flex>
   );
 }

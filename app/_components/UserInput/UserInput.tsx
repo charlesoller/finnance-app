@@ -21,6 +21,7 @@ import { PaperPlaneIcon } from '@radix-ui/react-icons';
 import { useModalStore } from '../../_stores/ModalStore';
 import { useParams } from 'next/navigation';
 import { useUserStore } from '../../_stores/UserStore';
+import { DISCLAIMER_MODAL } from '../_modals';
 
 type FormField = 'message' | 'useGraph';
 type FormDataType = string | boolean;
@@ -166,13 +167,7 @@ export default function UserInput() {
         <Button
           size="xs"
           c="dimmed"
-          onClick={() =>
-            openModal({
-              modal: 'disclaimer',
-              title: 'Disclaimer',
-              innerProps: {},
-            })
-          }
+          onClick={() => openModal(DISCLAIMER_MODAL)}
           variant="transparent"
           w="fit-content"
         >

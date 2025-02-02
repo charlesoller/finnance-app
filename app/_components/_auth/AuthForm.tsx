@@ -4,11 +4,14 @@ import { AuthFormType } from './auth.types';
 import { useModalStore } from '../../_stores/ModalStore';
 import {
   confirmResetPassword,
+  getCurrentUser,
   resetPassword,
   signIn,
   signUp,
 } from 'aws-amplify/auth';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction } from 'react';
+import { useFormState } from '../../_utils/hooks/useFormState';
+import { useUserStore } from '../../_stores/UserStore';
 
 interface AuthFormProps {
   type: AuthFormType;
@@ -26,8 +29,8 @@ const PW_REGEX =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
 export default function AuthForm({ type, setType }: AuthFormProps) {
-  const [error, setError] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
+  const { loading, error, startReq, endReq } = useFormState();
+  const { setUserData, fetchToken } = useUserStore();
   const { closeAllModals } = useModalStore();
 
   const form = useForm({
@@ -54,27 +57,37 @@ export default function AuthForm({ type, setType }: AuthFormProps) {
     },
   });
 
-  console.log(error);
   const handleSubmit = async ({
     username,
     password,
     confirmationCode,
   }: FormData) => {
-    setLoading(true);
-    setError('');
+    startReq();
 
     if (type === 'signIn') {
       await signIn({ username, password })
-        .then(closeAllModals)
-        .catch((e: any) => setError(e.message));
+        .then(() => {
+          fetchToken();
+          getCurrentUser().then(({ username, userId, signInDetails }) =>
+            setUserData({ username, userId, signInDetails }),
+          );
+          closeAllModals();
+        })
+        .catch((e: any) => endReq(e));
     } else if (type === 'signUp') {
       await signUp({ username, password })
-        .then(closeAllModals)
-        .catch((e: any) => setError(e.message));
+        .then(() => {
+          fetchToken();
+          getCurrentUser().then(({ username, userId, signInDetails }) =>
+            setUserData({ username, userId, signInDetails }),
+          );
+          closeAllModals();
+        })
+        .catch((e: any) => endReq(e));
     } else if (type === 'forgotPassword') {
       await resetPassword({ username })
         .then(() => setType('newPassword'))
-        .catch((e: any) => setError(e.message));
+        .catch((e: any) => endReq(e));
     } else if (type === 'newPassword') {
       await confirmResetPassword({
         username,
@@ -82,10 +95,10 @@ export default function AuthForm({ type, setType }: AuthFormProps) {
         confirmationCode,
       })
         .then(() => setType('signIn'))
-        .catch((e: any) => setError(e.message));
+        .catch((e: any) => endReq(e));
     }
 
-    setLoading(false);
+    endReq();
   };
 
   const getTitle = () => {

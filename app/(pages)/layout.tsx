@@ -41,11 +41,6 @@ export default function RootLayout({ children }: { children: any }) {
     defaultValue: 'light',
   });
 
-  const toggleColorScheme = () => {
-    if (colorScheme === 'dark') setColorScheme('light');
-    if (colorScheme === 'light') setColorScheme('dark');
-  };
-
   return (
     <html lang="en" {...mantineHtmlProps} className={oxygen.className}>
       <head>
@@ -74,12 +69,7 @@ export default function RootLayout({ children }: { children: any }) {
                 }}
               >
                 <AppShell.Header>
-                  <Header
-                    opened={opened}
-                    toggle={toggle}
-                    colorScheme={colorScheme}
-                    toggleColorScheme={toggleColorScheme}
-                  />
+                  <Header opened={opened} toggle={toggle} />
                 </AppShell.Header>
                 <AppShell.Navbar p="sm">
                   <SideNav />

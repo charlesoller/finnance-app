@@ -11,6 +11,7 @@ interface UserStore extends UserData {
   fetchToken: () => Promise<string>;
   getToken: () => string;
   setUserData: (data: UserData) => void;
+  clearUser: () => void;
 }
 
 export const useUserStore = create<UserStore>((set: any, get: any) => ({
@@ -19,12 +20,22 @@ export const useUserStore = create<UserStore>((set: any, get: any) => ({
   userId: '',
   signInDetails: {},
 
-  setUserData: (data: UserData) =>
+  setUserData: (data: UserData) => {
     set({
       username: data.username,
       userId: data.userId,
       signInDetails: data.signInDetails,
-    }),
+    });
+  },
+
+  clearUser: () => {
+    set({
+      token: '',
+      username: '',
+      userId: '',
+      signInDetails: {},
+    });
+  },
 
   fetchToken: async () => {
     const session = await fetchAuthSession();
@@ -40,6 +51,7 @@ export const useUserStore = create<UserStore>((set: any, get: any) => ({
 
     return authToken;
   },
+
   getToken: () => {
     return get().token;
   },

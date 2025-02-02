@@ -22,10 +22,18 @@ export const useModalStore = create<ModalStore>((set: any, get: any) => ({
       return { openModals: newModals };
     });
 
+    const url = new URL(window.location.href);
+    url.searchParams.set('open', options.modal);
+    window.history.pushState({}, '', url.toString());
+
     modals.openContextModal({
       ...options,
       radius: 'lg',
       onClose: () => {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('open');
+        window.history.pushState({}, '', url.toString());
+
         setTimeout(() => {
           set((state: any) => {
             const newModals = new Set(state.openModals);
@@ -39,6 +47,11 @@ export const useModalStore = create<ModalStore>((set: any, get: any) => ({
 
   closeModal: (id) => {
     modals.close(id);
+
+    const url = new URL(window.location.href);
+    url.searchParams.delete('open');
+    window.history.pushState({}, '', url.toString());
+
     set((state: any) => {
       const newModals = new Set(state.openModals);
       newModals.delete(id);
@@ -48,6 +61,11 @@ export const useModalStore = create<ModalStore>((set: any, get: any) => ({
 
   closeAllModals: () => {
     modals.closeAll();
+
+    const url = new URL(window.location.href);
+    url.searchParams.delete('open');
+    window.history.pushState({}, '', url.toString());
+
     set(() => {
       return { openModals: new Set() };
     });
