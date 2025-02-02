@@ -1,3 +1,5 @@
+'use client';
+
 import { getCurrentUser } from 'aws-amplify/auth';
 import { useEffect, useRef } from 'react';
 import { useModalStore } from '../../_stores/ModalStore';
@@ -8,10 +10,17 @@ import { useSearchParams } from 'next/navigation';
 export const useUserLanding = () => {
   const { openModal } = useModalStore();
   const { setUserData, fetchToken } = useUserStore();
-  const searchParams = useSearchParams();
-  const modalId = searchParams.get('open');
-  const modal = getModalById(modalId);
   const initialLoadDone = useRef(false);
+  let modal = null;
+
+  try {
+    const searchParams = useSearchParams();
+    const modalId = searchParams.get('open');
+    modal = getModalById(modalId);
+  } catch {
+    modal = null;
+  }
+
   if (!modal) {
     initialLoadDone.current = true;
   }
