@@ -65,3 +65,11 @@ export const formatTabName = (groupName: HistoryGroup) => {
   }
   return capitalize(groupName);
 };
+
+export const getDefaultTab = (data: GroupedSessionData): HistoryGroup => {
+  if (data.today.length) return 'today';
+  if (data.yesterday.length) return 'yesterday';
+  if (data.prevSeven.length) return 'prevSeven';
+  if (data.prevThirty.length) return 'prevThirty';
+  return 'past';
+};

@@ -18,11 +18,10 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import queryClient from '../_services/QueryClient';
 import Header from '../_components/Header/Header';
 import { MODALS } from '../_components/_modals';
-import { Authenticator } from '@aws-amplify/ui-react';
 import { Amplify } from 'aws-amplify';
 import outputs from '../../amplify_outputs.json';
 import '@aws-amplify/ui-react/styles.css';
-import { useAuth } from '../_utils/hooks/useAuth';
+import { useUserLanding } from '../_utils/hooks/useUserLanding';
 
 const oxygen = Oxygen({
   weight: ['300', '400', '700'],
@@ -34,7 +33,8 @@ const oxygen = Oxygen({
 Amplify.configure(outputs);
 
 export default function RootLayout({ children }: { children: any }) {
-  useAuth();
+  useUserLanding();
+
   const [opened, { toggle }] = useDisclosure();
   const [colorScheme, setColorScheme] = useLocalStorage<AppColorScheme>({
     key: 'mantine-color-scheme',
@@ -56,44 +56,36 @@ export default function RootLayout({ children }: { children: any }) {
           content="minimum-scale=1, initial-scale=1, width=device-width, user-scalable=no"
         />
       </head>
-      <body>
+      <body
+        style={{
+          overflow: 'hidden',
+        }}
+      >
         <MantineProvider theme={theme} forceColorScheme={colorScheme}>
           <QueryClientProvider client={queryClient}>
             <ModalsProvider modals={MODALS}>
-              <div
-                style={{
-                  overflow: 'hidden',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  height: '100vh',
+              <AppShell
+                w="100%"
+                header={{ height: 60 }}
+                navbar={{
+                  width: 150,
+                  breakpoint: 'sm',
+                  collapsed: { mobile: !opened },
                 }}
               >
-                <Authenticator>
-                  <AppShell
-                    w="100%"
-                    header={{ height: 60 }}
-                    navbar={{
-                      width: 150,
-                      breakpoint: 'sm',
-                      collapsed: { mobile: !opened },
-                    }}
-                  >
-                    <AppShell.Header>
-                      <Header
-                        opened={opened}
-                        toggle={toggle}
-                        colorScheme={colorScheme}
-                        toggleColorScheme={toggleColorScheme}
-                      />
-                    </AppShell.Header>
-                    <AppShell.Navbar p="sm">
-                      <SideNav />
-                    </AppShell.Navbar>
-                    <AppShell.Main>{children}</AppShell.Main>
-                  </AppShell>
-                </Authenticator>
-              </div>
+                <AppShell.Header>
+                  <Header
+                    opened={opened}
+                    toggle={toggle}
+                    colorScheme={colorScheme}
+                    toggleColorScheme={toggleColorScheme}
+                  />
+                </AppShell.Header>
+                <AppShell.Navbar p="sm">
+                  <SideNav />
+                </AppShell.Navbar>
+                <AppShell.Main>{children}</AppShell.Main>
+              </AppShell>
             </ModalsProvider>
           </QueryClientProvider>
         </MantineProvider>

@@ -8,6 +8,7 @@ interface ModalStore {
   openModals: Set<string>;
   openModal: (options: OpenModalOptions) => void;
   closeModal: (id: string) => void;
+  closeAllModals: () => void;
   isModalOpen: (id: string) => boolean;
 }
 
@@ -23,6 +24,7 @@ export const useModalStore = create<ModalStore>((set: any, get: any) => ({
 
     modals.openContextModal({
       ...options,
+      radius: 'lg',
       onClose: () => {
         setTimeout(() => {
           set((state: any) => {
@@ -41,6 +43,13 @@ export const useModalStore = create<ModalStore>((set: any, get: any) => ({
       const newModals = new Set(state.openModals);
       newModals.delete(id);
       return { openModals: newModals };
+    });
+  },
+
+  closeAllModals: () => {
+    modals.closeAll();
+    set(() => {
+      return { openModals: new Set() };
     });
   },
 

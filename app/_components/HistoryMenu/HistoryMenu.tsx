@@ -6,7 +6,11 @@ import { SessionData } from '../../_models/SessionData';
 import styles from './HistoryMenu.module.css';
 import { ArrowRightIcon } from '@radix-ui/react-icons';
 import Nav from '../Nav/Nav';
-import { formatTabName, groupSessions } from './HistoryMenu.utils';
+import {
+  formatTabName,
+  getDefaultTab,
+  groupSessions,
+} from './HistoryMenu.utils';
 import { TABS } from './HistoryMenu.consts';
 import { useMemo } from 'react';
 import { formatDate } from '../../_utils/utils';
@@ -79,7 +83,7 @@ export default function HistoryMenu() {
           )}
           {!isLoading && !!Object.keys(groupedSessions).length && (
             <Flex>
-              <Tabs defaultValue="today">
+              <Tabs defaultValue={getDefaultTab(groupedSessions)}>
                 <Tabs.List mb="xs">
                   {TABS.map(
                     (tab) =>
