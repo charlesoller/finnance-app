@@ -4,6 +4,7 @@ import queryClient from '../../_services/QueryClient';
 import { useSessionId } from '../../_utils/hooks/useSessionId';
 import { ChatMessage } from '../../_models/ChatMessage';
 import UserInfoMenu from '../UserInfoMenu/UserInfoMenu';
+import { useDisclosure } from '@mantine/hooks';
 
 interface HeaderProps {
   opened: boolean;
@@ -12,6 +13,7 @@ interface HeaderProps {
 
 export default function Header({ opened, toggle }: HeaderProps) {
   const { setSessionId } = useSessionId();
+  const [userMenuOpen, { toggle: toggleUserMenu }] = useDisclosure();
 
   const handleNavigation = () => {
     setSessionId('');
@@ -42,7 +44,7 @@ export default function Header({ opened, toggle }: HeaderProps) {
           Finnance
         </Text>
       </Link>
-      <UserInfoMenu />
+      <UserInfoMenu open={userMenuOpen} toggle={toggleUserMenu} />
     </Flex>
   );
 }

@@ -12,12 +12,25 @@ import LightDarkToggle from '../LightDarkToggle/LightDarkToggle';
 import { useUserStore } from '../../_stores/UserStore';
 import LogoutButton from '../LogoutButton/LogoutButton';
 import { trimEmail } from './UserInfoMenu.utils';
+import { useModalStore } from '../../_stores/ModalStore';
+import { USER_SETTINGS_MODAL } from '../_modals';
 
-export default function UserInfoMenu() {
+interface UserMenuProps {
+  open: boolean;
+  toggle: () => void;
+}
+
+export default function UserInfoMenu({ open, toggle }: UserMenuProps) {
   const { signInDetails } = useUserStore();
+  const { openModal } = useModalStore();
+
+  const handleOpenSettings = () => {
+    openModal(USER_SETTINGS_MODAL);
+    toggle();
+  };
 
   return (
-    <Menu shadow="md">
+    <Menu shadow="md" opened={open} onChange={toggle}>
       <Menu.Target>
         <ActionIcon variant="transparent" radius="xl" size="lg">
           <Avatar color="initials" name={signInDetails.loginId} />
@@ -29,7 +42,12 @@ export default function UserInfoMenu() {
           <Divider />
           <Flex align="center" justify="space-between">
             <LightDarkToggle />
-            <Button size="sm" variant="outline" color="green">
+            <Button
+              size="sm"
+              variant="outline"
+              color="green"
+              onClick={handleOpenSettings}
+            >
               Edit Settings
             </Button>
           </Flex>
