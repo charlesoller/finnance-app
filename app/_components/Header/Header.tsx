@@ -1,7 +1,6 @@
 import { Burger, Flex, Text } from '@mantine/core';
 import Link from 'next/link';
 import queryClient from '../../_services/QueryClient';
-import { useSessionId } from '../../_utils/hooks/useSessionId';
 import { ChatMessage } from '../../_models/ChatMessage';
 import UserInfoMenu from '../UserInfoMenu/UserInfoMenu';
 
@@ -11,10 +10,10 @@ interface HeaderProps {
 }
 
 export default function Header({ opened, toggle }: HeaderProps) {
-  const { setSessionId } = useSessionId();
+  // const { setSessionId } = useSessionId();
 
   const handleNavigation = () => {
-    setSessionId('');
+    // setSessionId('');
     queryClient.setQueryData<ChatMessage[]>(
       ['session'],
       [

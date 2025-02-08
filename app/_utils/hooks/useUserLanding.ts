@@ -5,11 +5,12 @@ import { useEffect, useRef } from 'react';
 import { useModalStore } from '../../_stores/ModalStore';
 import { useUserStore } from '../../_stores/UserStore';
 import { AUTH_MODAL, getModalById } from '../../_components/_modals';
-import { useSearchParams } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 export const useUserLanding = () => {
   const { openModal } = useModalStore();
   const { setUserData, fetchToken } = useUserStore();
+  const pathname = usePathname();
   const initialLoadDone = useRef(false);
   let modal = null;
 
@@ -33,12 +34,14 @@ export const useUserLanding = () => {
         setUserData({ username, userId, signInDetails });
         fetchToken();
       } catch {
-        openModal(AUTH_MODAL);
+        if (!pathname.includes('privacy-policy')) {
+          openModal(AUTH_MODAL);
+        }
       }
     };
 
     getAuthStatus();
-  }, [openModal, setUserData, fetchToken]);
+  }, [openModal, setUserData, fetchToken, pathname]);
 
   useEffect(() => {
     if (modal && !initialLoadDone.current) {
