@@ -6,12 +6,12 @@ import Chart from '../Chart/Chart';
 import UserInput from '../UserInput/UserInput';
 import NoMessages from '../NoMessages/NoMessages';
 import { useQuery } from '@tanstack/react-query';
-import { useSessionId } from '../../_utils/hooks/useSessionId';
+import { useSessionId } from '../../_utils/_hooks/useSessionId';
 import sessionAPI from '../../_services/SessionAPI';
 import { ChatMessage } from '../../_models/ChatMessage';
 import { useEffect, useRef } from 'react';
 import ScrollButton from '../ScrollButton/ScrollButton';
-import { useScrollButton } from '../../_utils/hooks/useScrollButton';
+import { useScrollButton } from '../../_utils/_hooks/useScrollButton';
 import { MessageOwner } from '../../_utils/types';
 import styles from './Chat.module.css';
 import ErrorState from '../ErrorState/ErrorState';
@@ -80,7 +80,7 @@ export default function Chat() {
                 gap="md"
               >
                 <Message
-                  owner={message.message_type.toUpperCase() as MessageOwner}
+                  owner={message.message_type?.toUpperCase() as MessageOwner}
                   content={message.message_content}
                   loading={message.message_id === 'LOADING'}
                 />

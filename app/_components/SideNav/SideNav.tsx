@@ -1,5 +1,5 @@
 import { Flex } from '@mantine/core';
-import { FaceIcon } from '@radix-ui/react-icons';
+import { BackpackIcon, FaceIcon } from '@radix-ui/react-icons';
 import HistoryMenu from '../HistoryMenu/HistoryMenu';
 import { usePathname } from 'next/navigation';
 import Nav from '../Nav/Nav';
@@ -14,6 +14,12 @@ export default function SideNav() {
         label="Advisor"
         leftSection={<FaceIcon />}
         active={pathname.includes('chat')}
+      />
+      <Nav
+        href="/manage"
+        label="Manage"
+        leftSection={<BackpackIcon />}
+        active={pathname.includes('manage')}
       />
       <HistoryMenu />
     </Flex>

@@ -8,7 +8,8 @@ import {
   ChartType,
   LineChartDataPoint,
 } from '../../_models/ChartData';
-import { formatCurrency, formatData, getDomain } from './Chart.utils';
+import { formatData, getDomain } from './Chart.utils';
+import { formatCurrency } from '../../_utils/utils';
 
 interface ChartProps {
   type: ChartType;

@@ -30,8 +30,9 @@ export const useUserLanding = () => {
     const getAuthStatus = async () => {
       try {
         const { username, userId, signInDetails } = await getCurrentUser();
+        const email = signInDetails?.loginId || '';
 
-        setUserData({ username, userId, signInDetails });
+        setUserData({ username, userId, signInDetails, email });
         fetchToken();
       } catch {
         if (!pathname.includes('privacy-policy')) {

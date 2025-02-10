@@ -25,9 +25,3 @@ export const formatData = (data: ChartDataPoint[], type: ChartType) => {
     );
   }
 };
-
-export const formatCurrency = (amount: number): string => {
-  return `$${Number(amount)
-    .toFixed(2)
-    .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
-};

@@ -2,7 +2,7 @@ import styles from '../UserSettings.module.css';
 
 import { Button, Divider, Flex, Text, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { useFormState } from '../../../_utils/hooks/useFormState';
+import { useFormState } from '../../../_utils/_hooks/useFormState';
 
 export default function NameForm() {
   const { loading, error, startReq, endReq } = useFormState();

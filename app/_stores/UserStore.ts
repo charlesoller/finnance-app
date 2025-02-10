@@ -1,23 +1,32 @@
 import { fetchAuthSession } from 'aws-amplify/auth';
 import { create } from 'zustand';
+import stripeAPI from '../_services/StripeAPI';
 
 interface UserData {
   username: string;
   userId: string;
   signInDetails: any;
+  email: string;
 }
-interface UserStore extends UserData {
+
+interface CustomerData {
+  customerId: string;
+}
+interface UserStore extends UserData, CustomerData {
   token: string;
   fetchToken: () => Promise<string>;
-  getToken: () => string;
+  fetchCustomerInfo: (email: string, token: string) => Promise<any>;
   setUserData: (data: UserData) => void;
   clearUser: () => void;
+  getUser: () => UserData;
 }
 
 export const useUserStore = create<UserStore>((set: any, get: any) => ({
   token: '',
   username: '',
   userId: '',
+  customerId: '',
+  email: '',
   signInDetails: {},
 
   setUserData: (data: UserData) => {
@@ -25,6 +34,7 @@ export const useUserStore = create<UserStore>((set: any, get: any) => ({
       username: data.username,
       userId: data.userId,
       signInDetails: data.signInDetails,
+      email: data.email,
     });
   },
 
@@ -33,8 +43,19 @@ export const useUserStore = create<UserStore>((set: any, get: any) => ({
       token: '',
       username: '',
       userId: '',
+      email: '',
       signInDetails: {},
     });
+  },
+
+  getUser: () => {
+    return {
+      username: get().username,
+      userId: get().userId,
+      customerId: get().customerId,
+      signInDetails: get().signInDetails,
+      email: get().email,
+    };
   },
 
   fetchToken: async () => {
@@ -52,7 +73,13 @@ export const useUserStore = create<UserStore>((set: any, get: any) => ({
     return authToken;
   },
 
-  getToken: () => {
-    return get().token;
+  fetchCustomerInfo: async (email: string, token: string) => {
+    const customerInfo = await stripeAPI.getCustomerInfo(email, token);
+
+    set(() => {
+      return { customerId: customerInfo.customer_id };
+    });
+
+    return customerInfo;
   },
 }));

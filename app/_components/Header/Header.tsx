@@ -1,6 +1,6 @@
 import { Burger, Flex, Text } from '@mantine/core';
 import Link from 'next/link';
-import queryClient from '../../_services/QueryClient';
+import queryClient from '../../_services/_clients/QueryClient';
 import { ChatMessage } from '../../_models/ChatMessage';
 import UserInfoMenu from '../UserInfoMenu/UserInfoMenu';
 import { useDisclosure } from '@mantine/hooks';

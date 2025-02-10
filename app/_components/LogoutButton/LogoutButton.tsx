@@ -2,7 +2,7 @@ import { Button } from '@mantine/core';
 import { signOut } from 'aws-amplify/auth';
 import { useUserStore } from '../../_stores/UserStore';
 import { useModalStore } from '../../_stores/ModalStore';
-import { useFormState } from '../../_utils/hooks/useFormState';
+import { useFormState } from '../../_utils/_hooks/useFormState';
 import { AUTH_MODAL } from '../_modals';
 import { useRouter } from 'next/navigation';
 

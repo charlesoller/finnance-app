@@ -15,13 +15,13 @@ import { AppColorScheme } from '../_utils/types';
 import { Oxygen } from 'next/font/google';
 import SideNav from '../_components/SideNav/SideNav';
 import { QueryClientProvider } from '@tanstack/react-query';
-import queryClient from '../_services/QueryClient';
+import queryClient from '../_services/_clients/QueryClient';
 import Header from '../_components/Header/Header';
 import { MODALS } from '../_components/_modals';
 import { Amplify } from 'aws-amplify';
 import outputs from '../../amplify_outputs.json';
 import '@aws-amplify/ui-react/styles.css';
-import { useUserLanding } from '../_utils/hooks/useUserLanding';
+import { useUserLanding } from '../_utils/_hooks/useUserLanding';
 
 const oxygen = Oxygen({
   weight: ['300', '400', '700'],

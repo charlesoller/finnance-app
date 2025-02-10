@@ -1,0 +1,8 @@
+.card {
+  transition: background-color 0.2s ease-in-out;
+
+  &:hover,
+  &:focus {
+    background-color: rgba(0, 255, 0, 0.15);
+  }
+}

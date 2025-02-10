@@ -10,7 +10,7 @@ import {
   signUp,
 } from 'aws-amplify/auth';
 import { Dispatch, SetStateAction } from 'react';
-import { useFormState } from '../../_utils/hooks/useFormState';
+import { useFormState } from '../../_utils/_hooks/useFormState';
 import { useUserStore } from '../../_stores/UserStore';
 
 interface AuthFormProps {
@@ -68,9 +68,10 @@ export default function AuthForm({ type, setType }: AuthFormProps) {
       await signIn({ username, password })
         .then(() => {
           fetchToken();
-          getCurrentUser().then(({ username, userId, signInDetails }) =>
-            setUserData({ username, userId, signInDetails }),
-          );
+          getCurrentUser().then(({ username, userId, signInDetails }) => {
+            const email = signInDetails?.loginId || '';
+            setUserData({ username, userId, signInDetails, email });
+          });
           closeAllModals();
         })
         .catch((e: any) => endReq(e));
@@ -78,9 +79,10 @@ export default function AuthForm({ type, setType }: AuthFormProps) {
       await signUp({ username, password })
         .then(() => {
           fetchToken();
-          getCurrentUser().then(({ username, userId, signInDetails }) =>
-            setUserData({ username, userId, signInDetails }),
-          );
+          getCurrentUser().then(({ username, userId, signInDetails }) => {
+            const email = signInDetails?.loginId || '';
+            setUserData({ username, userId, signInDetails, email });
+          });
           closeAllModals();
         })
         .catch((e: any) => endReq(e));

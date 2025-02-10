@@ -1,0 +1,11 @@
+/* .list {
+  overflow-y: auto;
+  flex: 1 1 auto;
+  position: relative;
+  min-height: 0;
+} */
+
+.list {
+  height: 100%;
+  /* background-color: red; */
+}
