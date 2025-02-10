@@ -35,3 +35,10 @@ export const utcToLocal = (date: Date): Date => {
   const localTime = toZonedTime(utc, localTimezone);
   return localTime;
 };
+
+export function toTitleCase(str: string): string {
+  return str
+    .replace(/([A-Z])/g, ' $1')
+    .replace(/^./, (char) => char.toUpperCase())
+    .trim();
+}
