@@ -1,12 +1,13 @@
 'use client';
 
 import '@mantine/core/styles.css';
-import React from 'react';
+import React, { Suspense } from 'react';
 import {
   MantineProvider,
   ColorSchemeScript,
   mantineHtmlProps,
   AppShell,
+  Loader,
 } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { theme } from '../../theme';
@@ -73,7 +74,11 @@ export default function RootLayout({ children }: { children: any }) {
                 {/* <AppShell.Navbar p="sm">
                   <SideNav />
                 </AppShell.Navbar> */}
-                <AppShell.Main>{children}</AppShell.Main>
+                <AppShell.Main>
+                  <Suspense fallback={<Loader color="green" />}>
+                    {children}
+                  </Suspense>
+                </AppShell.Main>
               </AppShell>
             </ModalsProvider>
           </QueryClientProvider>
