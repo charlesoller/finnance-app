@@ -1,14 +1,10 @@
 .button {
   position: fixed;
   bottom: 130px;
-  left: 50%;
-  right: 50%;
+  /* left: 50%; */
+  /* transform: translateX(-50%); */
   width: fit-content;
-  z-index: 9999;
-
-  @media screen and (max-width: 750px) {
-    right: unset;
-    transform: translateX(-50%);
-    width: unset;
-  }
+  z-index: 100;
+  transition: left 400ms ease;
+  will-change: left;
 }

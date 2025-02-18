@@ -1,24 +1,22 @@
-import { useParams, useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import { v4 } from 'uuid';
 
 export const useSessionId = () => {
-  const params = useParams();
+  const searchParams = useSearchParams();
   const router = useRouter();
+  const pathname = usePathname();
 
-  const [sessionId, setSessionId] = useState<string | null>(null);
+  const sessionId = searchParams.get('sessionId');
 
-  useEffect(() => {
-    if (sessionId) return;
+  const setSessionId = (newSessionId: string) => {
+    const newSearchParams = new URLSearchParams(searchParams.toString());
+    newSearchParams.set('sessionId', newSessionId);
+    router.replace(`${pathname}?${newSearchParams.toString()}`);
+  };
 
-    if (params.sessionId && typeof params.sessionId === 'string') {
-      setSessionId(params.sessionId);
-    } else {
-      const uuid = v4();
-      setSessionId(uuid);
-      router.replace(`/chat/${uuid}`);
-    }
-  }, [params, router, sessionId]);
+  if (!sessionId) {
+    setSessionId(v4());
+  }
 
-  return { sessionId, setSessionId };
+  return { sessionId };
 };

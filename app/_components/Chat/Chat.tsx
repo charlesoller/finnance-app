@@ -1,6 +1,6 @@
 'use client';
 
-import { Flex, Loader } from '@mantine/core';
+import { ActionIcon, Flex, Loader, Tooltip } from '@mantine/core';
 import Message from '../Message/Message';
 import Chart from '../Chart/Chart';
 import UserInput from '../UserInput/UserInput';
@@ -17,8 +17,19 @@ import styles from './Chat.module.css';
 import ErrorState from '../ErrorState/ErrorState';
 import { useModalStore } from '../../_stores/ModalStore';
 import { useUserStore } from '../../_stores/UserStore';
+import HistoryMenu from '../HistoryMenu/HistoryMenu';
+import { SESSION_KEY } from '../../_utils/_hooks/_mutations/queryKeys';
+import SlideDrawer from '../SlideDrawer/SlideDrawer';
+import { useDisclosure } from '@mantine/hooks';
+import { ChatBubbleIcon } from '@radix-ui/react-icons';
 
-export default function Chat() {
+interface ChatContentProps {
+  showHistoryMenu: boolean;
+  opened: boolean;
+  toggle: () => void;
+}
+
+function ChatContent({ showHistoryMenu, opened, toggle }: ChatContentProps) {
   const { sessionId } = useSessionId();
   const { isModalOpen } = useModalStore();
   const { token } = useUserStore();
@@ -31,10 +42,11 @@ export default function Chat() {
     data: messages,
     isLoading = false,
     isPending,
+    isFetching,
   } = useQuery<ChatMessage[]>({
-    queryKey: ['session'],
+    queryKey: [SESSION_KEY],
     queryFn: () => sessionAPI.getSession(sessionId as string, token),
-    enabled: Boolean(sessionId),
+    enabled: !!sessionId,
     refetchOnWindowFocus: false,
   });
 
@@ -45,11 +57,7 @@ export default function Chat() {
   }, [messages, scrollIntoView]);
 
   return (
-    <Flex
-      direction="column"
-      h={{ base: '100dvh', fallback: '100vh' }}
-      pos="relative"
-    >
+    <>
       <Flex
         direction="column"
         gap="md"
@@ -57,20 +65,30 @@ export default function Chat() {
         className={styles.chatContainer}
         ref={scrollableRef}
       >
+        {showHistoryMenu && (
+          <div className={styles.historyButton}>
+            <Tooltip label="View History" position="right">
+              <ActionIcon onClick={toggle} color="green" radius="xl" size="xl">
+                <ChatBubbleIcon />
+              </ActionIcon>
+            </Tooltip>
+          </div>
+        )}
         {!isModalOpen('disclaimer') && (
           <ScrollButton
             isVisible={!isLoading && !isPending && !isInViewport}
             onClick={scrollIntoView}
+            left={opened ? 62 : 45}
           />
         )}
-        {(isLoading || isPending) && (
+        {(isLoading || isPending || isFetching) && (
           <Loader mx="auto" my="auto" color="green" />
         )}
-        {(!messages || !messages.length) &&
+        {!messages?.length &&
           !isLoading &&
           !isPending &&
+          !isFetching &&
           !error && <NoMessages />}
-
         {!!messages?.length &&
           messages.map((message, index) => {
             return (
@@ -98,6 +116,38 @@ export default function Chat() {
         <div ref={ref} />
       </Flex>
       <UserInput />
+    </>
+  );
+}
+
+interface ChatProps {
+  showHistoryMenu?: boolean;
+}
+
+export default function Chat({ showHistoryMenu = true }: ChatProps) {
+  const [opened, { toggle }] = useDisclosure();
+
+  return showHistoryMenu ? (
+    <SlideDrawer
+      opened={opened}
+      side="left"
+      drawerComponent={<HistoryMenu />}
+      width={30}
+      p={0}
+    >
+      <ChatContent
+        showHistoryMenu={showHistoryMenu}
+        opened={opened}
+        toggle={toggle}
+      />
+    </SlideDrawer>
+  ) : (
+    <Flex direction="column" h="100%" w={'100%'}>
+      <ChatContent
+        showHistoryMenu={showHistoryMenu}
+        opened={opened}
+        toggle={toggle}
+      />
     </Flex>
   );
 }

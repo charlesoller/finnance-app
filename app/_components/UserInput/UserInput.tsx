@@ -12,16 +12,20 @@ import {
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { FormEvent, KeyboardEvent, useState } from 'react';
 import { GenerationRequest } from '../../_models/GenerationRequest';
-import { borderColor } from './UserInput.helpers';
 import { ChatMessage } from '../../_models/ChatMessage';
 import { v4 } from 'uuid';
 import sessionAPI from '../../_services/SessionAPI';
 import styles from './UserInput.module.css';
 import { PaperPlaneIcon } from '@radix-ui/react-icons';
 import { useModalStore } from '../../_stores/ModalStore';
-import { useParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useUserStore } from '../../_stores/UserStore';
 import { DISCLAIMER_MODAL } from '../_modals';
+import { borderColor } from '../../_utils/utils';
+import {
+  SESSION_INFO_KEY,
+  SESSION_KEY,
+} from '../../_utils/_hooks/_mutations/queryKeys';
 
 type FormField = 'message' | 'useGraph';
 type FormDataType = string | boolean;
@@ -36,9 +40,11 @@ const defaultFormState: FormData = {
 
 export default function UserInput() {
   const queryClient = useQueryClient();
-  const { sessionId } = useParams();
   const { openModal } = useModalStore();
-  const { token } = useUserStore();
+  const { token, userId } = useUserStore();
+
+  const searchParams = useSearchParams();
+  const sessionId = searchParams.get('sessionId');
 
   const theme = useMantineTheme();
   const { colorScheme } = useMantineColorScheme();
@@ -49,15 +55,15 @@ export default function UserInput() {
     mutationFn: (request: GenerationRequest) =>
       sessionAPI.createChatForSessionId(sessionId as string, token, request),
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['session'] });
-      queryClient.invalidateQueries({ queryKey: ['sessionInfo'] });
+      queryClient.invalidateQueries({ queryKey: [SESSION_KEY] });
+      queryClient.invalidateQueries({ queryKey: [SESSION_INFO_KEY] });
     },
     onError: () => {
       const previousMessages =
-        queryClient.getQueryData<ChatMessage[]>(['session']) ?? [];
+        queryClient.getQueryData<ChatMessage[]>([SESSION_KEY]) ?? [];
 
       queryClient.setQueryData<ChatMessage[]>(
-        ['session'],
+        [SESSION_KEY],
         [
           ...previousMessages,
           {
@@ -72,13 +78,13 @@ export default function UserInput() {
       );
     },
     onMutate: async (newRequest) => {
-      await queryClient.cancelQueries({ queryKey: ['session', sessionId] });
+      await queryClient.cancelQueries({ queryKey: [SESSION_KEY, sessionId] });
 
       const previousMessages =
-        queryClient.getQueryData<ChatMessage[]>(['session']) ?? [];
+        queryClient.getQueryData<ChatMessage[]>([SESSION_KEY]) ?? [];
 
       queryClient.setQueryData<ChatMessage[]>(
-        ['session'],
+        [SESSION_KEY],
         [
           ...previousMessages,
           {
@@ -127,7 +133,7 @@ export default function UserInput() {
       queryClient.getQueryData<ChatMessage[]>(['session']) ?? [];
 
     mutation.mutate({
-      user_id: '123',
+      user_id: userId,
       session_id: sessionId as string,
       history: chatHistory,
       message_content: form.message,

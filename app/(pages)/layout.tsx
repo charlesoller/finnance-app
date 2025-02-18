@@ -13,7 +13,6 @@ import { theme } from '../../theme';
 import { useDisclosure, useLocalStorage } from '@mantine/hooks';
 import { AppColorScheme } from '../_utils/types';
 import { Oxygen } from 'next/font/google';
-import SideNav from '../_components/SideNav/SideNav';
 import { QueryClientProvider } from '@tanstack/react-query';
 import queryClient from '../_services/_clients/QueryClient';
 import Header from '../_components/Header/Header';
@@ -62,18 +61,18 @@ export default function RootLayout({ children }: { children: any }) {
               <AppShell
                 w="100%"
                 header={{ height: 60 }}
-                navbar={{
-                  width: 150,
-                  breakpoint: 'sm',
-                  collapsed: { mobile: !opened },
-                }}
+                // navbar={{
+                //   width: 150,
+                //   breakpoint: 'sm',
+                //   collapsed: { mobile: !opened },
+                // }}
               >
                 <AppShell.Header>
                   <Header opened={opened} toggle={toggle} />
                 </AppShell.Header>
-                <AppShell.Navbar p="sm">
+                {/* <AppShell.Navbar p="sm">
                   <SideNav />
-                </AppShell.Navbar>
+                </AppShell.Navbar> */}
                 <AppShell.Main>{children}</AppShell.Main>
               </AppShell>
             </ModalsProvider>

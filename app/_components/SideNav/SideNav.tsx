@@ -10,7 +10,7 @@ export default function SideNav() {
   return (
     <Flex direction="column" gap="xs">
       <Nav
-        href="/"
+        href="/chat"
         label="Advisor"
         leftSection={<FaceIcon />}
         active={pathname.includes('chat')}

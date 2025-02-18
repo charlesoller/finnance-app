@@ -1,7 +1,6 @@
-import { Button, Flex, Loader, Menu, Tabs, Text } from '@mantine/core';
+import { Flex, Loader, Tabs, Text } from '@mantine/core';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import sessionAPI from '../../_services/SessionAPI';
-import { ChatMessage } from '../../_models/ChatMessage';
 import { SessionData } from '../../_models/SessionData';
 import styles from './HistoryMenu.module.css';
 import { ArrowRightIcon } from '@radix-ui/react-icons';
@@ -16,12 +15,16 @@ import { useMemo } from 'react';
 import { formatDate } from '../../_utils/utils';
 import ErrorState from '../ErrorState/ErrorState';
 import { GroupedSessionData } from './HistoryMenu.types';
-import { useParams } from 'next/navigation';
 import { useUserStore } from '../../_stores/UserStore';
+import {
+  SESSION_INFO_KEY,
+  SESSION_KEY,
+} from '../../_utils/_hooks/_mutations/queryKeys';
+import { useSessionId } from '../../_utils/_hooks/useSessionId';
 
 export default function HistoryMenu() {
   const queryClient = useQueryClient();
-  const { sessionId } = useParams();
+  const { sessionId } = useSessionId();
   const { token } = useUserStore();
 
   const {
@@ -29,7 +32,7 @@ export default function HistoryMenu() {
     isLoading,
     data: sessionData,
   } = useQuery<SessionData[]>({
-    queryKey: ['sessionInfo'],
+    queryKey: [SESSION_INFO_KEY],
     queryFn: () => sessionAPI.getSessionInfo(token),
   });
 
@@ -41,89 +44,79 @@ export default function HistoryMenu() {
     [sessionData],
   );
 
-  const handleNavigation = (id: string) => {
-    queryClient.setQueryData<ChatMessage[]>(
-      ['session'],
-      [
-        {
-          message_id: 'LOADING',
-          user_id: '123',
-          message_type: 'USER',
-          message_content: '',
-          session_id: id,
-          timestamp: new Date().toISOString(),
-        },
-      ],
+  const handleNavigation = () => {
+    // queryClient.setQueryData([SESSION_KEY], [])
+    setTimeout(
+      () => queryClient.invalidateQueries({ queryKey: [SESSION_KEY] }),
+      200,
     );
   };
 
   return (
-    <Menu shadow="md">
-      <Menu.Target>
-        <Button color="green">History</Button>
-      </Menu.Target>
-      <Menu.Dropdown className={styles.menu}>
-        <Flex direction="column" justify="center">
-          {isLoading && (
-            <Loader color="green" m="lg" className={styles.loader} />
-          )}
-          {!isLoading && !error && !sessionData?.length && (
-            <Flex
-              p="sm"
-              gap="xs"
-              direction="column"
-              justify="center"
-              align="center"
-            >
-              <Text size="md">No Session History</Text>
-              <Text c="dimmed" size="xs">
-                Ask some questions to see your chat history here
-              </Text>
-            </Flex>
-          )}
-          {!isLoading && !!Object.keys(groupedSessions).length && (
-            <Flex>
-              <Tabs defaultValue={getDefaultTab(groupedSessions)}>
-                <Tabs.List mb="xs">
-                  {TABS.map(
-                    (tab) =>
-                      // Only renders a tab if that tab would have content
-                      !!groupedSessions[tab].length && (
-                        <Tabs.Tab
-                          key={tab}
-                          value={tab}
-                          size="xs"
-                          p="xs"
-                          className={styles.tab}
-                          color="green"
-                        >
-                          {formatTabName(tab)}
-                        </Tabs.Tab>
-                      ),
-                  )}
-                </Tabs.List>
-
-                {TABS.map((tab) => (
-                  <Tabs.Panel key={tab} value={tab} className={styles.panel}>
-                    {groupedSessions[tab].map((session) => (
-                      <Nav
-                        key={session.session_id}
-                        href={`/chat/${session.session_id}`}
-                        active={session.session_id === sessionId}
-                        label={session.session_name}
-                        rightSection={<ArrowRightIcon />}
-                        onClick={() => handleNavigation(session.session_id)}
-                        description={formatDate(session.updated_at)}
-                      />
-                    ))}
-                  </Tabs.Panel>
-                ))}
-              </Tabs>
-            </Flex>
-          )}
-          {error && <ErrorState />}
+    <Flex
+      direction="column"
+      justify="center"
+      w="100%"
+      p="sm"
+      style={{ overflowY: 'auto' }}
+    >
+      {isLoading && <Loader color="green" m="lg" className={styles.loader} />}
+      {!isLoading && !error && !sessionData?.length && (
+        <Flex
+          p="sm"
+          gap="xs"
+          direction="column"
+          justify="center"
+          align="center"
+        >
+          <Text size="md">No Session History</Text>
+          <Text c="dimmed" size="xs">
+            Ask some questions to see your chat history here
+          </Text>
         </Flex>
-      </Menu.Dropdown>
-    </Menu>
+      )}
+      {!isLoading && !!Object.keys(groupedSessions).length && (
+        <Flex h="100%">
+          <Tabs defaultValue={getDefaultTab(groupedSessions)} w="100%">
+            <Tabs.List mb="xs">
+              {TABS.map(
+                (tab) =>
+                  // Only renders a tab if that tab would have content
+                  !!groupedSessions[tab].length && (
+                    <Tabs.Tab
+                      key={tab}
+                      value={tab}
+                      size="xs"
+                      p="xs"
+                      className={styles.tab}
+                      color="green"
+                    >
+                      {formatTabName(tab)}
+                    </Tabs.Tab>
+                  ),
+              )}
+            </Tabs.List>
+
+            {TABS.map((tab) => (
+              <Tabs.Panel key={tab} value={tab}>
+                {groupedSessions[tab].map((session) => (
+                  <Nav
+                    key={session.session_id}
+                    href={`/chat?sessionId=${session.session_id}`}
+                    active={session.session_id === sessionId}
+                    label={session.session_name}
+                    rightSection={<ArrowRightIcon />}
+                    onClick={handleNavigation}
+                    description={formatDate(session.updated_at)}
+                    w="100%"
+                  />
+                ))}
+              </Tabs.Panel>
+            ))}
+          </Tabs>
+        </Flex>
+      )}
+      {error && <ErrorState />}
+    </Flex>
   );
 }

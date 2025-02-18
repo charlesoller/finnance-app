@@ -1,3 +1,4 @@
+import { MantineTheme } from '@mantine/core';
 import { format, parseISO } from 'date-fns';
 import { toZonedTime } from 'date-fns-tz';
 
@@ -19,8 +20,14 @@ const getOrdinalSuffix = (day: number) => {
   return `${day}th`;
 };
 
-export const formatDate = (date: Date) => {
+export const formatDate = (date: Date, short: boolean = false) => {
   const local = utcToLocal(date);
+
+  if (short) {
+    const month = format(local, 'MMM');
+    const day = format(local, 'd');
+    return `${month} ${day}`;
+  }
 
   const day = format(local, 'd');
   const month = format(local, 'MMMM');
@@ -31,7 +38,8 @@ export const formatDate = (date: Date) => {
 
 export const utcToLocal = (date: Date): Date => {
   const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const utc = parseISO(String(date));
+  // Convert Date to ISO string first if it's a Date object
+  const utc = date instanceof Date ? date : parseISO(String(date));
   const localTime = toZonedTime(utc, localTimezone);
   return localTime;
 };
@@ -43,8 +51,19 @@ export function toTitleCase(str: string): string {
     .trim();
 }
 
-export const formatCurrency = (amount: number): string => {
+export const formatCurrency = (
+  amount: number,
+  short: boolean = false,
+): string => {
   return `$${Number(amount)
-    .toFixed(2)
+    .toFixed(short ? 0 : 2)
     .replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`;
+};
+
+export const borderColor = (colorScheme: string, theme: MantineTheme) => {
+  if (colorScheme === 'light') {
+    return theme.colors.gray[3];
+  } else {
+    return theme.colors.dark[4];
+  }
 };

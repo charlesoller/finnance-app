@@ -1,4 +1,6 @@
 import { AccountData } from '../../_models/AccountData';
+import { LineChartDataPoint } from '../../_models/ChartData';
+import { NetWorthData } from './Accounts.mock';
 
 export interface GroupedAccounts {
   cash?: AccountData[];
@@ -32,4 +34,13 @@ export const getCurrentNet = (accounts: GroupedAccounts) => {
     (acct) => (total -= acct.balance?.current?.usd || 0),
   );
   return total;
+};
+
+export const formatNetWorthData = (
+  data: NetWorthData[],
+): LineChartDataPoint[] => {
+  return data.map(({ total, date }) => ({
+    date: String(new Date(date)),
+    amount: total,
+  }));
 };
