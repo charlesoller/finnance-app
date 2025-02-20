@@ -10,11 +10,14 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { FormEvent, KeyboardEvent, useState } from 'react';
+import {
+  FormEvent,
+  KeyboardEvent,
+  useState,
+} from 'react';
 import { GenerationRequest } from '../../_models/GenerationRequest';
 import { ChatMessage } from '../../_models/ChatMessage';
 import { v4 } from 'uuid';
-import sessionAPI from '../../_services/SessionAPI';
 import styles from './UserInput.module.css';
 import { PaperPlaneIcon } from '@radix-ui/react-icons';
 import { useModalStore } from '../../_stores/ModalStore';
@@ -26,6 +29,9 @@ import {
   SESSION_INFO_KEY,
   SESSION_KEY,
 } from '../../_utils/_hooks/_mutations/queryKeys';
+import { useStreamingFilter } from '../../_utils/_hooks/useStreamingFilter';
+import agentAPI from '../../_services/AgentAPI';
+// import { useStreamAgentResponse, useStreamResponse } from '../../_utils/_hooks/useStreamResponse';
 
 type FormField = 'message' | 'useGraph';
 type FormDataType = string | boolean;
@@ -50,13 +56,58 @@ export default function UserInput() {
   const { colorScheme } = useMantineColorScheme();
 
   const [form, setForm] = useState<FormData>(defaultFormState);
+  const { handleChunk, isValidChunk, reset, isGraph } = useStreamingFilter();
+
+  const handleMessage = (msg: string) => {
+    const messages =
+      queryClient.getQueryData<ChatMessage[]>([SESSION_KEY]) ?? [];
+
+    handleChunk(msg);
+
+    if (isValidChunk(msg)) {
+      queryClient.setQueryData<ChatMessage[]>(
+        [SESSION_KEY],
+        messages.map((message) => {
+          const fullMessage = message.message_content + msg;
+          if (message.message_id === 'LOADING') {
+            return {
+              ...message,
+              message_content: fullMessage.replace(/\\n/g, '\n'),
+            };
+          }
+          return message;
+        }),
+      );
+    }
+    if (
+      isGraph &&
+      !messages.some((msg) => msg.message_id === 'LOADING_GRAPH')
+    ) {
+      queryClient.setQueryData<ChatMessage[]>(
+        [SESSION_KEY],
+        [
+          ...messages,
+          {
+            message_id: 'LOADING_GRAPH',
+            user_id: '123',
+            message_type: 'AI',
+            message_content: '',
+            session_id: sessionId as string,
+            timestamp: new Date().toISOString(),
+          },
+        ],
+      );
+    }
+  };
 
   const mutation = useMutation({
-    mutationFn: (request: GenerationRequest) =>
-      sessionAPI.createChatForSessionId(sessionId as string, token, request),
+    mutationFn: (request: GenerationRequest) => {
+      return agentAPI.createChat(token, request, handleMessage);
+    },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: [SESSION_KEY] });
       queryClient.invalidateQueries({ queryKey: [SESSION_INFO_KEY] });
+      reset();
     },
     onError: () => {
       const previousMessages =

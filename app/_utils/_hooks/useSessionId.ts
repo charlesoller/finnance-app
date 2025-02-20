@@ -1,4 +1,5 @@
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 import { v4 } from 'uuid';
 
 export const useSessionId = () => {
@@ -8,15 +9,17 @@ export const useSessionId = () => {
 
   const sessionId = searchParams.get('sessionId');
 
-  const setSessionId = (newSessionId: string) => {
-    const newSearchParams = new URLSearchParams(searchParams.toString());
-    newSearchParams.set('sessionId', newSessionId);
-    router.replace(`${pathname}?${newSearchParams.toString()}`);
-  };
+  useEffect(() => {
+    const setSessionId = (newSessionId: string) => {
+      const newSearchParams = new URLSearchParams(searchParams.toString());
+      newSearchParams.set('sessionId', newSessionId);
+      router.replace(`${pathname}?${newSearchParams.toString()}`);
+    };
 
-  if (!sessionId) {
-    setSessionId(v4());
-  }
+    if (!sessionId) {
+      setSessionId(v4());
+    }
+  }, [sessionId, pathname, router, searchParams]);
 
   return { sessionId };
 };

@@ -1,12 +1,7 @@
 import { getStripe } from './_clients/StripeClient';
 import APIService from './APIService';
-import { Config } from './Config';
 
 class StripeAPI extends APIService {
-  static getBaseURL() {
-    return Config.getBaseURL();
-  }
-
   async initiateStripeAuth(email: string, token: string) {
     if (!email || !token) return;
     const stripe = await getStripe();
@@ -55,6 +50,6 @@ class StripeAPI extends APIService {
   }
 }
 
-const stripeAPI = new StripeAPI(StripeAPI.getBaseURL());
+const stripeAPI = new StripeAPI();
 
 export default stripeAPI;

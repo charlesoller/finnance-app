@@ -10,6 +10,7 @@ const hydrateColors = (data: Omit<PieChartDataPoint, 'color'>[]) => {
 };
 
 export const getDomain = (data: LineChartDataPoint[]) => {
+  if (!data[0]) return;
   return [data[0].amount, data[data.length - 1].amount];
 };
 

@@ -5704,6 +5704,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@microsoft/fetch-event-source@npm:^2.0.1":
+  version: 2.0.1
+  resolution: "@microsoft/fetch-event-source@npm:2.0.1"
+  checksum: 10c0/38c69e9b9990e6cee715c7bbfa2752f943b42575acadb36facf19bb831f1520c469f854277439154258e0e1dc8650cc85038230d1f451e3f6b62e8faeaa1126c
+  languageName: node
+  linkType: hard
+
 "@next/env@npm:15.0.1":
   version: 15.0.1
   resolution: "@next/env@npm:15.0.1"
@@ -13050,6 +13057,7 @@ __metadata:
     "@mantine/form": "npm:^7.16.2"
     "@mantine/hooks": "npm:^7.16.2"
     "@mantine/modals": "npm:^7.16.2"
+    "@microsoft/fetch-event-source": "npm:^2.0.1"
     "@radix-ui/react-icons": "npm:^1.3.2"
     "@stripe/stripe-js": "npm:^5.6.0"
     "@tabler/icons-react": "npm:^3.29.0"

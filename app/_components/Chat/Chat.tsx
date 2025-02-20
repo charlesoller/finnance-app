@@ -100,7 +100,11 @@ function ChatContent({ showHistoryMenu, opened, toggle }: ChatContentProps) {
                 <Message
                   owner={message.message_type?.toUpperCase() as MessageOwner}
                   content={message.message_content}
-                  loading={message.message_id === 'LOADING'}
+                  loading={
+                    (message.message_id === 'LOADING' &&
+                      !message.message_content.length) ||
+                    message.message_id === 'LOADING_GRAPH'
+                  }
                 />
                 {!!message.graph_data && (
                   <Chart

@@ -11,7 +11,6 @@ import {
 import { ReactElement } from 'react';
 import { MessageOwner } from '../../_utils/types';
 import ReactMarkdown from 'react-markdown';
-import rehypeSanitize from 'rehype-sanitize';
 import 'katex/dist/katex.min.css';
 
 interface MessageProps {
@@ -55,9 +54,7 @@ export default function Message({
             {loading ? (
               <Loader color="green" />
             ) : (
-              <ReactMarkdown rehypePlugins={[rehypeSanitize]}>
-                {content}
-              </ReactMarkdown>
+              <ReactMarkdown>{content}</ReactMarkdown>
             )}
           </Flex>
         ) : (
