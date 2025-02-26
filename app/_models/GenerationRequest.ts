@@ -5,5 +5,5 @@ export interface GenerationRequest {
   session_id: string;
   message_content: string;
   history: ChatMessage[];
-  use_graph: boolean;
+  context: string[];
 }

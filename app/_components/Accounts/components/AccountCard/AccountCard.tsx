@@ -10,6 +10,7 @@ import {
 import { AccountData } from '../../../../_models/AccountData';
 import styles from './AccountCard.module.css';
 import Link from 'next/link';
+import { useChatContextStore } from '../../../../_stores/ChatContextStore';
 
 interface AccountCardProps {
   acct: AccountData;
@@ -22,6 +23,8 @@ export default function AccountCard({
   selected,
   onSelect,
 }: AccountCardProps) {
+  const { clearContext } = useChatContextStore();
+
   const getBalance = () => {
     const { status, balance } = acct;
 
@@ -51,6 +54,7 @@ export default function AccountCard({
         textDecoration: 'none',
         color: 'unset',
       }}
+      onClick={clearContext}
     >
       <Paper p="sm" className={styles.card}>
         <Flex justify="space-between">

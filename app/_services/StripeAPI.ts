@@ -28,12 +28,15 @@ class StripeAPI extends APIService {
 
   async getCustomerInfo(email: string, token: string) {
     if (!email || !token) return;
-    return this.get(`/financial-connections/accounts/${email}`, token);
+    return this.get(`/financial-connections/accounts/email/${email}`, token);
   }
 
   async getAccounts(customerId: string, token: string) {
     if (!customerId || !token) return;
-    return this.get(`/financial-connections/accounts/${customerId}`, token);
+    return this.get(
+      `/financial-connections/accounts/customer/${customerId}`,
+      token,
+    );
   }
 
   async getAccountById(accountId: string, token: string) {
@@ -41,7 +44,15 @@ class StripeAPI extends APIService {
     return this.get(`/financial-connections/accounts/${accountId}`, token);
   }
 
-  async getTransactions(transactionId: string, token: string) {
+  async getTransactions(accountId: string, token: string) {
+    if (!accountId || !token) return;
+    return this.get(
+      `/financial-connections/accounts/${accountId}/transactions`,
+      token,
+    );
+  }
+
+  async getTransaction(transactionId: string, token: string) {
     if (!transactionId || !token) return;
     return this.get(
       `/financial-connections/transactions/${transactionId}`,

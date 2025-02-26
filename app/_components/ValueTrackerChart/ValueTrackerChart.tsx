@@ -23,7 +23,7 @@ export default function ValueTrackerChart({
   }, [data, range]);
 
   return (
-    <Paper shadow="md" withBorder p="lg" radius="lg">
+    <Paper shadow="sm" withBorder p="lg" radius="lg">
       <Flex direction="column" gap="xl">
         <SegmentedControl
           value={range}

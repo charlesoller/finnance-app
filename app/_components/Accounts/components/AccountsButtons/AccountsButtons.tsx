@@ -1,6 +1,6 @@
 'use client';
 
-import { Avatar, Button, Flex, Tooltip } from '@mantine/core';
+import { Button, Flex } from '@mantine/core';
 import { useCustomerInfo } from '../../../../_utils/_hooks/useCustomerInfo';
 import { useConnectAccounts } from '../../../../_utils/_hooks/_mutations/useConnectAccounts';
 
@@ -22,15 +22,6 @@ export default function AccountsButtons({ onToggle }: AccountsButtonsProps) {
       <Button onClick={handleAuthClick} w="fit-content" color="green">
         + Account
       </Button>
-      <Tooltip label="Ask Finn a Question">
-        <Button
-          leftSection={<Avatar src="./mascot.webp" />}
-          color="green"
-          onClick={onToggle}
-        >
-          Ask a Question
-        </Button>
-      </Tooltip>
     </Flex>
   );
 }

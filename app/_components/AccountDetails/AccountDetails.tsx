@@ -10,7 +10,6 @@ import { ArrowLeftIcon } from '@radix-ui/react-icons';
 import Nav from '../Nav/Nav';
 import TransactionList from './components/TransactionList';
 import { useDisclosure } from '@mantine/hooks';
-import { useState } from 'react';
 import { useModalStore } from '../../_stores/ModalStore';
 import { CONFIRM_DISCONNECT_MODAL } from '../_modals';
 import {
@@ -20,16 +19,16 @@ import {
 import { AccountData } from '../../_models/AccountData';
 import SlideDrawer from '../SlideDrawer/SlideDrawer';
 import Chat from '../Chat/Chat';
+import { useChatContextStore } from '../../_stores/ChatContextStore';
 
 export default function AccountDetails() {
   const { accountId } = useParams();
   const { token } = useUserStore();
   const { openModal } = useModalStore();
+  const { handleSelectTxn, selectedTransactionIds, isActiveTxnId } =
+    useChatContextStore();
 
   const [opened, { toggle }] = useDisclosure();
-  const [selectedTransactions, setSelectedTransactions] = useState<string[]>(
-    [],
-  );
 
   const {
     error: accountError,
@@ -60,16 +59,11 @@ export default function AccountDetails() {
       toggle();
     }
 
-    if (selectedTransactions.includes(id)) {
-      const filtered = selectedTransactions.filter((txId) => txId !== id);
-      setSelectedTransactions(filtered);
-
-      if (!filtered.length) {
-        toggle();
-      }
-    } else {
-      setSelectedTransactions((prev) => [...prev, id]);
+    if (isActiveTxnId(id) && selectedTransactionIds.length === 1) {
+      toggle();
     }
+
+    handleSelectTxn(id);
   };
 
   const handleDisconnect = () => {
@@ -121,10 +115,7 @@ export default function AccountDetails() {
           <>
             <AccountSummary transactions={transactions} />
             <Divider label="Transactions" labelPosition="left" my="xs" />
-            <TransactionList
-              onSelect={handleSelect}
-              selectedTransactions={selectedTransactions}
-            />
+            <TransactionList onSelect={handleSelect} />
           </>
         )}
       </>

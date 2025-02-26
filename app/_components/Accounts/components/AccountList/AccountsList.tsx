@@ -13,16 +13,14 @@ import { groupAccountsByType, GroupedAccounts } from '../../Accounts.utils';
 import { capitalize } from '../../../../_utils/utils';
 import { ACCOUNT_KEY } from '../../../../_utils/_hooks/_mutations/queryKeys';
 import { usePollAccountBalances } from '../../../../_utils/_hooks/usePollAccountBalances';
+import { useChatContextStore } from '../../../../_stores/ChatContextStore';
 
-interface AccountsListProps {
-  selectedAccounts: string[];
+interface AccountListProps {
   onSelect: (id: string) => void;
 }
 
-export default function AccountsList({
-  selectedAccounts,
-  onSelect,
-}: AccountsListProps) {
+export default function AccountsList({ onSelect }: AccountListProps) {
+  const { isActiveAcctId } = useChatContextStore();
   const { token, customerId } = useUserStore();
 
   const {
@@ -51,14 +49,6 @@ export default function AccountsList({
       {!isLoading && !isPending && !error && !accounts?.length && (
         <Text>No data found</Text>
       )}
-      {/* <Text size="xl">
-        Net Worth:
-        <NumberFormatter
-          prefix=" $"
-          value={getCurrentNet(groupedAccounts) / 100 || 0}
-          thousandSeparator
-        />
-      </Text> */}
       {!!Object.keys(groupedAccounts)?.length &&
         Object.keys(groupedAccounts).map((group) => (
           <Flex key={group} direction="column">
@@ -67,7 +57,7 @@ export default function AccountsList({
               <AccountCard
                 key={acct.id}
                 acct={acct}
-                selected={selectedAccounts.includes(acct.id)}
+                selected={isActiveAcctId(acct.id)}
                 onSelect={onSelect}
               />
             ))}

@@ -10,11 +10,7 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import {
-  FormEvent,
-  KeyboardEvent,
-  useState,
-} from 'react';
+import { FormEvent, KeyboardEvent, useState } from 'react';
 import { GenerationRequest } from '../../_models/GenerationRequest';
 import { ChatMessage } from '../../_models/ChatMessage';
 import { v4 } from 'uuid';
@@ -31,6 +27,7 @@ import {
 } from '../../_utils/_hooks/_mutations/queryKeys';
 import { useStreamingFilter } from '../../_utils/_hooks/useStreamingFilter';
 import agentAPI from '../../_services/AgentAPI';
+import { useChatContextStore } from '../../_stores/ChatContextStore';
 // import { useStreamAgentResponse, useStreamResponse } from '../../_utils/_hooks/useStreamResponse';
 
 type FormField = 'message' | 'useGraph';
@@ -48,6 +45,7 @@ export default function UserInput() {
   const queryClient = useQueryClient();
   const { openModal } = useModalStore();
   const { token, userId } = useUserStore();
+  const { getContext } = useChatContextStore();
 
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('sessionId');
@@ -80,7 +78,7 @@ export default function UserInput() {
       );
     }
     if (
-      isGraph &&
+      isGraph.current &&
       !messages.some((msg) => msg.message_id === 'LOADING_GRAPH')
     ) {
       queryClient.setQueryData<ChatMessage[]>(
@@ -104,7 +102,7 @@ export default function UserInput() {
     mutationFn: (request: GenerationRequest) => {
       return agentAPI.createChat(token, request, handleMessage);
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [SESSION_KEY] });
       queryClient.invalidateQueries({ queryKey: [SESSION_INFO_KEY] });
       reset();
@@ -159,6 +157,7 @@ export default function UserInput() {
 
       return { previousMessages };
     },
+    retry: false,
   });
 
   const handleForm = (field: FormField, newData: FormDataType) => {
@@ -188,7 +187,7 @@ export default function UserInput() {
       session_id: sessionId as string,
       history: chatHistory,
       message_content: form.message,
-      use_graph: form.useGraph,
+      context: getContext(),
     });
 
     handleForm('message', '');

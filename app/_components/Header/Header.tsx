@@ -4,9 +4,9 @@ import queryClient from '../../_services/_clients/QueryClient';
 import UserInfoMenu from '../UserInfoMenu/UserInfoMenu';
 import { useDisclosure } from '@mantine/hooks';
 import Nav from '../Nav/Nav';
-import { BackpackIcon, FaceIcon } from '@radix-ui/react-icons';
 import { usePathname } from 'next/navigation';
 import { SESSION_KEY } from '../../_utils/_hooks/_mutations/queryKeys';
+import { IconDashboard, IconDog } from '@tabler/icons-react';
 
 interface HeaderProps {
   opened: boolean;
@@ -37,7 +37,7 @@ export default function Header({ opened, toggle }: HeaderProps) {
         <Nav
           href="/chat"
           label="Advisor"
-          leftSection={<FaceIcon />}
+          leftSection={<IconDog size="20px" />}
           active={pathname.includes('chat')}
           onClick={handleNavigation}
           w="fit-content"
@@ -45,11 +45,19 @@ export default function Header({ opened, toggle }: HeaderProps) {
         <Nav
           href="/manage"
           label="Manage"
-          leftSection={<BackpackIcon />}
+          leftSection={<IconDashboard size="20px" />}
           active={pathname.includes('manage')}
           onClick={handleNavigation}
           w="fit-content"
         />
+        {/* <Nav
+          href="/budget"
+          label="Budget"
+          leftSection={<IconClockDollar size='20px' />}
+          active={pathname.includes('budget')}
+          onClick={handleNavigation}
+          w="fit-content"
+        /> */}
       </Flex>
       <UserInfoMenu open={userMenuOpen} toggle={toggleUserMenu} />
     </Flex>

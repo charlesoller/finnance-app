@@ -31,7 +31,11 @@ export default function TransactionCard({
         </Flex>
         <Flex direction="column" justify="flex-end" align="flex-end">
           <Text size="xl">
-            <NumberFormatter prefix="$" value={tx.amount} thousandSeparator />
+            <NumberFormatter
+              prefix="$"
+              value={tx.amount / 100}
+              thousandSeparator
+            />
           </Text>
         </Flex>
       </Flex>

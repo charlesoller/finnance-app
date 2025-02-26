@@ -5,17 +5,15 @@ import { useParams } from 'next/navigation';
 import { Flex } from '@mantine/core';
 import TransactionCard from './TransactionCard/TransactionCard';
 import { TransactionData } from '../../../_models/TransactionData';
+import { useChatContextStore } from '../../../_stores/ChatContextStore';
 
 interface TransactionListProps {
   onSelect: (id: string) => void;
-  selectedTransactions: string[];
 }
 
-export default function TransactionList({
-  onSelect,
-  selectedTransactions,
-}: TransactionListProps) {
+export default function TransactionList({ onSelect }: TransactionListProps) {
   const { token } = useUserStore();
+  const { isActiveTxnId } = useChatContextStore();
   const { accountId } = useParams();
   const {
     error,
@@ -36,7 +34,7 @@ export default function TransactionList({
           <TransactionCard
             key={tx.id}
             tx={tx}
-            selected={selectedTransactions.includes(tx.id)}
+            selected={isActiveTxnId(tx.id)}
             onSelect={onSelect}
           />
         ))}

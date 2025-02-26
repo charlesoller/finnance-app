@@ -1,12 +1,7 @@
 import { GenerationRequest } from '../_models/GenerationRequest';
 import APIService from './APIService';
-import { Config } from './Config';
 
 class AgentAPI extends APIService {
-  static getBaseURL() {
-    return Config.getBaseURL();
-  }
-
   async createChat(
     token: string,
     request: GenerationRequest,

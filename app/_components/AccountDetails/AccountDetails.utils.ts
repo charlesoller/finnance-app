@@ -8,7 +8,7 @@ export const formatTransactions = (
   return tx
     .sort((a, b) => a.transacted_at - b.transacted_at)
     .map(({ amount, transacted_at }) => {
-      runningTotal += amount;
+      runningTotal += amount / 100;
       return {
         date: String(new Date(transacted_at * 1000)),
         amount: runningTotal,
