@@ -4,7 +4,7 @@ export class Config {
   }
 
   static getAgentURL() {
-    return process.env.AGENT_URL || 'http://127.0.0.1:3002';
+    return process.env.NEXT_PUBLIC_AGENT_URL || 'http://127.0.0.1:3002';
   }
 
   static getEnv() {

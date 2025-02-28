@@ -5,7 +5,7 @@ const nextConfig = {
     optimizePackageImports: ['@mantine/core', '@mantine/hooks'],
   },
   env: {
-    STRIPE_API_KEY: process.env.STRIPE_API_KEY,
+    STRIPE_API_KEY: process.env.NEXT_PUBLIC_STRIPE_API_KEY,
   },
 };
 
