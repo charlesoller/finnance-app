@@ -85,6 +85,7 @@ class APIService {
       },
       onerror(err) {
         console.log('There was an error from server', err);
+        throw new Error('Stopping attempts in fetchEventSource');
       },
     });
 
