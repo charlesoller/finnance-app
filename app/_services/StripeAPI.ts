@@ -4,6 +4,7 @@ import APIService from './APIService';
 class StripeAPI extends APIService {
   async initiateStripeAuth(email: string, token: string) {
     if (!email || !token) return;
+
     const stripe = await getStripe();
     if (!stripe) {
       console.error('Stripe failed to load');
