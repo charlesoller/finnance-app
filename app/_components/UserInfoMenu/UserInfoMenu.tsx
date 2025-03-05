@@ -21,7 +21,8 @@ interface UserMenuProps {
 }
 
 export default function UserInfoMenu({ open, toggle }: UserMenuProps) {
-  const { signInDetails } = useUserStore();
+  const { email, userId } = useUserStore();
+
   const { openModal } = useModalStore();
 
   const handleOpenSettings = () => {
@@ -33,12 +34,12 @@ export default function UserInfoMenu({ open, toggle }: UserMenuProps) {
     <Menu shadow="md" opened={open} onChange={toggle}>
       <Menu.Target>
         <ActionIcon variant="transparent" radius="xl" size="lg">
-          <Avatar color="initials" name={signInDetails.loginId} />
+          <Avatar color="initials" name={trimEmail(email)} />
         </ActionIcon>
       </Menu.Target>
       <Menu.Dropdown className={styles.menu}>
         <Flex direction="column" p="sm" gap="md">
-          <Text>Hello, {trimEmail(signInDetails.loginId)}!</Text>
+          <Text>Hello, {trimEmail(email)}!</Text>
           <Divider />
           <Flex align="center" justify="space-between">
             <LightDarkToggle />

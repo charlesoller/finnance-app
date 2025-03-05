@@ -1,4 +1,11 @@
-import { Button, Flex, PasswordInput, Text, TextInput } from '@mantine/core';
+import {
+  Button,
+  Divider,
+  Flex,
+  PasswordInput,
+  Text,
+  TextInput,
+} from '@mantine/core';
 import { isEmail, matches, matchesField, useForm } from '@mantine/form';
 import { AuthFormType } from './auth.types';
 import { useModalStore } from '../../_stores/ModalStore';
@@ -12,6 +19,7 @@ import {
 import { Dispatch, SetStateAction } from 'react';
 import { useFormState } from '../../_utils/_hooks/useFormState';
 import { useUserStore } from '../../_stores/UserStore';
+import SocialSignIn from './SocialSignIn';
 
 interface AuthFormProps {
   type: AuthFormType;
@@ -134,6 +142,9 @@ export default function AuthForm({ type, setType }: AuthFormProps) {
           <Text size="xl">{getTitle()}</Text>
           <Text size="sm">{getDescription()}</Text>
         </Flex>
+        <Divider />
+        <SocialSignIn />
+        <Divider />
         <Flex direction="column" gap="md">
           {type !== 'newPassword' && (
             <TextInput

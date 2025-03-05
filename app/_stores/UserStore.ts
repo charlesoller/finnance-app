@@ -1,6 +1,7 @@
 import { fetchAuthSession } from 'aws-amplify/auth';
 import { create } from 'zustand';
 import stripeAPI from '../_services/StripeAPI';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 
 interface UserData {
   username: string;
@@ -64,13 +65,18 @@ export const useUserStore = create<UserStore>((set: any, get: any) => ({
       console.log('No authorization token found.');
       return '';
     }
-    const authToken = session.tokens.idToken.toString();
+
+    const token = session.tokens.idToken.toString();
+    const decoded = jwt.decode(token, { complete: true }) as JwtPayload;
+    if (!!decoded?.payload?.email) {
+      set({ email: decoded.payload.email });
+    }
 
     set(() => {
-      return { token: authToken };
+      return { token };
     });
 
-    return authToken;
+    return token;
   },
 
   fetchCustomerInfo: async (email: string, token: string) => {
