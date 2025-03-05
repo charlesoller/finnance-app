@@ -12,7 +12,7 @@ class StripeAPI extends APIService {
     }
 
     const clientSecret = await this.post(
-      '/financial-connections/customers',
+      '/financial-connections/accounts',
       token,
       { email },
     );
