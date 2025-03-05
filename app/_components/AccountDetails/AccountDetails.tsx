@@ -107,10 +107,6 @@ export default function AccountDetails() {
         {(transactionsLoading || transactionsPending) &&
           account?.status !== 'inactive' && <Loader color="green" />}
         {!!transactionsError && <Text>{transactionsError.message}</Text>}
-        {!transactionsLoading &&
-          !transactionsPending &&
-          !transactionsError &&
-          !transactions?.length && <Text>No data found</Text>}
         {!!transactions?.length && (
           <>
             <AccountSummary transactions={transactions} />

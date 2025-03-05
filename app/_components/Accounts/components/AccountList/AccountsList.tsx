@@ -2,7 +2,7 @@
 
 import styles from './AccountsList.module.css';
 
-import { Divider, Flex, Loader, Text } from '@mantine/core';
+import { Divider, Flex, Loader, Text, Title } from '@mantine/core';
 import AccountCard from '../AccountCard/AccountCard';
 import { AccountData } from '../../../../_models/AccountData';
 import stripeAPI from '../../../../_services/StripeAPI';
@@ -44,10 +44,16 @@ export default function AccountsList({ onSelect }: AccountListProps) {
 
   return (
     <Flex direction="column" className={styles.list}>
-      {(isLoading || isPending) && <Loader color="green" />}
+      {(isLoading || isPending) && <Loader color="green" m="auto" />}
       {!!error && <Text>{error.message}</Text>}
       {!isLoading && !isPending && !error && !accounts?.length && (
-        <Text>No data found</Text>
+        <Flex direction="column" m="auto" ta="center">
+          <Title>No Accounts Connected</Title>
+          <Text>
+            Use the add account button above to get started with integrating
+            your accounts
+          </Text>
+        </Flex>
       )}
       {!!Object.keys(groupedAccounts)?.length &&
         Object.keys(groupedAccounts).map((group) => (
