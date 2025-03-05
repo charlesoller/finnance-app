@@ -1,25 +1,19 @@
-import {
-  parseISO,
-  isToday,
-  isYesterday,
-  isWithinInterval,
-  subDays,
-} from 'date-fns';
+import { parseISO, isToday, isWithinInterval, subDays } from 'date-fns';
 import { SessionData } from '../../_models/SessionData';
 import { GroupedSessionData, HistoryGroup } from './HistoryMenu.types';
-import { capitalize, utcToLocal } from '../../_utils/utils';
+import { utcToLocal } from '../../_utils/utils';
 
 export const groupSessions = (sessions: SessionData[]): GroupedSessionData => {
   const today = new Date();
-  const yesterday = subDays(today, 1);
+  // const yesterday = subDays(today, 1);
   const sevenDaysAgo = subDays(today, 7);
-  const thirtyDaysAgo = subDays(today, 30);
+  // const thirtyDaysAgo = subDays(today, 30);
 
   const grouped = {
     today: [] as SessionData[],
-    yesterday: [] as SessionData[],
+    // yesterday: [] as SessionData[],
     prevSeven: [] as SessionData[],
-    prevThirty: [] as SessionData[],
+    // prevThirty: [] as SessionData[],
     past: [] as SessionData[],
   };
 
@@ -29,16 +23,10 @@ export const groupSessions = (sessions: SessionData[]): GroupedSessionData => {
 
     if (isToday(updatedAt) || updatedAt > today) {
       grouped.today.push(session);
-    } else if (isYesterday(updatedAt)) {
-      grouped.yesterday.push(session);
     } else if (
-      isWithinInterval(updatedAt, { start: sevenDaysAgo, end: yesterday })
+      isWithinInterval(updatedAt, { start: sevenDaysAgo, end: today })
     ) {
       grouped.prevSeven.push(session);
-    } else if (
-      isWithinInterval(updatedAt, { start: thirtyDaysAgo, end: sevenDaysAgo })
-    ) {
-      grouped.prevThirty.push(session);
     } else {
       grouped.past.push(session);
     }
@@ -56,20 +44,12 @@ export const groupSessions = (sessions: SessionData[]): GroupedSessionData => {
   return grouped;
 };
 
-export const formatTabName = (groupName: HistoryGroup) => {
-  if (groupName === 'prevSeven') {
-    return 'Last 7 Days';
-  }
-  if (groupName === 'prevThirty') {
-    return 'Last 30 Days';
-  }
-  return capitalize(groupName);
-};
-
 export const getDefaultTab = (data: GroupedSessionData): HistoryGroup => {
   if (data.today.length) return 'today';
-  if (data.yesterday.length) return 'yesterday';
   if (data.prevSeven.length) return 'prevSeven';
-  if (data.prevThirty.length) return 'prevThirty';
   return 'past';
+};
+
+export const hasData = (data: any[]) => {
+  return !!data.length;
 };
