@@ -67,6 +67,9 @@ export const timeAgo = (timestamp: number): string => {
   const now = Math.floor(Date.now() / 1000);
   const secondsAgo = now - timestamp;
   const hoursAgo = Math.floor(secondsAgo / 3600);
+  if (hoursAgo < 1) {
+    return 'Just now';
+  }
 
-  return `${hoursAgo} hours ago`;
+  return `${hoursAgo} hour${hoursAgo === 1 ? '' : 's'} ago`;
 };

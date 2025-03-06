@@ -18,6 +18,7 @@ export default function Accounts() {
   useCustomerInfo();
 
   const [opened, { toggle }] = useDisclosure();
+
   const { handleSelectAcct, selectedAccountIds, isActiveAcctId } =
     useChatContextStore();
 
@@ -56,12 +57,14 @@ export default function Accounts() {
       drawerComponent={<Chat showHistoryMenu={false} />}
     >
       <>
-        <ValueTrackerChart
-          data={accountTxnData ? formatNetWorthData(accountTxnData) : []}
-          totalValue={accountTxnData ? accountTxnData[0].total / 100 : 0}
-          showAddAccountButton
-          loading={isFetching || isPending}
-        />
+        {(!!accountTxnData?.length || isFetching || isPending) && (
+          <ValueTrackerChart
+            data={accountTxnData ? formatNetWorthData(accountTxnData) : []}
+            totalValue={accountTxnData ? accountTxnData?.[0]?.total / 100 : 0}
+            showAddAccountButton
+            loading={isFetching || isPending}
+          />
+        )}
         <AccountsList onSelect={handleSelect} />
       </>
     </SlideDrawer>

@@ -36,8 +36,10 @@ export default function TransactionCard({
           <Text size="xl">
             <NumberFormatter
               prefix="$"
-              value={Math.abs(tx.amount / 100)}
+              value={tx.amount / 100}
               thousandSeparator
+              decimalScale={2}
+              fixedDecimalScale
             />
           </Text>
         </Flex>

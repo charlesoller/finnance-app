@@ -36,6 +36,7 @@ import {
   IconHome,
   IconMoneybag,
 } from '@tabler/icons-react';
+import AddAccountButton from '../../../AddAccountButton/AddAccountButton';
 
 interface AccountListProps {
   onSelect: (id: string) => void;
@@ -85,10 +86,11 @@ export default function AccountsList({ onSelect }: AccountListProps) {
       {!isLoading && !isPending && !error && !accounts?.length && (
         <Flex direction="column" m="auto" ta="center">
           <Title>No Accounts Connected</Title>
-          <Text>
-            Use the add account button above to get started with integrating
+          <Text mb="lg">
+            Use the add account button below to get started with integrating
             your accounts
           </Text>
+          <AddAccountButton />
         </Flex>
       )}
       <Accordion
@@ -120,6 +122,8 @@ export default function AccountsList({ onSelect }: AccountListProps) {
                         ) / 100
                       }
                       thousandSeparator
+                      decimalScale={2}
+                      fixedDecimalScale
                     />
                   </Title>
                 </Flex>

@@ -31,7 +31,7 @@ export default function TransactionList({ onSelect }: TransactionListProps) {
     refetchOnWindowFocus: false,
     enabled: !!accountId && !!token,
   });
-
+  console.log('TX: ', transactions);
   const groupedTransactions = useMemo((): GroupedTransactions => {
     if (!transactions?.length) return {};
     return groupTransactionsByDate(transactions);

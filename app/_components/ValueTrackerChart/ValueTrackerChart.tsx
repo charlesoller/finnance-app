@@ -1,6 +1,5 @@
 import { LineChart } from '@mantine/charts';
 import {
-  Button,
   Flex,
   LoadingOverlay,
   NumberFormatter,
@@ -15,7 +14,7 @@ import { formatCurrency } from '../../_utils/utils';
 import { useMemo, useState } from 'react';
 import { ValueTrackerDateRange } from './ValueTracker.types';
 import { sortByDate } from './ValueTracker.utils';
-import { useConnectAccounts } from '../../_utils/_hooks/_mutations/useConnectAccounts';
+import AddAccountButton from '../AddAccountButton/AddAccountButton';
 
 interface ValueTrackerChartProps {
   data: LineChartDataPoint[];
@@ -34,12 +33,7 @@ export default function ValueTrackerChart({
   totalValueLabel = 'Net Worth',
   loading = false,
 }: ValueTrackerChartProps) {
-  const { mutation: connectAccounts } = useConnectAccounts();
   const [range, setRange] = useState<ValueTrackerDateRange>(defaultRange);
-
-  const handleAuthClick = async () => {
-    connectAccounts.mutate();
-  };
 
   const selectedData = useMemo(() => {
     return sortByDate(data, range);
@@ -62,14 +56,12 @@ export default function ValueTrackerChart({
                 prefix="$"
                 value={totalValue}
                 thousandSeparator
+                decimalScale={2}
+                fixedDecimalScale
               />
             </Title>
           </Flex>
-          {showAddAccountButton && (
-            <Button color="green" radius="md" onClick={handleAuthClick}>
-              + Add Account
-            </Button>
-          )}
+          {showAddAccountButton && <AddAccountButton />}
         </Flex>
         <LineChart
           h={300}
@@ -79,7 +71,7 @@ export default function ValueTrackerChart({
           dataKey="date"
           series={[{ name: 'amount', color: 'green.6', label: 'Amount' }]}
           curveType="linear"
-          valueFormatter={(val) => formatCurrency(val, true)}
+          valueFormatter={(val) => formatCurrency(val)}
           yAxisProps={{
             domain: getDomain(selectedData as LineChartDataPoint[]),
           }}

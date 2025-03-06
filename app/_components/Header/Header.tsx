@@ -20,7 +20,6 @@ export default function Header({ opened, toggle }: HeaderProps) {
   const handleNavigation = () => {
     queryClient.setQueryData([SESSION_KEY], []);
   };
-
   return (
     <Flex align="center" justify="space-between" h="100%" px="xl">
       <Flex gap="md">
@@ -38,7 +37,7 @@ export default function Header({ opened, toggle }: HeaderProps) {
           href="/chat"
           label="Advisor"
           leftSection={<IconDog size="20px" />}
-          active={pathname.includes('chat')}
+          active={pathname.includes('chat') || pathname === '/'}
           onClick={handleNavigation}
           w="fit-content"
         />

@@ -16,7 +16,7 @@ class StripeAPI extends APIService {
       token,
       { email },
     );
-
+    console.log('SECRET: ', clientSecret);
     await stripe.collectFinancialConnectionsAccounts({
       clientSecret,
     });
