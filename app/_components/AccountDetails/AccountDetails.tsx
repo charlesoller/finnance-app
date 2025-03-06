@@ -117,6 +117,13 @@ export default function AccountDetails() {
             <TransactionList onSelect={handleSelect} />
           </>
         )}
+        {!transactionsLoading &&
+          !transactionsPending &&
+          !transactions.length && (
+            <Text size="xl">
+              No transaction data available for this account
+            </Text>
+          )}
       </>
     </SlideDrawer>
   );
