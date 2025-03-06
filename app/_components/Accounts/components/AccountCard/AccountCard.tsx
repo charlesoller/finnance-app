@@ -74,11 +74,8 @@ export default function AccountCard({
               <Text c="dimmed">{acct.institution_name}</Text>
             </Flex>
           </Flex>
-          <Flex direction="column" align="flex-end" justify="space-between">
+          <Flex direction="column" justify="center">
             {getBalance()}
-            <Text c="dimmed" size="sm">
-              {acct.subcategory || acct.category}
-            </Text>
           </Flex>
         </Flex>
       </Paper>

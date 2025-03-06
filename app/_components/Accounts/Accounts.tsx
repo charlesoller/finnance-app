@@ -1,15 +1,13 @@
 'use client';
 
-import { Divider } from '@mantine/core';
 import AccountsList from './components/AccountList/AccountsList';
-import AccountsButtons from './components/AccountsButtons/AccountsButtons';
 import { useDisclosure } from '@mantine/hooks';
 import ValueTrackerChart from '../ValueTrackerChart/ValueTrackerChart';
-import { formatNetWorthData } from './Accounts.utils';
 import { MOCK_NET_WORTH_DATA } from './Accounts.mock';
 import SlideDrawer from '../SlideDrawer/SlideDrawer';
 import Chat from '../Chat/Chat';
 import { useChatContextStore } from '../../_stores/ChatContextStore';
+import { formatNetWorthData } from './Accounts.utils';
 
 export default function Accounts() {
   const [opened, { toggle }] = useDisclosure();
@@ -35,9 +33,12 @@ export default function Accounts() {
       drawerComponent={<Chat showHistoryMenu={false} />}
     >
       <>
-        <ValueTrackerChart data={formatNetWorthData(MOCK_NET_WORTH_DATA)} />
-        <Divider my="xs" mt="lg" label="Actions" labelPosition="left" />
-        <AccountsButtons onToggle={toggle} />
+        <ValueTrackerChart
+          data={formatNetWorthData(MOCK_NET_WORTH_DATA)}
+          totalValue={MOCK_NET_WORTH_DATA[MOCK_NET_WORTH_DATA.length - 1].total}
+          showAddAccountButton
+        />
+        {/* <AccountsButtons onToggle={toggle} /> */}
         <AccountsList onSelect={handleSelect} />
       </>
     </SlideDrawer>

@@ -8,11 +8,18 @@ interface AccountSummaryProps {
 }
 
 export default function AccountSummary({ transactions }: AccountSummaryProps) {
+  const formattedTransactions = formatTransactions(transactions);
   return (
     <Paper>
       <Flex w="100%" gap="md">
         <div style={{ flex: 1 }}>
-          <ValueTrackerChart data={formatTransactions(transactions)} />
+          <ValueTrackerChart
+            data={formattedTransactions}
+            totalValue={
+              formattedTransactions[formattedTransactions.length - 1].amount
+            }
+            totalValueLabel="Current Balance"
+          />
         </div>
       </Flex>
     </Paper>

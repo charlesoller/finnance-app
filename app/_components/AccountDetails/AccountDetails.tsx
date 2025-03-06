@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Divider, Flex, Loader, Text, Title } from '@mantine/core';
+import { Button, Flex, Loader, Text, Title } from '@mantine/core';
 import { useUserStore } from '../../_stores/UserStore';
 import { useQuery } from '@tanstack/react-query';
 import stripeAPI from '../../_services/StripeAPI';
@@ -110,7 +110,6 @@ export default function AccountDetails() {
         {!!transactions?.length && (
           <>
             <AccountSummary transactions={transactions} />
-            <Divider label="Transactions" labelPosition="left" my="xs" />
             <TransactionList onSelect={handleSelect} />
           </>
         )}

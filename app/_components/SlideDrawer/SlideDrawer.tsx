@@ -35,7 +35,14 @@ export default function SlideDrawer({
       h={{ base: '93dvh', fallback: '93vh' }}
     >
       {side === 'left' ? (
-        <>
+        <div
+          style={{
+            transition: 'all 400ms ease',
+            width: '100%',
+            maxWidth: opened ? '100%' : '1024px',
+            margin: '0 auto',
+          }}
+        >
           <Flex
             direction="column"
             h="100%"
@@ -72,9 +79,16 @@ export default function SlideDrawer({
               </Flex>
             )}
           </Transition>
-        </>
+        </div>
       ) : (
-        <>
+        <div
+          style={{
+            transition: 'all 400ms ease',
+            width: '100%',
+            maxWidth: opened ? '100%' : '1024px',
+            margin: '0 auto',
+          }}
+        >
           <Flex
             direction="column"
             h="100%"
@@ -110,7 +124,7 @@ export default function SlideDrawer({
               </Flex>
             )}
           </Transition>
-        </>
+        </div>
       )}
     </Flex>
   );

@@ -1,14 +1,6 @@
 'use client';
 
-import {
-  ActionIcon,
-  Button,
-  Flex,
-  Paper,
-  Textarea,
-  useMantineColorScheme,
-  useMantineTheme,
-} from '@mantine/core';
+import { ActionIcon, Button, Flex, Paper, Textarea } from '@mantine/core';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { FormEvent, KeyboardEvent, useState } from 'react';
 import { GenerationRequest } from '../../_models/GenerationRequest';
@@ -20,7 +12,6 @@ import { useModalStore } from '../../_stores/ModalStore';
 import { useSearchParams } from 'next/navigation';
 import { useUserStore } from '../../_stores/UserStore';
 import { DISCLAIMER_MODAL } from '../_modals';
-import { borderColor } from '../../_utils/utils';
 import {
   SESSION_INFO_KEY,
   SESSION_KEY,
@@ -49,9 +40,6 @@ export default function UserInput() {
 
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('sessionId');
-
-  const theme = useMantineTheme();
-  const { colorScheme } = useMantineColorScheme();
 
   const [form, setForm] = useState<FormData>(defaultFormState);
   const { handleChunk, isValidChunk, reset, isGraph } = useStreamingFilter();
@@ -194,12 +182,7 @@ export default function UserInput() {
   };
 
   return (
-    <Paper
-      p="sm"
-      radius={0}
-      style={{ borderTop: `1px solid ${borderColor(colorScheme, theme)}` }}
-      className={styles.container}
-    >
+    <Paper p="sm" radius={0} className={styles.container}>
       <Flex direction="column" gap="xs">
         <form onSubmit={handleSubmit}>
           <Textarea

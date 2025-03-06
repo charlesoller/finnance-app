@@ -46,6 +46,7 @@ export const utcToLocal = (date: Date): Date => {
 
 export function toTitleCase(str: string): string {
   return str
+    .replace(/_/g, ' ')
     .replace(/([A-Z])/g, ' $1')
     .replace(/^./, (char) => char.toUpperCase())
     .trim();

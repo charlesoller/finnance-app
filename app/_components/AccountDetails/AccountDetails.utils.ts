@@ -28,7 +28,7 @@ export const groupTransactionsByDate = (
 
   transactions.forEach((tx) => {
     const date = new Date(tx.transacted_at * 1000);
-    const dateString = formatDate(date, true);
+    const dateString = formatDate(date);
 
     if (!grouped[dateString]) {
       grouped[dateString] = [];

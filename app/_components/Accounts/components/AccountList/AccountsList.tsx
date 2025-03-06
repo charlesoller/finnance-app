@@ -2,24 +2,47 @@
 
 import styles from './AccountsList.module.css';
 
-import { Divider, Flex, Loader, Text, Title } from '@mantine/core';
+import {
+  Accordion,
+  AccordionControl,
+  AccordionItem,
+  AccordionPanel,
+  Flex,
+  Loader,
+  NumberFormatter,
+  Text,
+  Title,
+} from '@mantine/core';
 import AccountCard from '../AccountCard/AccountCard';
 import { AccountData } from '../../../../_models/AccountData';
 import stripeAPI from '../../../../_services/StripeAPI';
 import { useQuery } from '@tanstack/react-query';
 import { useUserStore } from '../../../../_stores/UserStore';
 import { useMemo } from 'react';
-import { groupAccountsByType, GroupedAccounts } from '../../Accounts.utils';
-import { capitalize } from '../../../../_utils/utils';
+import {
+  getTotal,
+  groupAccountsByType,
+  GroupedAccounts,
+} from '../../Accounts.utils';
+import { toTitleCase } from '../../../../_utils/utils';
 import { ACCOUNT_KEY } from '../../../../_utils/_hooks/_mutations/queryKeys';
 import { usePollAccountBalances } from '../../../../_utils/_hooks/usePollAccountBalances';
 import { useChatContextStore } from '../../../../_stores/ChatContextStore';
+import { useCustomerInfo } from '../../../../_utils/_hooks/useCustomerInfo';
+import {
+  IconCash,
+  IconCoins,
+  IconCreditCard,
+  IconHome,
+  IconMoneybag,
+} from '@tabler/icons-react';
 
 interface AccountListProps {
   onSelect: (id: string) => void;
 }
 
 export default function AccountsList({ onSelect }: AccountListProps) {
+  useCustomerInfo();
   const { isActiveAcctId } = useChatContextStore();
   const { token, customerId } = useUserStore();
 
@@ -35,6 +58,8 @@ export default function AccountsList({ onSelect }: AccountListProps) {
     enabled: !!customerId && !!token,
   });
 
+  console.log('ACCTS: ', accounts);
+
   usePollAccountBalances(accounts);
 
   const groupedAccounts = useMemo(() => {
@@ -42,8 +67,22 @@ export default function AccountsList({ onSelect }: AccountListProps) {
     return groupAccountsByType(accounts);
   }, [accounts]);
 
+  const getIcon = (category: keyof GroupedAccounts) => {
+    if (category === 'checking') {
+      return <IconCash />;
+    } else if (category === 'credit_card') {
+      return <IconCreditCard />;
+    } else if (category === 'mortgage') {
+      return <IconHome />;
+    } else if (category === 'savings') {
+      return <IconMoneybag />;
+    } else {
+      return <IconCoins />;
+    }
+  };
+
   return (
-    <Flex direction="column" className={styles.list}>
+    <Flex direction="column" className={styles.list} mt="sm">
       {(isLoading || isPending) && <Loader color="green" m="auto" />}
       {!!error && <Text>{error.message}</Text>}
       {!isLoading && !isPending && !error && !accounts?.length && (
@@ -55,20 +94,54 @@ export default function AccountsList({ onSelect }: AccountListProps) {
           </Text>
         </Flex>
       )}
-      {!!Object.keys(groupedAccounts)?.length &&
-        Object.keys(groupedAccounts).map((group) => (
-          <Flex key={group} direction="column">
-            <Divider my="xs" label={capitalize(group)} labelPosition="left" />
-            {groupedAccounts[group as keyof GroupedAccounts]!.map((acct) => (
-              <AccountCard
-                key={acct.id}
-                acct={acct}
-                selected={isActiveAcctId(acct.id)}
-                onSelect={onSelect}
-              />
-            ))}
-          </Flex>
-        ))}
+      <Accordion
+        multiple={true}
+        defaultValue={[
+          'checking',
+          'savings',
+          'mortgage',
+          'credit_card',
+          'other',
+        ]}
+      >
+        {Object.keys(groupedAccounts)
+          .reverse()
+          .map((group) => (
+            <AccordionItem key={group} value={group}>
+              <AccordionControl>
+                <Flex p="md" justify="space-between">
+                  <Flex align="center" gap="md">
+                    {getIcon(group as keyof GroupedAccounts)}
+                    <Title order={3}>{toTitleCase(group)}</Title>
+                  </Flex>
+                  <Title order={3}>
+                    <NumberFormatter
+                      prefix="$"
+                      value={
+                        getTotal(
+                          groupedAccounts[group as keyof GroupedAccounts]!,
+                        ) / 100
+                      }
+                      thousandSeparator
+                    />
+                  </Title>
+                </Flex>
+              </AccordionControl>
+              <AccordionPanel>
+                {groupedAccounts[group as keyof GroupedAccounts]!.map(
+                  (acct) => (
+                    <AccountCard
+                      key={acct.id}
+                      acct={acct}
+                      selected={isActiveAcctId(acct.id)}
+                      onSelect={onSelect}
+                    />
+                  ),
+                )}
+              </AccordionPanel>
+            </AccordionItem>
+          ))}
+      </Accordion>
     </Flex>
   );
 }
