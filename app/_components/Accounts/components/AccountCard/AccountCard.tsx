@@ -81,7 +81,7 @@ export default function AccountCard({
           <Flex direction="column" justify="center" align="flex-end">
             {getBalance()}
             <Text c="dimmed" size="sm">
-              {timeAgo(acct.balance_refresh.last_attempted_at)}
+              {timeAgo(acct?.balance_refresh?.last_attempted_at)}
             </Text>
           </Flex>
         </Flex>

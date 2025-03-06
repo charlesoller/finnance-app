@@ -56,7 +56,7 @@ export default function AccountsList({ onSelect }: AccountListProps) {
     refetchOnWindowFocus: false,
     enabled: !!customerId && !!token,
   });
-
+  console.log('ACCOUNTS: ', accounts);
   usePollAccountBalances(accounts);
 
   const groupedAccounts = useMemo(() => {

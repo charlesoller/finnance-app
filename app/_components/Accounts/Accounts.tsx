@@ -35,6 +35,8 @@ export default function Accounts() {
     enabled: !!customerId && !!token,
   });
 
+  console.log('ACCOUNT TXN DATA: ', accountTxnData);
+
   const handleSelect = (id: string) => {
     if (!opened) {
       toggle();
