@@ -59,7 +59,11 @@ export const formatNetWorthData = (
 
 export const getTotal = (data: AccountData[]): number => {
   let total = 0;
-  data.forEach((acct) => (total += acct.balance?.current?.usd));
+  data.forEach((acct) => {
+    if (acct?.balance?.current?.usd) {
+      total += acct.balance?.current?.usd;
+    }
+  });
   return total;
 };
 

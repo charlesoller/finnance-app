@@ -113,7 +113,10 @@ export default function AccountsList({ onSelect }: AccountListProps) {
                     {getIcon(group as keyof GroupedAccounts)}
                     <Title order={3}>{toTitleCase(group)}</Title>
                   </Flex>
-                  <Title order={3}>
+                  <Title
+                    order={3}
+                    c={group === 'credit_card' ? 'red' : 'green'}
+                  >
                     <NumberFormatter
                       prefix="$"
                       value={

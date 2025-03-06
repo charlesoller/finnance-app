@@ -119,7 +119,9 @@ export default function AccountDetails() {
         )}
         {!transactionsLoading &&
           !transactionsPending &&
-          !transactions.length && (
+          !transactions.length &&
+          !transactionsError &&
+          account?.status !== 'inactive' && (
             <Text size="xl">
               No transaction data available for this account
             </Text>

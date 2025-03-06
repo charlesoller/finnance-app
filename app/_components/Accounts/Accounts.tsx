@@ -62,7 +62,7 @@ export default function Accounts() {
             data={accountTxnData ? formatNetWorthData(accountTxnData) : []}
             totalValue={accountTxnData ? accountTxnData?.[0]?.total / 100 : 0}
             showAddAccountButton
-            loading={isFetching || isPending}
+            loading={isPending}
           />
         )}
         <AccountsList onSelect={handleSelect} />
