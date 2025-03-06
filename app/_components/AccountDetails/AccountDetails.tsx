@@ -56,6 +56,8 @@ export default function AccountDetails() {
     enabled: !!accountId && !!token && account?.status !== 'inactive',
   });
 
+  console.log('TRANSACTIONS: ', transactions);
+
   const handleSelect = (id: string) => {
     if (!opened) {
       toggle();
