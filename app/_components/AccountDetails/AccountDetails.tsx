@@ -20,8 +20,10 @@ import { AccountData } from '../../_models/AccountData';
 import SlideDrawer from '../SlideDrawer/SlideDrawer';
 import Chat from '../Chat/Chat';
 import { useChatContextStore } from '../../_stores/ChatContextStore';
+import { useCustomerInfo } from '../../_utils/_hooks/useCustomerInfo';
 
 export default function AccountDetails() {
+  useCustomerInfo();
   const { accountId } = useParams();
   const { token } = useUserStore();
   const { openModal } = useModalStore();

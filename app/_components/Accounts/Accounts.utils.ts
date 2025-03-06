@@ -51,14 +51,22 @@ export const getCurrentNet = (accounts: GroupedAccounts) => {
 export const formatNetWorthData = (
   data: NetWorthData[],
 ): LineChartDataPoint[] => {
-  return data.map(({ total, date }) => ({
+  return data?.map(({ total, date }) => ({
     date: String(new Date(date)),
-    amount: total,
+    amount: total / 100,
   }));
 };
 
 export const getTotal = (data: AccountData[]): number => {
   let total = 0;
-  data.forEach((acct) => (total += acct.balance.current.usd));
+  data.forEach((acct) => (total += acct.balance?.current?.usd));
   return total;
+};
+
+export const timeAgo = (timestamp: number): string => {
+  const now = Math.floor(Date.now() / 1000);
+  const secondsAgo = now - timestamp;
+  const hoursAgo = Math.floor(secondsAgo / 3600);
+
+  return `${hoursAgo} hours ago`;
 };

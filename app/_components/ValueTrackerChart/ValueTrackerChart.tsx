@@ -2,6 +2,7 @@ import { LineChart } from '@mantine/charts';
 import {
   Button,
   Flex,
+  LoadingOverlay,
   NumberFormatter,
   Paper,
   SegmentedControl,
@@ -22,6 +23,7 @@ interface ValueTrackerChartProps {
   defaultRange?: ValueTrackerDateRange;
   showAddAccountButton?: boolean;
   totalValueLabel?: string;
+  loading?: boolean;
 }
 
 export default function ValueTrackerChart({
@@ -30,6 +32,7 @@ export default function ValueTrackerChart({
   defaultRange = 'week',
   showAddAccountButton = false,
   totalValueLabel = 'Net Worth',
+  loading = false,
 }: ValueTrackerChartProps) {
   const { mutation: connectAccounts } = useConnectAccounts();
   const [range, setRange] = useState<ValueTrackerDateRange>(defaultRange);
@@ -43,7 +46,13 @@ export default function ValueTrackerChart({
   }, [data, range]);
 
   return (
-    <Paper shadow="sm" withBorder p="lg" radius="lg">
+    <Paper shadow="sm" withBorder p="lg" radius="lg" pos="relative">
+      <LoadingOverlay
+        visible={loading}
+        zIndex={1000}
+        overlayProps={{ radius: 'sm', blur: 2 }}
+        loaderProps={{ color: 'green' }}
+      />
       <Flex direction="column" gap="xl">
         <Flex justify="space-between">
           <Flex direction="column" px="md">

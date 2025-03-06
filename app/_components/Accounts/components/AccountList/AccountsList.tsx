@@ -28,7 +28,7 @@ import { toTitleCase } from '../../../../_utils/utils';
 import { ACCOUNT_KEY } from '../../../../_utils/_hooks/_mutations/queryKeys';
 import { usePollAccountBalances } from '../../../../_utils/_hooks/usePollAccountBalances';
 import { useChatContextStore } from '../../../../_stores/ChatContextStore';
-import { useCustomerInfo } from '../../../../_utils/_hooks/useCustomerInfo';
+
 import {
   IconCash,
   IconCoins,
@@ -42,7 +42,6 @@ interface AccountListProps {
 }
 
 export default function AccountsList({ onSelect }: AccountListProps) {
-  useCustomerInfo();
   const { isActiveAcctId } = useChatContextStore();
   const { token, customerId } = useUserStore();
 
@@ -57,8 +56,6 @@ export default function AccountsList({ onSelect }: AccountListProps) {
     refetchOnWindowFocus: false,
     enabled: !!customerId && !!token,
   });
-
-  console.log('ACCTS: ', accounts);
 
   usePollAccountBalances(accounts);
 

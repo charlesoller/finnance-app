@@ -60,6 +60,14 @@ class StripeAPI extends APIService {
       token,
     );
   }
+
+  async getCustomerTransactionData(customerId: string, token: string) {
+    if (!customerId || !token) return;
+    return this.get(
+      `/financial-connections/transactions/customer/${customerId}`,
+      token,
+    );
+  }
 }
 
 const stripeAPI = new StripeAPI();
