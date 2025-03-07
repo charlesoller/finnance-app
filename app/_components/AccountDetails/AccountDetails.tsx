@@ -55,7 +55,6 @@ export default function AccountDetails() {
     refetchOnWindowFocus: false,
     enabled: !!accountId && !!token && account?.status !== 'inactive',
   });
-
   console.log('TRANSACTIONS: ', transactions);
 
   const handleSelect = (id: string) => {
@@ -111,9 +110,12 @@ export default function AccountDetails() {
         {(transactionsLoading || transactionsPending) &&
           account?.status !== 'inactive' && <Loader color="green" />}
         {!!transactionsError && <Text>{transactionsError.message}</Text>}
-        {!!transactions?.length && (
+        {!!transactions?.length && !!account && (
           <>
-            <AccountSummary transactions={transactions} />
+            <AccountSummary
+              balance={account.balance.current.usd / 100}
+              transactions={transactions}
+            />
             <TransactionList onSelect={handleSelect} />
           </>
         )}

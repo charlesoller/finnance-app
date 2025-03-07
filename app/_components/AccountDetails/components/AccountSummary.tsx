@@ -5,19 +5,21 @@ import { formatTransactions } from '../AccountDetails.utils';
 
 interface AccountSummaryProps {
   transactions: TransactionData[];
+  balance: number;
 }
 
-export default function AccountSummary({ transactions }: AccountSummaryProps) {
-  const formattedTransactions = formatTransactions(transactions);
+export default function AccountSummary({
+  transactions,
+  balance,
+}: AccountSummaryProps) {
+  const formattedTransactions = formatTransactions(transactions, balance);
   return (
     <Paper>
       <Flex w="100%" gap="md">
         <div style={{ flex: 1 }}>
           <ValueTrackerChart
             data={formattedTransactions}
-            totalValue={
-              formattedTransactions[formattedTransactions.length - 1].amount
-            }
+            totalValue={balance}
             totalValueLabel="Current Balance"
           />
         </div>

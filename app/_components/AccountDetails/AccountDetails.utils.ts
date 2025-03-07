@@ -4,16 +4,21 @@ import { formatDate } from '../../_utils/utils';
 
 export const formatTransactions = (
   tx: TransactionData[],
+  balance: number,
 ): LineChartDataPoint[] => {
-  let runningTotal = 0;
+  let runningTotal = balance;
+
   return tx
-    .sort((a, b) => a.transacted_at - b.transacted_at)
+    .sort((a, b) => b.transacted_at - a.transacted_at)
     .map(({ amount, transacted_at }) => {
-      runningTotal += amount / 100;
-      return {
+      const point = {
         date: String(new Date(transacted_at * 1000)),
         amount: runningTotal,
       };
+
+      runningTotal -= amount / 100;
+
+      return point;
     });
 };
 
