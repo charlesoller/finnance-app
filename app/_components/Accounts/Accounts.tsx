@@ -19,8 +19,12 @@ export default function Accounts() {
 
   const [opened, { toggle }] = useDisclosure();
 
-  const { handleSelectAcct, selectedAccountIds, isActiveAcctId } =
-    useChatContextStore();
+  const {
+    handleSelectAcct,
+    selectedAccountIds,
+    isActiveAcctId,
+    omittedAccounts,
+  } = useChatContextStore();
 
   const { token, customerId } = useUserStore();
 
@@ -31,7 +35,8 @@ export default function Accounts() {
     isPending,
   } = useQuery<NetWorthData[]>({
     queryKey: [ACCOUNT_TRANSACTIONS_KEY],
-    queryFn: () => stripeAPI.getCustomerTransactionData(customerId, token),
+    queryFn: () =>
+      stripeAPI.getCustomerTransactionData(customerId, omittedAccounts, token),
     refetchOnWindowFocus: false,
     enabled: !!customerId && !!token,
   });
@@ -62,7 +67,7 @@ export default function Accounts() {
             data={accountTxnData ? formatNetWorthData(accountTxnData) : []}
             totalValue={accountTxnData ? accountTxnData?.[0]?.total / 100 : 0}
             showAddAccountButton
-            loading={isPending}
+            loading={isPending || isFetching}
           />
         )}
         <AccountsList onSelect={handleSelect} />

@@ -1,4 +1,4 @@
-import { Burger, Flex, Text } from '@mantine/core';
+import { Flex, Text } from '@mantine/core';
 import Link from 'next/link';
 import queryClient from '../../_services/_clients/QueryClient';
 import UserInfoMenu from '../UserInfoMenu/UserInfoMenu';
@@ -6,7 +6,10 @@ import { useDisclosure } from '@mantine/hooks';
 import Nav from '../Nav/Nav';
 import { usePathname } from 'next/navigation';
 import { SESSION_KEY } from '../../_utils/_hooks/_mutations/queryKeys';
-import { IconDashboard, IconDog } from '@tabler/icons-react';
+import {
+  IconDashboard,
+  IconMessageChatbot,
+} from '@tabler/icons-react';
 
 interface HeaderProps {
   opened: boolean;
@@ -23,7 +26,7 @@ export default function Header({ opened, toggle }: HeaderProps) {
   return (
     <Flex align="center" justify="space-between" h="100%" px="xl">
       <Flex gap="md">
-        <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" />
+        {/* <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" /> */}
         <Link
           href={'/chat'}
           style={{ textDecoration: 'none' }}
@@ -36,7 +39,7 @@ export default function Header({ opened, toggle }: HeaderProps) {
         <Nav
           href="/chat"
           label="Advisor"
-          leftSection={<IconDog size="20px" />}
+          leftSection={<IconMessageChatbot size="20px" />}
           active={pathname.includes('chat') || pathname === '/'}
           onClick={handleNavigation}
           w="fit-content"

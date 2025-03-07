@@ -1,7 +1,18 @@
-import { Checkbox, Flex, NumberFormatter, Paper, Text } from '@mantine/core';
+import {
+  ActionIcon,
+  Flex,
+  NumberFormatter,
+  Paper,
+  Text,
+  Tooltip,
+} from '@mantine/core';
 import styles from './TransactionCard.module.css';
 import { TransactionData } from '../../../../_models/TransactionData';
 import { formatDate } from '../../../../_utils/utils';
+import {
+  IconMessageChatbot,
+  IconMessageChatbotFilled,
+} from '@tabler/icons-react';
 
 interface TransactionCardProps {
   tx: TransactionData;
@@ -19,11 +30,26 @@ export default function TransactionCard({
       <Flex justify="space-between">
         <Flex gap="sm" align="center">
           <div onClick={(e) => e.stopPropagation()}>
-            <Checkbox
+            {/* <Checkbox
               checked={selected}
               onChange={() => onSelect(tx.id)}
               color="green"
-            />
+            /> */}
+            <Tooltip label="Ask Finn a question about this account">
+              <ActionIcon
+                size="lg"
+                variant="subtle"
+                radius="xl"
+                color="gray"
+                onClick={(e) => onSelect(tx.id)}
+              >
+                {selected ? (
+                  <IconMessageChatbotFilled />
+                ) : (
+                  <IconMessageChatbot />
+                )}
+              </ActionIcon>
+            </Tooltip>
           </div>
           <Flex direction="column">
             <Text size="lg">{tx.description}</Text>

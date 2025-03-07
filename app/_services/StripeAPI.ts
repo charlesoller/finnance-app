@@ -61,10 +61,16 @@ class StripeAPI extends APIService {
     );
   }
 
-  async getCustomerTransactionData(customerId: string, token: string) {
+  async getCustomerTransactionData(
+    customerId: string,
+    omit: string[],
+    token: string,
+  ) {
     if (!customerId || !token) return;
+    const omitStr = omit.length ? `?omit=${omit.join(',')}` : '';
+    console.log('Making request: ', omitStr);
     return this.get(
-      `/financial-connections/transactions/customer/${customerId}`,
+      `/financial-connections/transactions/customer/${customerId}${omitStr}`,
       token,
     );
   }

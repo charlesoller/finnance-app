@@ -1,6 +1,7 @@
 import { LineChart } from '@mantine/charts';
 import {
   Flex,
+  Loader,
   LoadingOverlay,
   NumberFormatter,
   Paper,
@@ -44,8 +45,16 @@ export default function ValueTrackerChart({
       <LoadingOverlay
         visible={loading}
         zIndex={1000}
-        overlayProps={{ radius: 'sm', blur: 2 }}
-        loaderProps={{ color: 'green' }}
+        overlayProps={{ radius: 'lg', blur: 2 }}
+        loaderProps={{
+          color: 'green',
+          children: (
+            <Flex direction="column" justify="center" align="center" gap="md">
+              <Loader color="green" />
+              <Text>Calculating transaction history...</Text>
+            </Flex>
+          ),
+        }}
       />
       <Flex direction="column" gap="xl">
         <Flex justify="space-between">
