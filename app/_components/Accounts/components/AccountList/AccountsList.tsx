@@ -23,6 +23,7 @@ import {
   getTotal,
   groupAccountsByType,
   GroupedAccounts,
+  ORDERED_ACCT_TYPES,
 } from '../../Accounts.utils';
 import { toTitleCase } from '../../../../_utils/utils';
 import { ACCOUNT_KEY } from '../../../../_utils/_hooks/_mutations/queryKeys';
@@ -103,48 +104,50 @@ export default function AccountsList({ onSelect }: AccountListProps) {
           'other',
         ]}
       >
-        {Object.keys(groupedAccounts)
-          .reverse()
-          .map((group) => (
-            <AccordionItem key={group} value={group}>
-              <AccordionControl>
-                <Flex p="md" justify="space-between">
-                  <Flex align="center" gap="md">
-                    {getIcon(group as keyof GroupedAccounts)}
-                    <Title order={3}>{toTitleCase(group)}</Title>
+        {ORDERED_ACCT_TYPES.map((group) => {
+          if (!!groupedAccounts[group as keyof GroupedAccounts]) {
+            return (
+              <AccordionItem key={group} value={group}>
+                <AccordionControl>
+                  <Flex p="md" justify="space-between">
+                    <Flex align="center" gap="md">
+                      {getIcon(group as keyof GroupedAccounts)}
+                      <Title order={3}>{toTitleCase(group)}</Title>
+                    </Flex>
+                    <Title
+                      order={3}
+                      c={group === 'credit_card' ? 'red' : 'green'}
+                    >
+                      <NumberFormatter
+                        prefix="$"
+                        value={
+                          getTotal(
+                            groupedAccounts[group as keyof GroupedAccounts]!,
+                          ) / 100
+                        }
+                        thousandSeparator
+                        decimalScale={2}
+                        fixedDecimalScale
+                      />
+                    </Title>
                   </Flex>
-                  <Title
-                    order={3}
-                    c={group === 'credit_card' ? 'red' : 'green'}
-                  >
-                    <NumberFormatter
-                      prefix="$"
-                      value={
-                        getTotal(
-                          groupedAccounts[group as keyof GroupedAccounts]!,
-                        ) / 100
-                      }
-                      thousandSeparator
-                      decimalScale={2}
-                      fixedDecimalScale
-                    />
-                  </Title>
-                </Flex>
-              </AccordionControl>
-              <AccordionPanel>
-                {groupedAccounts[group as keyof GroupedAccounts]!.map(
-                  (acct) => (
-                    <AccountCard
-                      key={acct.id}
-                      acct={acct}
-                      selected={isActiveAcctId(acct.id)}
-                      onSelect={onSelect}
-                    />
-                  ),
-                )}
-              </AccordionPanel>
-            </AccordionItem>
-          ))}
+                </AccordionControl>
+                <AccordionPanel>
+                  {groupedAccounts[group as keyof GroupedAccounts]!.map(
+                    (acct) => (
+                      <AccountCard
+                        key={acct.id}
+                        acct={acct}
+                        selected={isActiveAcctId(acct.id)}
+                        onSelect={onSelect}
+                      />
+                    ),
+                  )}
+                </AccordionPanel>
+              </AccordionItem>
+            );
+          }
+        })}
       </Accordion>
     </Flex>
   );

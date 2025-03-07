@@ -10,6 +10,14 @@ export interface GroupedAccounts {
   other?: AccountData[];
 }
 
+export const ORDERED_ACCT_TYPES = [
+  'checking',
+  'savings',
+  'credit_card',
+  'mortgage',
+  'other',
+];
+
 export const groupAccountsByType = (accounts: AccountData[]) => {
   const grouped: GroupedAccounts = {};
 
