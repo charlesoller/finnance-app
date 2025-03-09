@@ -6,10 +6,7 @@ import ValueTrackerChart from '../ValueTrackerChart/ValueTrackerChart';
 import SlideDrawer from '../SlideDrawer/SlideDrawer';
 import Chat from '../Chat/Chat';
 import { useChatContextStore } from '../../_stores/ChatContextStore';
-import {
-  computeTransactionData,
-  formatNetWorthData,
-} from './Accounts.utils';
+import { computeTransactionData, formatNetWorthData } from './Accounts.utils';
 import { useCustomerInfo } from '../../_utils/_hooks/useCustomerInfo';
 import { useUserStore } from '../../_stores/UserStore';
 import { useQuery } from '@tanstack/react-query';
@@ -28,9 +25,11 @@ import {
   TransactionRange,
 } from '../../_models/TransactionData';
 import { AccountData } from '../../_models/AccountData';
+import { useLoadTransactionInBackground } from '../../_utils/_hooks/useLoadTransactionsInBackground';
 
 export default function Accounts() {
   useCustomerInfo();
+  useLoadTransactionInBackground();
 
   const [feedDisplay, setFeedDisplay] = useState<FeedDisplay>('accounts');
   const [opened, { toggle }] = useDisclosure();
