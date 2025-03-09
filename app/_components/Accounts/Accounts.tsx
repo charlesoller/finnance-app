@@ -6,21 +6,28 @@ import ValueTrackerChart from '../ValueTrackerChart/ValueTrackerChart';
 import SlideDrawer from '../SlideDrawer/SlideDrawer';
 import Chat from '../Chat/Chat';
 import { useChatContextStore } from '../../_stores/ChatContextStore';
-import { formatNetWorthData } from './Accounts.utils';
+import {
+  computeTransactionData,
+  formatNetWorthData,
+} from './Accounts.utils';
 import { useCustomerInfo } from '../../_utils/_hooks/useCustomerInfo';
 import { useUserStore } from '../../_stores/UserStore';
 import { useQuery } from '@tanstack/react-query';
 import stripeAPI from '../../_services/StripeAPI';
-import { ACCOUNT_TRANSACTIONS_KEY } from '../../_utils/_hooks/_mutations/queryKeys';
+import {
+  ACCOUNT_KEY,
+  ACCOUNT_TRANSACTIONS_KEY,
+} from '../../_utils/_hooks/_mutations/queryKeys';
 import { FeedDisplay } from './Accounts.types';
 import { useMemo, useState } from 'react';
 import { Flex, SegmentedControl } from '@mantine/core';
 import AllTransactionsList from './components/AllTransactionsList/AllTransactionsList';
 import {
+  TransactionData,
   TransactionDataRequest,
-  TransactionDataResponse,
   TransactionRange,
 } from '../../_models/TransactionData';
+import { AccountData } from '../../_models/AccountData';
 
 export default function Accounts() {
   useCustomerInfo();
@@ -45,19 +52,42 @@ export default function Accounts() {
     () => ({
       customerId,
       range: graphRange,
-      omit: omittedAccounts,
     }),
-    [customerId, graphRange, omittedAccounts],
+    [customerId, graphRange],
   );
 
-  const { error, data, isFetching, isPending, isStale } =
-    useQuery<TransactionDataResponse>({
-      queryKey: [ACCOUNT_TRANSACTIONS_KEY, graphRange],
-      queryFn: () => stripeAPI.getCustomerTransactionData(request, token),
-      refetchOnWindowFocus: false,
-      enabled: !!customerId && !!token,
-      staleTime: Infinity,
-    });
+  const {
+    error: acctError,
+    data: accts,
+    isLoading: acctLoading,
+    isPending: acctPending,
+  } = useQuery<AccountData[]>({
+    queryKey: [ACCOUNT_KEY],
+    queryFn: () => stripeAPI.getAccounts(customerId, token),
+    refetchOnWindowFocus: false,
+    enabled: !!customerId && !!token,
+  });
+
+  const {
+    error: txnError,
+    data: txns,
+    isFetching: txnFetching,
+    isPending: txnPending,
+    isStale: txnStale,
+  } = useQuery<TransactionData[]>({
+    queryKey: [ACCOUNT_TRANSACTIONS_KEY, graphRange],
+    queryFn: () => stripeAPI.getCustomerTransactionData(request, token),
+    refetchOnWindowFocus: false,
+    enabled: !!customerId && !!token,
+    staleTime: Infinity,
+  });
+  console.log('Accts: ', accts);
+  console.log('TXNS: ', txns);
+  const computedTxnData = useMemo(
+    () => computeTransactionData(accts, txns, omittedAccounts),
+    [accts, txns, omittedAccounts],
+  );
+  console.log('COMPUTED: ', computedTxnData);
 
   const handleSelectAccount = (id: string) => {
     if (!opened) {
@@ -91,18 +121,12 @@ export default function Accounts() {
     >
       <>
         <Flex direction="column" gap="md">
-          {(!!data?.running_total?.length || isFetching || isPending) && (
+          {(!!computedTxnData || txnFetching || txnPending) && (
             <ValueTrackerChart
-              data={
-                data?.running_total
-                  ? formatNetWorthData(data?.running_total)
-                  : []
-              }
-              totalValue={
-                data?.running_total ? data?.running_total?.[0]?.total / 100 : 0
-              }
+              data={computedTxnData ? formatNetWorthData(computedTxnData) : []}
+              totalValue={computedTxnData ? computedTxnData[0].total / 100 : 0}
               showAddAccountButton
-              loading={isPending || isStale}
+              loading={txnPending || txnStale}
               onRangeChange={(v) => setGraphRange(v)}
             />
           )}

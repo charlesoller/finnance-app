@@ -118,6 +118,7 @@ export default function AccountDetails() {
             <TransactionList
               onSelect={handleSelect}
               transactions={transactions}
+              account={account}
             />
           </>
         )}

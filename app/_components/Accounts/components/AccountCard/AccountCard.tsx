@@ -1,6 +1,5 @@
 import {
   ActionIcon,
-  Avatar,
   Flex,
   Loader,
   NumberFormatter,
@@ -13,20 +12,19 @@ import styles from './AccountCard.module.css';
 import Link from 'next/link';
 import { useChatContextStore } from '../../../../_stores/ChatContextStore';
 import { timeAgo } from '../../Accounts.utils';
-import { MouseEvent } from 'react';
 import {
   IconEye,
   IconEyeClosed,
   IconMessageChatbot,
   IconMessageChatbotFilled,
 } from '@tabler/icons-react';
+import BankLogo from '../../../BankLogo/BankLogo';
 
 interface AccountCardProps {
   acct: AccountData;
   selected: boolean;
   omitted: boolean;
   onSelect: (id: string) => void;
-  onOmit: (e: MouseEvent<HTMLButtonElement, MouseEvent>, id: string) => void;
 }
 
 export default function AccountCard({
@@ -34,9 +32,14 @@ export default function AccountCard({
   selected,
   onSelect,
   omitted,
-  onOmit,
 }: AccountCardProps) {
-  const { clearContext } = useChatContextStore();
+  const { clearContext, handleOmitAcct } = useChatContextStore();
+
+  const handleOmit = (e: any) => {
+    e.preventDefault();
+    e.stopPropagation();
+    handleOmitAcct(acct.id);
+  };
 
   const getBalance = () => {
     const { status, balance } = acct;
@@ -102,14 +105,14 @@ export default function AccountCard({
                     variant="subtle"
                     radius="xl"
                     color="gray"
-                    onClick={(e: any) => onOmit(e, acct.id)}
+                    onClick={handleOmit}
                   >
                     {omitted ? <IconEyeClosed /> : <IconEye />}
                   </ActionIcon>
                 </Tooltip>
               </Flex>
             </div>
-            <Avatar size={'lg'} color="initials" name={acct.institution_name} />
+            <BankLogo name={acct.institution_name} />
             <Flex direction="column">
               <Text size="lg">
                 {acct.display_name} (...{acct.last4})

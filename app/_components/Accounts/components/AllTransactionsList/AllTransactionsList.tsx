@@ -1,19 +1,13 @@
-import {
-  Divider,
-  Flex,
-  Loader,
-  SegmentedControl,
-} from '@mantine/core';
+import { Divider, Flex, Loader, SegmentedControl } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import { ACCOUNT_TRANSACTIONS_KEY } from '../../../../_utils/_hooks/_mutations/queryKeys';
 import stripeAPI from '../../../../_services/StripeAPI';
 import { useUserStore } from '../../../../_stores/UserStore';
-import { useChatContextStore } from '../../../../_stores/ChatContextStore';
 import TransactionList from '../../../AccountDetails/components/TransactionList';
 import {
+  TransactionData,
   TransactionDataRequest,
-  TransactionDataResponse,
   TransactionRange,
 } from '../../../../_models/TransactionData';
 
@@ -24,25 +18,27 @@ export default function AllTransactionsList({
   onSelect,
 }: AllTransactionsListProps) {
   const { token, customerId } = useUserStore();
-  const { omittedAccounts } = useChatContextStore();
   const [range, setRange] = useState<TransactionRange>('week');
 
   const request: TransactionDataRequest = useMemo(
     () => ({
       customerId,
       range,
-      omit: omittedAccounts,
     }),
-    [customerId, range, omittedAccounts],
+    [customerId, range],
   );
 
-  const { error, data, isLoading, isPending } =
-    useQuery<TransactionDataResponse>({
-      queryKey: [ACCOUNT_TRANSACTIONS_KEY, range],
-      queryFn: () => stripeAPI.getCustomerTransactionData(request, token),
-      refetchOnWindowFocus: false,
-      enabled: !!customerId && !!token,
-    });
+  const {
+    error,
+    data: transactions,
+    isLoading,
+    isPending,
+  } = useQuery<TransactionData[]>({
+    queryKey: [ACCOUNT_TRANSACTIONS_KEY, range],
+    queryFn: () => stripeAPI.getCustomerTransactionData(request, token),
+    refetchOnWindowFocus: false,
+    enabled: !!customerId && !!token,
+  });
 
   return (
     <Flex direction="column">
@@ -78,11 +74,8 @@ export default function AllTransactionsList({
         />
       </Flex>
       {isLoading && <Loader color="green" m="auto" />}
-      {!!data?.transactions && (
-        <TransactionList
-          transactions={data?.transactions}
-          onSelect={onSelect}
-        />
+      {!!transactions && (
+        <TransactionList transactions={transactions} onSelect={onSelect} />
       )}
     </Flex>
   );

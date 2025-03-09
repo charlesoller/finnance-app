@@ -68,3 +68,20 @@ export const borderColor = (colorScheme: string, theme: MantineTheme) => {
     return theme.colors.dark[4];
   }
 };
+
+export type SupportedBanks =
+  | 'StripeBank'
+  | 'Chase'
+  | 'American Express'
+  | 'Wealthfront';
+
+export const getBankLogoSrc = (bankName: SupportedBanks | string) => {
+  if (bankName.toLowerCase() === 'stripebank') return '/logos/stripe.webp';
+  if (bankName.toLowerCase() === 'american express') return '/logos/amex.webp';
+  if (bankName.toLowerCase() === 'chase') return '/logos/chase.webp';
+  if (bankName.toLowerCase() === 'wealthfront')
+    return '/logos/wealthfront.webp';
+  if (bankName.toWellFormed() === 'bank of america')
+    return '/logos/bankofamerica.webp';
+  else return null;
+};

@@ -7,15 +7,18 @@ import {
   GroupedTransactions,
   groupTransactionsByDate,
 } from '../AccountDetails.utils';
+import { AccountData } from '../../../_models/AccountData';
 
 interface TransactionListProps {
   onSelect: (id: string) => void;
   transactions: TransactionData[];
+  account?: AccountData;
 }
 
 export default function TransactionList({
   onSelect,
   transactions,
+  account,
 }: TransactionListProps) {
   const { isActiveTxnId } = useChatContextStore();
 
@@ -36,6 +39,7 @@ export default function TransactionList({
                 tx={tx}
                 selected={isActiveTxnId(tx.id)}
                 onSelect={onSelect}
+                acct={account}
               />
             ))}
           </Flex>

@@ -1,6 +1,5 @@
 'use client';
 
-
 import {
   Accordion,
   AccordionControl,
@@ -17,7 +16,7 @@ import { AccountData } from '../../../../_models/AccountData';
 import stripeAPI from '../../../../_services/StripeAPI';
 import { useQuery } from '@tanstack/react-query';
 import { useUserStore } from '../../../../_stores/UserStore';
-import { MouseEvent, useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import {
   getTotal,
   groupAccountsByType,
@@ -25,10 +24,7 @@ import {
   ORDERED_ACCT_TYPES,
 } from '../../Accounts.utils';
 import { toTitleCase } from '../../../../_utils/utils';
-import {
-  ACCOUNT_KEY,
-  ACCOUNT_TRANSACTIONS_KEY,
-} from '../../../../_utils/_hooks/_mutations/queryKeys';
+import { ACCOUNT_KEY } from '../../../../_utils/_hooks/_mutations/queryKeys';
 import { usePollAccountBalances } from '../../../../_utils/_hooks/usePollAccountBalances';
 import { useChatContextStore } from '../../../../_stores/ChatContextStore';
 
@@ -40,16 +36,13 @@ import {
   IconMoneybag,
 } from '@tabler/icons-react';
 import AddAccountButton from '../../../AddAccountButton/AddAccountButton';
-import queryClient from '../../../../_services/_clients/QueryClient';
-import { useDebouncedCallback } from '@mantine/hooks';
 
 interface AccountListProps {
   onSelect: (id: string) => void;
 }
 
 export default function AccountsList({ onSelect }: AccountListProps) {
-  const { isActiveAcctId, isOmittedAcct, handleOmitAcct } =
-    useChatContextStore();
+  const { isActiveAcctId, isOmittedAcct } = useChatContextStore();
   const { token, customerId } = useUserStore();
 
   const {
@@ -84,22 +77,6 @@ export default function AccountsList({ onSelect }: AccountListProps) {
       return <IconCoins />;
     }
   };
-
-  const debouncedInvalidateQueries = useDebouncedCallback(() => {
-    queryClient.invalidateQueries({ queryKey: [ACCOUNT_TRANSACTIONS_KEY] });
-  }, 800);
-
-  const handleOmit = useCallback(
-    (e: MouseEvent<HTMLButtonElement, MouseEvent>, id: string) => {
-      e.stopPropagation();
-      e.preventDefault();
-
-      handleOmitAcct(id);
-
-      debouncedInvalidateQueries();
-    },
-    [handleOmitAcct, debouncedInvalidateQueries],
-  );
 
   return (
     <Flex direction="column">
@@ -162,7 +139,6 @@ export default function AccountsList({ onSelect }: AccountListProps) {
                         selected={isActiveAcctId(acct.id)}
                         onSelect={onSelect}
                         omitted={isOmittedAcct(acct.id)}
-                        onOmit={handleOmit}
                       />
                     ),
                   )}

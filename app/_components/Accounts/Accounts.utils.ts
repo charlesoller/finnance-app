@@ -1,6 +1,9 @@
 import { AccountData } from '../../_models/AccountData';
 import { LineChartDataPoint } from '../../_models/ChartData';
-import { RunningTotalData } from '../../_models/TransactionData';
+import {
+  RunningTotalData,
+  TransactionData,
+} from '../../_models/TransactionData';
 
 export interface GroupedAccounts {
   checking?: AccountData[];
@@ -37,23 +40,56 @@ export const groupAccountsByType = (accounts: AccountData[]) => {
   return grouped;
 };
 
-export const getCurrentNet = (accounts: GroupedAccounts) => {
-  let total: number = 0;
-
-  // Cash
-  accounts.checking?.forEach(
-    (acct) => (total += acct.balance?.current?.usd || 0),
-  );
-  accounts.savings?.forEach(
-    (acct) => (total += acct.balance?.current?.usd || 0),
-  );
-
-  // Debt
-  accounts.credit_card?.forEach(
-    (acct) => (total -= acct.balance?.current?.usd || 0),
-  );
-
+export const getCurrentTotal = (accounts: AccountData[]) => {
+  let total = 0;
+  for (const account of accounts) {
+    const balance = account?.balance?.current?.usd;
+    if (account.category === 'credit') {
+      total -= Math.abs(balance);
+    } else {
+      total += balance;
+    }
+  }
   return total;
+};
+
+export const computeTransactionData = (
+  accounts?: AccountData[],
+  transactions?: TransactionData[],
+  omit?: string[],
+) => {
+  if (!accounts || !transactions) return;
+  const filteredAccounts = accounts.filter((acct) => !omit?.includes(acct.id));
+  const filteredTransactions = transactions.filter(
+    (txn) => !omit?.includes(txn.account),
+  );
+
+  const currTotal = getCurrentTotal(filteredAccounts);
+
+  const today = new Date().toISOString().split('T')[0];
+  const transactionsByDay: Record<string, number> = { [today]: currTotal };
+
+  let runningTotal = currTotal;
+
+  for (const transaction of filteredTransactions) {
+    const timestamp = transaction.transacted_at || 0;
+    const date = new Date(timestamp * 1000).toISOString().split('T')[0];
+
+    const amount = transaction.amount || 0;
+    runningTotal -= amount;
+
+    transactionsByDay[date] = runningTotal;
+  }
+
+  // Convert to list of dicts format
+  const dailyTotals: RunningTotalData[] = Object.entries(transactionsByDay).map(
+    ([date, total]) => ({
+      date,
+      total,
+    }),
+  );
+
+  return dailyTotals;
 };
 
 export const formatNetWorthData = (
