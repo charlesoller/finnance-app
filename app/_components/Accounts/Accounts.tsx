@@ -58,7 +58,7 @@ export default function Accounts() {
   const {
     error: acctError,
     data: accts,
-    isLoading: acctLoading,
+    isFetching: acctFetching,
     isPending: acctPending,
   } = useQuery<AccountData[]>({
     queryKey: [ACCOUNT_KEY],
@@ -120,7 +120,11 @@ export default function Accounts() {
     >
       <>
         <Flex direction="column" gap="md">
-          {(!!computedTxnData || txnFetching || txnPending) && (
+          {(!!computedTxnData ||
+            txnFetching ||
+            txnPending ||
+            acctFetching ||
+            acctPending) && (
             <ValueTrackerChart
               data={computedTxnData ? formatNetWorthData(computedTxnData) : []}
               totalValue={computedTxnData ? computedTxnData[0].total / 100 : 0}

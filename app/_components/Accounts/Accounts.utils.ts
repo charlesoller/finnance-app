@@ -44,6 +44,8 @@ export const getCurrentTotal = (accounts: AccountData[]) => {
   let total = 0;
   for (const account of accounts) {
     const balance = account?.balance?.current?.usd;
+    if (!balance) continue;
+
     if (account.category === 'credit') {
       total -= Math.abs(balance);
     } else {
