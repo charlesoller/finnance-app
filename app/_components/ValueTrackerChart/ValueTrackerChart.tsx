@@ -12,8 +12,7 @@ import {
 import { LineChartDataPoint } from '../../_models/ChartData';
 import { formatCurrency } from '../../_utils/utils';
 import { useMemo, useState } from 'react';
-import { ValueTrackerDateRange } from './ValueTracker.types';
-import { sortByDate } from './ValueTracker.utils';
+import { getRandomLoadingQuote, sortByDate } from './ValueTracker.utils';
 import AddAccountButton from '../AddAccountButton/AddAccountButton';
 import { TransactionRange } from '../../_models/TransactionData';
 import { getDomain } from '../Chart/Chart.utils';
@@ -22,7 +21,7 @@ interface ValueTrackerChartProps {
   data: LineChartDataPoint[];
   totalValue: number;
   onRangeChange?: (range: TransactionRange) => void;
-  defaultRange?: ValueTrackerDateRange;
+  defaultRange?: TransactionRange;
   showAddAccountButton?: boolean;
   totalValueLabel?: string;
   loading?: boolean;
@@ -48,6 +47,8 @@ export default function ValueTrackerChart({
     setRange(val);
   };
 
+  const loadingQuote = useMemo(() => getRandomLoadingQuote(), []);
+
   return (
     <Paper shadow="sm" withBorder p="lg" radius="lg" pos="relative">
       <LoadingOverlay
@@ -59,7 +60,7 @@ export default function ValueTrackerChart({
           children: (
             <Flex direction="column" justify="center" align="center" gap="md">
               <Loader color="green" />
-              <Text>Calculating transaction history...</Text>
+              <Text>{loadingQuote}</Text>
             </Flex>
           ),
         }}
@@ -101,10 +102,10 @@ export default function ValueTrackerChart({
           data={[
             { label: 'Week', value: 'week' },
             { label: 'Month', value: 'month' },
-            { label: 'Year', value: 'year' },
-            { label: 'All', value: 'all' },
+            { label: '3 Month', value: 'threeMonth' },
+            { label: '6 Month', value: 'sixMonth' },
           ]}
-          onChange={(v) => handleRangeChange(v as ValueTrackerDateRange)}
+          onChange={(v) => handleRangeChange(v as TransactionRange)}
         />
       </Flex>
     </Paper>

@@ -123,3 +123,26 @@ export const timeAgo = (timestamp: number): string => {
 
   return `${hoursAgo} hour${hoursAgo === 1 ? '' : 's'} ago`;
 };
+
+export const getRecurringCharges = (txns: TransactionData[]) => {
+  const recurringMap: Record<string, TransactionData[]> = {};
+
+  txns.forEach((txn) => {
+    const key = `${txn.description}_${txn.account}`;
+    if (recurringMap[key]) {
+      recurringMap[key] = [...recurringMap[key], txn];
+    } else {
+      recurringMap[key] = [txn];
+    }
+  });
+
+  const filteredRecurringMap: Record<string, TransactionData[]> = {};
+
+  Object.keys(recurringMap).forEach((key) => {
+    if (recurringMap[key].length >= 2) {
+      filteredRecurringMap[key] = recurringMap[key];
+    }
+  });
+
+  return filteredRecurringMap;
+};

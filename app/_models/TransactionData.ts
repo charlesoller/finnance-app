@@ -8,7 +8,7 @@ export interface TransactionData {
   transacted_at: number;
   institution_name: string;
 }
-export type TransactionRange = 'week' | 'month' | 'year' | 'all';
+export type TransactionRange = 'week' | 'month' | 'threeMonth' | 'sixMonth';
 export interface TransactionDataRequest {
   customerId: string;
   range: TransactionRange;

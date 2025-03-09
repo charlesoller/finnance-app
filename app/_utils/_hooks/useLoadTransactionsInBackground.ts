@@ -20,9 +20,14 @@ export const useLoadTransactionInBackground = () => {
     range: 'month' as TransactionRange,
   };
 
-  const yearQuery = {
+  const threeMonthQuery = {
     customerId,
-    range: 'year' as TransactionRange,
+    range: 'threeMonth' as TransactionRange,
+  };
+
+  const sixMonthQuery = {
+    customerId,
+    range: 'sixMonth' as TransactionRange,
   };
 
   const weekRes = useQuery<TransactionData[]>({
@@ -37,15 +42,23 @@ export const useLoadTransactionInBackground = () => {
     queryKey: [ACCOUNT_TRANSACTIONS_KEY, 'month'],
     queryFn: () => stripeAPI.getCustomerTransactionData(monthQuery, token),
     refetchOnWindowFocus: false,
-    enabled: !!customerId && !!token && !!weekRes,
+    enabled: !!customerId && !!token && !!weekRes?.data,
+    staleTime: Infinity,
+  });
+
+  const threeMonthRes = useQuery<TransactionData[]>({
+    queryKey: [ACCOUNT_TRANSACTIONS_KEY, 'threeMonth'],
+    queryFn: () => stripeAPI.getCustomerTransactionData(threeMonthQuery, token),
+    refetchOnWindowFocus: false,
+    enabled: !!customerId && !!token && !!monthRes?.data,
     staleTime: Infinity,
   });
 
   useQuery<TransactionData[]>({
-    queryKey: [ACCOUNT_TRANSACTIONS_KEY, 'year'],
-    queryFn: () => stripeAPI.getCustomerTransactionData(yearQuery, token),
+    queryKey: [ACCOUNT_TRANSACTIONS_KEY, 'sixMonth'],
+    queryFn: () => stripeAPI.getCustomerTransactionData(sixMonthQuery, token),
     refetchOnWindowFocus: false,
-    enabled: !!customerId && !!token && !!monthRes,
+    enabled: !!customerId && !!token && !!threeMonthRes?.data,
     staleTime: Infinity,
   });
 };

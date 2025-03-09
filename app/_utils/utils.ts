@@ -77,7 +77,6 @@ export type SupportedBanks =
   | 'Bank of America';
 
 export const getBankLogoSrc = (bankName: SupportedBanks | string) => {
-  console.log('BankName: ', bankName);
   if (bankName.toLowerCase() === 'stripebank') return '/logos/stripe.webp';
   if (bankName.toLowerCase() === 'american express') return '/logos/amex.webp';
   if (bankName.toLowerCase() === 'chase') return '/logos/chase.webp';

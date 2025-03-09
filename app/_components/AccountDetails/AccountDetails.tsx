@@ -112,7 +112,7 @@ export default function AccountDetails() {
         {!!transactions?.length && !!account && (
           <>
             <AccountSummary
-              balance={account.balance.current.usd / 100}
+              balance={account.balance?.current?.usd / 100}
               transactions={transactions}
             />
             <TransactionList
