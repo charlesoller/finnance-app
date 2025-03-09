@@ -44,7 +44,7 @@ export default function AccountCard({
   const getBalance = () => {
     const { status, balance } = acct;
 
-    if (status === 'inactive') {
+    if (status === 'inactive' && !balance) {
       return <Text c="red">Inactive</Text>;
     }
 

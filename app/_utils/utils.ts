@@ -73,15 +73,17 @@ export type SupportedBanks =
   | 'StripeBank'
   | 'Chase'
   | 'American Express'
-  | 'Wealthfront';
+  | 'Wealthfront'
+  | 'Bank of America';
 
 export const getBankLogoSrc = (bankName: SupportedBanks | string) => {
+  console.log('BankName: ', bankName);
   if (bankName.toLowerCase() === 'stripebank') return '/logos/stripe.webp';
   if (bankName.toLowerCase() === 'american express') return '/logos/amex.webp';
   if (bankName.toLowerCase() === 'chase') return '/logos/chase.webp';
   if (bankName.toLowerCase() === 'wealthfront')
     return '/logos/wealthfront.webp';
-  if (bankName.toWellFormed() === 'bank of america')
+  if (bankName.toLowerCase() === 'bank of america')
     return '/logos/bankofamerica.webp';
   else return null;
 };
