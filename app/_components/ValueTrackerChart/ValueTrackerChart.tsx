@@ -16,6 +16,7 @@ import { ValueTrackerDateRange } from './ValueTracker.types';
 import { sortByDate } from './ValueTracker.utils';
 import AddAccountButton from '../AddAccountButton/AddAccountButton';
 import { TransactionRange } from '../../_models/TransactionData';
+import { getDomain } from '../Chart/Chart.utils';
 
 interface ValueTrackerChartProps {
   data: LineChartDataPoint[];
@@ -88,9 +89,9 @@ export default function ValueTrackerChart({
           series={[{ name: 'amount', color: 'green.6', label: 'Amount' }]}
           curveType="linear"
           valueFormatter={(val) => formatCurrency(val)}
-          // yAxisProps={{
-          //   domain: getDomain(selectedData as LineChartDataPoint[]),
-          // }}
+          yAxisProps={{
+            domain: getDomain(selectedData as LineChartDataPoint[]),
+          }}
           xAxisProps={{
             tickCount: 15,
           }}
