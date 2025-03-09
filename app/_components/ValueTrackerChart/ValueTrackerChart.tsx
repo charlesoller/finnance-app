@@ -10,7 +10,6 @@ import {
   Title,
 } from '@mantine/core';
 import { LineChartDataPoint } from '../../_models/ChartData';
-import { getDomain } from '../Chart/Chart.utils';
 import { formatCurrency } from '../../_utils/utils';
 import { useMemo, useState } from 'react';
 import { ValueTrackerDateRange } from './ValueTracker.types';
@@ -89,9 +88,9 @@ export default function ValueTrackerChart({
           series={[{ name: 'amount', color: 'green.6', label: 'Amount' }]}
           curveType="linear"
           valueFormatter={(val) => formatCurrency(val)}
-          yAxisProps={{
-            domain: getDomain(selectedData as LineChartDataPoint[]),
-          }}
+          // yAxisProps={{
+          //   domain: getDomain(selectedData as LineChartDataPoint[]),
+          // }}
           xAxisProps={{
             tickCount: 15,
           }}
