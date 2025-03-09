@@ -1,7 +1,7 @@
 import { Tabs } from '@mantine/core';
 import NameForm from './components/NameForm';
 import AccountSection from './components/AccountSection';
-import ProfilePictureSection from './components/ProfilePictureSection';
+// import ProfilePictureSection from './components/ProfilePictureSection';
 import { TABS } from './UserSettings.consts';
 import { toTitleCase } from '../../_utils/utils';
 
@@ -18,9 +18,9 @@ export default function UserSettings() {
       <Tabs.Panel value="nameSettings">
         <NameForm />
       </Tabs.Panel>
-      <Tabs.Panel value="profilePicture">
+      {/* <Tabs.Panel value="profilePicture">
         <ProfilePictureSection />
-      </Tabs.Panel>
+      </Tabs.Panel> */}
       <Tabs.Panel value="accountActions">
         <AccountSection />
       </Tabs.Panel>

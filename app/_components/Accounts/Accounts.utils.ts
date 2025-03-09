@@ -1,6 +1,6 @@
 import { AccountData } from '../../_models/AccountData';
 import { LineChartDataPoint } from '../../_models/ChartData';
-import { NetWorthData } from './Accounts.mock';
+import { RunningTotalData } from '../../_models/TransactionData';
 
 export interface GroupedAccounts {
   checking?: AccountData[];
@@ -57,7 +57,7 @@ export const getCurrentNet = (accounts: GroupedAccounts) => {
 };
 
 export const formatNetWorthData = (
-  data: NetWorthData[],
+  data: RunningTotalData[],
 ): LineChartDataPoint[] => {
   return data?.map(({ total, date }) => ({
     date: String(new Date(date)),

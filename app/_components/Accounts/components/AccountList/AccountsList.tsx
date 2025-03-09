@@ -1,6 +1,5 @@
 'use client';
 
-import styles from './AccountsList.module.css';
 
 import {
   Accordion,
@@ -64,7 +63,7 @@ export default function AccountsList({ onSelect }: AccountListProps) {
     refetchOnWindowFocus: false,
     enabled: !!customerId && !!token,
   });
-  console.log('ACCOUNTS: ', accounts);
+
   usePollAccountBalances(accounts);
 
   const groupedAccounts = useMemo(() => {
@@ -103,7 +102,7 @@ export default function AccountsList({ onSelect }: AccountListProps) {
   );
 
   return (
-    <Flex direction="column" className={styles.list} mt="sm">
+    <Flex direction="column">
       {(isLoading || isPending) && <Loader color="green" m="auto" />}
       {!!error && <Text>{error.message}</Text>}
       {!isLoading && !isPending && !error && !accounts?.length && (
@@ -131,7 +130,7 @@ export default function AccountsList({ onSelect }: AccountListProps) {
             return (
               <AccordionItem key={group} value={group}>
                 <AccordionControl>
-                  <Flex p="md" justify="space-between">
+                  <Flex p="xs" justify="space-between">
                     <Flex align="center" gap="md">
                       {getIcon(group as keyof GroupedAccounts)}
                       <Title order={3}>{toTitleCase(group)}</Title>

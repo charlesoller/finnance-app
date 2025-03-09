@@ -55,7 +55,6 @@ export default function AccountDetails() {
     refetchOnWindowFocus: false,
     enabled: !!accountId && !!token && account?.status !== 'inactive',
   });
-  console.log('TRANSACTIONS: ', transactions);
 
   const handleSelect = (id: string) => {
     if (!opened) {
@@ -116,7 +115,10 @@ export default function AccountDetails() {
               balance={account.balance.current.usd / 100}
               transactions={transactions}
             />
-            <TransactionList onSelect={handleSelect} />
+            <TransactionList
+              onSelect={handleSelect}
+              transactions={transactions}
+            />
           </>
         )}
         {!transactionsLoading &&

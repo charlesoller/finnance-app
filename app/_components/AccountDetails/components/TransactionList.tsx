@@ -1,7 +1,3 @@
-import { useQuery } from '@tanstack/react-query';
-import stripeAPI from '../../../_services/StripeAPI';
-import { useUserStore } from '../../../_stores/UserStore';
-import { useParams } from 'next/navigation';
 import { Divider, Flex } from '@mantine/core';
 import TransactionCard from './TransactionCard/TransactionCard';
 import { TransactionData } from '../../../_models/TransactionData';
@@ -14,24 +10,15 @@ import {
 
 interface TransactionListProps {
   onSelect: (id: string) => void;
+  transactions: TransactionData[];
 }
 
-export default function TransactionList({ onSelect }: TransactionListProps) {
-  const { token } = useUserStore();
+export default function TransactionList({
+  onSelect,
+  transactions,
+}: TransactionListProps) {
   const { isActiveTxnId } = useChatContextStore();
-  const { accountId } = useParams();
-  const {
-    error,
-    data: transactions,
-    isLoading,
-    isPending,
-  } = useQuery<TransactionData[]>({
-    queryKey: ['transactionData', accountId],
-    queryFn: () => stripeAPI.getTransactions(accountId as string, token),
-    refetchOnWindowFocus: false,
-    enabled: !!accountId && !!token,
-  });
-  console.log('TX: ', transactions);
+
   const groupedTransactions = useMemo((): GroupedTransactions => {
     if (!transactions?.length) return {};
     return groupTransactionsByDate(transactions);

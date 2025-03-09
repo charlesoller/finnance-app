@@ -1,8 +1,7 @@
-import styles from './LightDarkToggle.module.css';
-import { ActionIcon } from '@mantine/core';
+import { ActionIcon, Tooltip } from '@mantine/core';
 import { useLocalStorage } from '@mantine/hooks';
 import { AppColorScheme } from '../../_utils/types';
-import { MoonIcon, SunIcon } from '@radix-ui/react-icons';
+import { IconMoon, IconSun } from '@tabler/icons-react';
 
 export default function LightDarkToggle() {
   const [colorScheme, setColorScheme] = useLocalStorage<AppColorScheme>({
@@ -16,18 +15,19 @@ export default function LightDarkToggle() {
   };
 
   return (
-    <ActionIcon
-      variant="outline"
-      color={colorScheme === 'dark' ? 'yellow' : 'blue'}
-      onClick={toggleColorScheme}
-      title="Toggle color scheme"
-      size="lg"
+    <Tooltip
+      label={colorScheme === 'dark' ? 'Toggle light mode' : 'Toggle dark mode'}
     >
-      {colorScheme === 'dark' ? (
-        <SunIcon className={styles.sun} />
-      ) : (
-        <MoonIcon className={styles.moon} />
-      )}
-    </ActionIcon>
+      <ActionIcon
+        variant="subtle"
+        color={colorScheme === 'dark' ? 'yellow' : 'blue'}
+        onClick={toggleColorScheme}
+        title="Toggle color scheme"
+        size="lg"
+        radius="xl"
+      >
+        {colorScheme === 'dark' ? <IconSun /> : <IconMoon />}
+      </ActionIcon>
+    </Tooltip>
   );
 }

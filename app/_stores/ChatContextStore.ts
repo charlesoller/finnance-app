@@ -114,7 +114,6 @@ export const useChatContextStore = create<ChatContextStore>(
       set({
         selectedAccountIds: [],
         selectedTransactionIds: [],
-        omittedAccounts: [],
       });
     },
   }),

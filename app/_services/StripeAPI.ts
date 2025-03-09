@@ -1,3 +1,4 @@
+import { TransactionDataRequest } from '../_models/TransactionData';
 import { getStripe } from './_clients/StripeClient';
 import APIService from './APIService';
 
@@ -61,17 +62,33 @@ class StripeAPI extends APIService {
     );
   }
 
+  // async getCustomerTransactionData(
+  //   customerId: string,
+  //   omit: string[],
+  //   token: string,
+  // ) {
+  //   if (!customerId || !token) return;
+  //   const omitStr = omit.length ? `?omit=${omit.join(',')}` : '';
+  //   console.log('Making request: ', omitStr);
+  //   return this.get(
+  //     `/financial-connections/transactions/customer/${customerId}${omitStr}`,
+  //     token,
+  //   );
+  // }
+
   async getCustomerTransactionData(
-    customerId: string,
-    omit: string[],
+    body: TransactionDataRequest,
     token: string,
   ) {
-    if (!customerId || !token) return;
-    const omitStr = omit.length ? `?omit=${omit.join(',')}` : '';
-    console.log('Making request: ', omitStr);
-    return this.get(
-      `/financial-connections/transactions/customer/${customerId}${omitStr}`,
+    const snakeCaseReq = {
+      ...body,
+      customer_id: body.customerId,
+    };
+
+    return this.post(
+      '/financial-connections/transactions/data',
       token,
+      snakeCaseReq,
     );
   }
 }

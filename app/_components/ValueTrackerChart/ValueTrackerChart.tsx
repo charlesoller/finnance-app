@@ -16,10 +16,12 @@ import { useMemo, useState } from 'react';
 import { ValueTrackerDateRange } from './ValueTracker.types';
 import { sortByDate } from './ValueTracker.utils';
 import AddAccountButton from '../AddAccountButton/AddAccountButton';
+import { TransactionRange } from '../../_models/TransactionData';
 
 interface ValueTrackerChartProps {
   data: LineChartDataPoint[];
   totalValue: number;
+  onRangeChange?: (range: TransactionRange) => void;
   defaultRange?: ValueTrackerDateRange;
   showAddAccountButton?: boolean;
   totalValueLabel?: string;
@@ -29,16 +31,22 @@ interface ValueTrackerChartProps {
 export default function ValueTrackerChart({
   data,
   totalValue,
+  onRangeChange,
   defaultRange = 'week',
   showAddAccountButton = false,
   totalValueLabel = 'Net Worth',
   loading = false,
 }: ValueTrackerChartProps) {
-  const [range, setRange] = useState<ValueTrackerDateRange>(defaultRange);
+  const [range, setRange] = useState<TransactionRange>(defaultRange);
 
   const selectedData = useMemo(() => {
     return sortByDate(data, range);
   }, [data, range]);
+
+  const handleRangeChange = (val: TransactionRange) => {
+    onRangeChange?.(val);
+    setRange(val);
+  };
 
   return (
     <Paper shadow="sm" withBorder p="lg" radius="lg" pos="relative">
@@ -96,7 +104,7 @@ export default function ValueTrackerChart({
             { label: 'Year', value: 'year' },
             { label: 'All', value: 'all' },
           ]}
-          onChange={(v) => setRange(v as ValueTrackerDateRange)}
+          onChange={(v) => handleRangeChange(v as ValueTrackerDateRange)}
         />
       </Flex>
     </Paper>
