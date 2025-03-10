@@ -4,6 +4,10 @@ import {
   RunningTotalData,
   TransactionData,
 } from '../../_models/TransactionData';
+import {
+  GroupedRecurringTransactions,
+  ValidRecurrencePattern,
+} from '../RecurringTransactions/RecurringTransactions.types';
 
 export interface GroupedAccounts {
   cash?: AccountData[];
@@ -133,8 +137,10 @@ export const timeAgo = (timestamp: number): string => {
   return `${hoursAgo} hour${hoursAgo === 1 ? '' : 's'} ago`;
 };
 
-const hasRecurringPattern = (transactions: TransactionData[]): boolean => {
-  if (transactions.length < 2) return false;
+const hasRecurringPattern = (
+  transactions: TransactionData[],
+): ValidRecurrencePattern | null => {
+  if (transactions.length < 2) return null;
 
   // Constants for time intervals in seconds
   const DAY_IN_SECONDS = 24 * 60 * 60;
@@ -154,17 +160,22 @@ const hasRecurringPattern = (transactions: TransactionData[]): boolean => {
       transactions[i].transacted_at - transactions[i - 1].transacted_at;
     intervals.push(interval);
   }
-
-  // Check if all intervals correspond to one of the accepted recurring periods (with padding)
-  return intervals.every(
-    (interval) =>
-      // Weekly pattern (with 1 day padding)
-      Math.abs(interval - WEEK_IN_SECONDS) <= WEEK_PADDING ||
-      // Monthly pattern (with 3 day padding)
-      Math.abs(interval - MONTH_IN_SECONDS) <= MONTH_PADDING ||
-      // Yearly pattern (with 1 week padding)
-      Math.abs(interval - YEAR_IN_SECONDS) <= YEAR_PADDING,
+  const isWeekly = intervals.every(
+    (interval) => Math.abs(interval - WEEK_IN_SECONDS) <= WEEK_PADDING,
   );
+  if (isWeekly) return 'weekly';
+
+  const isMonthly = intervals.every(
+    (interval) => Math.abs(interval - MONTH_IN_SECONDS) <= MONTH_PADDING,
+  );
+  if (isMonthly) return 'monthly';
+
+  const isYearly = intervals.every(
+    (interval) => Math.abs(interval - YEAR_IN_SECONDS) <= YEAR_PADDING,
+  );
+  if (isYearly) return 'yearly';
+
+  return null;
 };
 
 export const getRecurringCharges = (txns: TransactionData[]) => {
@@ -181,7 +192,7 @@ export const getRecurringCharges = (txns: TransactionData[]) => {
     }
   });
 
-  const filteredRecurringMap: Record<string, TransactionData[]> = {};
+  const filteredRecurringMap: GroupedRecurringTransactions = {};
 
   Object.keys(recurringMap).forEach((key) => {
     if (recurringMap[key].length >= 2) {
@@ -189,9 +200,12 @@ export const getRecurringCharges = (txns: TransactionData[]) => {
         (a, b) => a.transacted_at - b.transacted_at,
       );
 
-      // Check if these transactions follow a recurring pattern
-      if (hasRecurringPattern(transactions)) {
-        filteredRecurringMap[key] = transactions;
+      const pattern = hasRecurringPattern(transactions);
+      if (!!pattern) {
+        filteredRecurringMap[key] = {
+          pattern,
+          transactions,
+        };
       }
     }
   });

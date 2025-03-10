@@ -19,6 +19,7 @@ import {
   TransactionRange,
 } from '../../../../_models/TransactionData';
 import { getRecurringCharges } from '../../Accounts.utils';
+import RecurringTransactions from '../../../RecurringTransactions/RecurringTransactions';
 
 interface AllTransactionsListProps {
   onSelect: (id: string) => void;
@@ -159,11 +160,14 @@ export default function AllTransactionsList({
         </Tooltip>
       </Flex>
       {isLoading && <Loader color="green" m="auto" />}
-      {!!transactions && (
+      {!!transactions && !viewRecurring && (
         <TransactionList
           transactions={paginatedTxns[page - 1]}
           onSelect={onSelect}
         />
+      )}
+      {!!transactions && viewRecurring && (
+        <RecurringTransactions onSelect={onSelect} />
       )}
     </Flex>
   );
