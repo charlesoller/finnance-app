@@ -1,3 +1,5 @@
+'use client';
+
 import { LineChart } from '@mantine/charts';
 import {
   Flex,
@@ -12,10 +14,11 @@ import {
 import { LineChartDataPoint } from '../../_models/ChartData';
 import { formatCurrency } from '../../_utils/utils';
 import { useMemo, useState } from 'react';
-import { getRandomLoadingQuote, sortByDate } from './ValueTracker.utils';
+import { sortByDate } from './ValueTracker.utils';
 import AddAccountButton from '../AddAccountButton/AddAccountButton';
 import { TransactionRange } from '../../_models/TransactionData';
 import { getDomain } from '../Chart/Chart.utils';
+import { useRandomLoadingQuote } from '../../_utils/_hooks/useRandomLoadingQuote';
 
 interface ValueTrackerChartProps {
   data: LineChartDataPoint[];
@@ -36,6 +39,7 @@ export default function ValueTrackerChart({
   totalValueLabel = 'Net Worth',
   loading = false,
 }: ValueTrackerChartProps) {
+  const loadingQuote = useRandomLoadingQuote();
   const [range, setRange] = useState<TransactionRange>(defaultRange);
 
   const selectedData = useMemo(() => {
@@ -47,8 +51,6 @@ export default function ValueTrackerChart({
     setRange(val);
   };
 
-  const loadingQuote = useMemo(() => getRandomLoadingQuote(), []);
-
   return (
     <Paper shadow="sm" withBorder p="lg" radius="lg" pos="relative">
       <LoadingOverlay
@@ -58,7 +60,13 @@ export default function ValueTrackerChart({
         loaderProps={{
           color: 'green',
           children: (
-            <Flex direction="column" justify="center" align="center" gap="md">
+            <Flex
+              direction="column"
+              justify="center"
+              align="center"
+              gap="md"
+              maw="400px"
+            >
               <Loader color="green" />
               <Text>{loadingQuote}</Text>
             </Flex>

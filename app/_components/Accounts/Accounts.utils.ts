@@ -6,7 +6,7 @@ import {
 } from '../../_models/TransactionData';
 
 export interface GroupedAccounts {
-  checking?: AccountData[];
+  cash?: AccountData[];
   savings?: AccountData[];
   mortgage?: AccountData[];
   credit_card?: AccountData[];
@@ -14,7 +14,7 @@ export interface GroupedAccounts {
 }
 
 export const ORDERED_ACCT_TYPES = [
-  'checking',
+  'cash',
   'savings',
   'credit_card',
   'mortgage',
@@ -25,15 +25,21 @@ export const groupAccountsByType = (accounts: AccountData[]) => {
   const grouped: GroupedAccounts = {};
 
   accounts.forEach((acct) => {
-    let { subcategory: category } = acct;
-    if (category === 'line_of_credit') {
-      category = 'credit_card';
+    let acctType: keyof GroupedAccounts;
+    const { category, subcategory } = acct;
+
+    if (category === 'credit' && subcategory === 'line_of_credit') {
+      acctType = 'credit_card';
+    } else if (category === 'investment') {
+      acctType = 'savings';
+    } else {
+      acctType = category as keyof GroupedAccounts;
     }
 
-    if (category in grouped && !!grouped[category]) {
-      grouped[category] = [...grouped[category]!, acct];
+    if (acctType in grouped && !!grouped[acctType]) {
+      grouped[acctType] = [...grouped[acctType]!, acct];
     } else {
-      grouped[category] = [acct];
+      grouped[acctType] = [acct];
     }
   });
 
@@ -128,7 +134,7 @@ export const getRecurringCharges = (txns: TransactionData[]) => {
   const recurringMap: Record<string, TransactionData[]> = {};
 
   txns.forEach((txn) => {
-    const key = `${txn.description}_${txn.account}`;
+    const key = `${txn.description}_${txn.account}_${txn.amount}`;
     if (recurringMap[key]) {
       recurringMap[key] = [...recurringMap[key], txn];
     } else {

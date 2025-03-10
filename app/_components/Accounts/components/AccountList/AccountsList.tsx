@@ -65,7 +65,7 @@ export default function AccountsList({ onSelect }: AccountListProps) {
   }, [accounts]);
 
   const getIcon = (category: keyof GroupedAccounts) => {
-    if (category === 'checking') {
+    if (category === 'cash') {
       return <IconCash />;
     } else if (category === 'credit_card') {
       return <IconCreditCard />;
@@ -94,13 +94,7 @@ export default function AccountsList({ onSelect }: AccountListProps) {
       )}
       <Accordion
         multiple={true}
-        defaultValue={[
-          'checking',
-          'savings',
-          'mortgage',
-          'credit_card',
-          'other',
-        ]}
+        defaultValue={['cash', 'savings', 'mortgage', 'credit_card', 'other']}
       >
         {ORDERED_ACCT_TYPES.map((group) => {
           if (!!groupedAccounts[group as keyof GroupedAccounts]) {

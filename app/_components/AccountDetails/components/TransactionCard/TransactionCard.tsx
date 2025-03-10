@@ -9,7 +9,10 @@ import {
 } from '@mantine/core';
 import styles from './TransactionCard.module.css';
 import { TransactionData } from '../../../../_models/TransactionData';
-import { formatDate, getBankLogoSrc } from '../../../../_utils/utils';
+import {
+  capitalize,
+  getBankLogoSrc,
+} from '../../../../_utils/utils';
 import {
   IconMessageChatbot,
   IconMessageChatbotFilled,
@@ -68,9 +71,7 @@ export default function TransactionCard({
               fixedDecimalScale
             />
           </Text>
-          <Text c="dimmed">
-            {formatDate(new Date(tx.transacted_at * 1000), true)}
-          </Text>
+          <Text c="dimmed">{capitalize(tx.status)}</Text>
         </Flex>
       </Flex>
     </Paper>

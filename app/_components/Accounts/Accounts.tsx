@@ -86,7 +86,6 @@ export default function Accounts() {
     () => computeTransactionData(accts, txns, omittedAccounts),
     [accts, txns, omittedAccounts],
   );
-  console.log('COMPUTED: ', computedTxnData);
 
   const handleSelectAccount = (id: string) => {
     if (!opened) {
