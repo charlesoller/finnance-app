@@ -17,16 +17,38 @@ import {
 } from '@tabler/icons-react';
 import { useChatContextStore } from '../../_stores/ChatContextStore';
 import { useRecurringTransactions } from '../../_utils/_hooks/useRecurringCharges';
+import { useMemo } from 'react';
 
 interface RecurringTransactionsProps {
   onSelect: (id: string) => void;
+  accountId?: string;
 }
 
 export default function RecurringTransactions({
   onSelect,
+  accountId,
 }: RecurringTransactionsProps) {
   const { recurringTransactions: groupedRecurringTransactions, loading } =
     useRecurringTransactions();
+
+  const groupedAndFilteredRecurringTransactions = useMemo(() => {
+    if (accountId) {
+      // Filter the object to only include entries where the key contains the accountId
+      return Object.keys(groupedRecurringTransactions)
+        .filter((key) => key.includes(accountId))
+        .reduce(
+          (filtered, key) => {
+            (filtered as any)[key] = groupedRecurringTransactions[key];
+            return filtered;
+          },
+          {} as Record<
+            string,
+            (typeof groupedRecurringTransactions)[keyof typeof groupedRecurringTransactions]
+          >,
+        );
+    }
+    return groupedRecurringTransactions;
+  }, [groupedRecurringTransactions, accountId]);
 
   const { isActiveTxnId } = useChatContextStore();
 
@@ -53,9 +75,9 @@ export default function RecurringTransactions({
 
   return (
     <Accordion multiple={true}>
-      {Object.keys(groupedRecurringTransactions).map((group) => {
+      {Object.keys(groupedAndFilteredRecurringTransactions).map((group) => {
         const name = group.split('_')[0];
-        const pattern = groupedRecurringTransactions[group].pattern;
+        const pattern = groupedAndFilteredRecurringTransactions[group].pattern;
 
         return (
           <AccordionItem key={group} value={group}>
@@ -68,16 +90,18 @@ export default function RecurringTransactions({
               </Flex>
             </AccordionControl>
             <AccordionPanel>
-              {groupedRecurringTransactions[group].transactions.map((txn) => (
-                <TransactionCard
-                  key={txn.id}
-                  tx={txn}
-                  selected={isActiveTxnId(txn.id)}
-                  onSelect={onSelect}
-                  showAccountName
-                  showDate
-                />
-              ))}
+              {groupedAndFilteredRecurringTransactions[group].transactions.map(
+                (txn) => (
+                  <TransactionCard
+                    key={txn.id}
+                    tx={txn}
+                    selected={isActiveTxnId(txn.id)}
+                    onSelect={onSelect}
+                    showAccountName
+                    showDate
+                  />
+                ),
+              )}
             </AccordionPanel>
           </AccordionItem>
         );

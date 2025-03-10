@@ -12,9 +12,7 @@ import TransactionList from './components/TransactionList';
 import { useDisclosure } from '@mantine/hooks';
 import { useModalStore } from '../../_stores/ModalStore';
 import { CONFIRM_DISCONNECT_MODAL } from '../_modals';
-import {
-  ACCOUNT_TRANSACTIONS_KEY,
-} from '../../_utils/_hooks/_mutations/queryKeys';
+import { ACCOUNT_TRANSACTIONS_KEY } from '../../_utils/_hooks/_mutations/queryKeys';
 import SlideDrawer from '../SlideDrawer/SlideDrawer';
 import Chat from '../Chat/Chat';
 import { useChatContextStore } from '../../_stores/ChatContextStore';
@@ -42,18 +40,6 @@ export default function AccountDetails() {
   const [range, setRange] = useState<TransactionRange>('week');
   const [page, setPage] = useState<number>(1);
   const [viewRecurring, setViewRecurring] = useState<boolean>(false);
-
-  // const {
-  //   error: accountError,
-  //   data: account,
-  //   isLoading: accountLoading,
-  //   isPending: accountPending,
-  // } = useQuery<AccountData>({
-  //   queryKey: [ACCOUNT_KEY, accountId],
-  //   queryFn: () => stripeAPI.getAccountById(accountId as string, token),
-  //   refetchOnWindowFocus: false,
-  //   enabled: !!accountId && !!token,
-  // });
 
   const { accountData: account, loading: accountLoading } = useAccountData(
     accountId as string,
@@ -181,7 +167,12 @@ export default function AccountDetails() {
                 account={account}
               />
             )}
-            {viewRecurring && <RecurringTransactions onSelect={handleSelect} />}
+            {viewRecurring && (
+              <RecurringTransactions
+                onSelect={handleSelect}
+                accountId={accountId as string}
+              />
+            )}
           </>
         )}
         {!transactionsLoading &&
