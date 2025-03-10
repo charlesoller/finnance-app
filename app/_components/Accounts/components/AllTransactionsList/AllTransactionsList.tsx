@@ -1,11 +1,6 @@
 import {
-  ActionIcon,
   Flex,
   Loader,
-  Pagination,
-  Paper,
-  SegmentedControl,
-  Tooltip,
 } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
@@ -19,13 +14,12 @@ import {
   TransactionRange,
 } from '../../../../_models/TransactionData';
 import RecurringTransactions from '../../../RecurringTransactions/RecurringTransactions';
-import { IconRotateClockwise2 } from '@tabler/icons-react';
+import TransactionFilters from '../../../TransactionFilters/TransactionFilters';
+import { PAGE_LENGTH } from '../../Accounts.types';
 
 interface AllTransactionsListProps {
   onSelect: (id: string) => void;
 }
-
-const PAGE_LENGTH = 20;
 
 export default function AllTransactionsList({
   onSelect,
@@ -75,55 +69,22 @@ export default function AllTransactionsList({
     setPage(1);
   };
 
+  const handleViewRecurringClick = () => {
+    setViewRecurring((prev) => !prev);
+  };
+
   return (
     <Flex direction="column">
-      <Paper withBorder p="sm" my="sm">
-        <Flex align="center" justify="space-between">
-          <Flex align="center" gap="md">
-            <Tooltip label="View your recurring charges">
-              <ActionIcon
-                radius="xl"
-                color="green"
-                variant={viewRecurring ? 'filled' : 'outline'}
-                onClick={() => setViewRecurring((prev) => !prev)}
-                size="lg"
-              >
-                <IconRotateClockwise2 />
-              </ActionIcon>
-            </Tooltip>
-            <Tooltip
-              disabled={!viewRecurring}
-              label="Date range is disabled while viewing recurring charges"
-            >
-              <SegmentedControl
-                disabled={viewRecurring}
-                value={range}
-                data={[
-                  { label: 'Week', value: 'week' },
-                  { label: 'Month', value: 'month' },
-                  { label: '3 Month', value: 'threeMonth' },
-                  { label: '6 Month', value: 'sixMonth' },
-                ]}
-                onChange={(v) => handleRangeChange(v as TransactionRange)}
-              />
-            </Tooltip>
-          </Flex>
-          <Tooltip
-            disabled={!viewRecurring}
-            label="Pages are disabled while viewing recurring charges"
-          >
-            <Pagination
-              radius="lg"
-              value={page}
-              onChange={setPage}
-              total={getPaginationTotal()}
-              color="green"
-              siblings={1}
-              disabled={!transactions || viewRecurring}
-            />
-          </Tooltip>
-        </Flex>
-      </Paper>
+      <TransactionFilters
+        viewRecurring={viewRecurring}
+        onViewRecurringClick={handleViewRecurringClick}
+        range={range}
+        rangeOnChange={handleRangeChange}
+        disabled={!transactions}
+        page={page}
+        pageOnChange={setPage}
+        paginationTotal={getPaginationTotal()}
+      />
       {isLoading && <Loader color="green" m="auto" />}
       {!!transactions && !viewRecurring && (
         <TransactionList

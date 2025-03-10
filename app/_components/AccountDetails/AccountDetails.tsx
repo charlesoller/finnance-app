@@ -13,47 +13,70 @@ import { useDisclosure } from '@mantine/hooks';
 import { useModalStore } from '../../_stores/ModalStore';
 import { CONFIRM_DISCONNECT_MODAL } from '../_modals';
 import {
-  ACCOUNT_KEY,
-  TRANSACTION_KEY,
+  ACCOUNT_TRANSACTIONS_KEY,
 } from '../../_utils/_hooks/_mutations/queryKeys';
-import { AccountData } from '../../_models/AccountData';
 import SlideDrawer from '../SlideDrawer/SlideDrawer';
 import Chat from '../Chat/Chat';
 import { useChatContextStore } from '../../_stores/ChatContextStore';
 import { useCustomerInfo } from '../../_utils/_hooks/useCustomerInfo';
+import { useMemo, useState } from 'react';
+import {
+  TransactionData,
+  TransactionDataRequest,
+  TransactionRange,
+} from '../../_models/TransactionData';
+import { PAGE_LENGTH } from '../Accounts/Accounts.types';
+import TransactionFilters from '../TransactionFilters/TransactionFilters';
+import RecurringTransactions from '../RecurringTransactions/RecurringTransactions';
+import { useAccountData } from '../../_utils/_hooks/useAccountData';
 
 export default function AccountDetails() {
   useCustomerInfo();
   const { accountId } = useParams();
-  const { token } = useUserStore();
+  const { token, customerId } = useUserStore();
   const { openModal } = useModalStore();
   const { handleSelectTxn, selectedTransactionIds, isActiveTxnId } =
     useChatContextStore();
 
   const [opened, { toggle }] = useDisclosure();
+  const [range, setRange] = useState<TransactionRange>('week');
+  const [page, setPage] = useState<number>(1);
+  const [viewRecurring, setViewRecurring] = useState<boolean>(false);
 
-  const {
-    error: accountError,
-    data: account,
-    isLoading: accountLoading,
-    isPending: accountPending,
-  } = useQuery<AccountData>({
-    queryKey: [ACCOUNT_KEY, accountId],
-    queryFn: () => stripeAPI.getAccountById(accountId as string, token),
-    refetchOnWindowFocus: false,
-    enabled: !!accountId && !!token,
-  });
+  // const {
+  //   error: accountError,
+  //   data: account,
+  //   isLoading: accountLoading,
+  //   isPending: accountPending,
+  // } = useQuery<AccountData>({
+  //   queryKey: [ACCOUNT_KEY, accountId],
+  //   queryFn: () => stripeAPI.getAccountById(accountId as string, token),
+  //   refetchOnWindowFocus: false,
+  //   enabled: !!accountId && !!token,
+  // });
+
+  const { accountData: account, loading: accountLoading } = useAccountData(
+    accountId as string,
+  );
+
+  const request: TransactionDataRequest = useMemo(
+    () => ({
+      customerId,
+      range,
+    }),
+    [customerId, range],
+  );
 
   const {
     error: transactionsError,
     data: transactions,
     isLoading: transactionsLoading,
     isPending: transactionsPending,
-  } = useQuery<any>({
-    queryKey: [TRANSACTION_KEY, accountId],
-    queryFn: () => stripeAPI.getTransactions(accountId as string, token),
+  } = useQuery<TransactionData[]>({
+    queryKey: [ACCOUNT_TRANSACTIONS_KEY, range],
+    queryFn: () => stripeAPI.getCustomerTransactionData(request, token),
     refetchOnWindowFocus: false,
-    enabled: !!accountId && !!token && account?.status !== 'inactive',
+    enabled: !!customerId && !!token,
   });
 
   const handleSelect = (id: string) => {
@@ -73,6 +96,32 @@ export default function AccountDetails() {
     openModal(CONFIRM_DISCONNECT_MODAL);
   };
 
+  const filteredAndPaginatedTxns = useMemo(() => {
+    if (!transactions || transactions.length === 0 || !accountId) return [];
+    const filtered = transactions.filter((txn) => txn.account === accountId);
+
+    const result: TransactionData[][] = [];
+    for (let i = 0; i < filtered.length; i += PAGE_LENGTH) {
+      result.push(filtered.slice(i, i + PAGE_LENGTH));
+    }
+    return result;
+  }, [transactions, accountId]);
+
+  const getPaginationTotal = () => {
+    if (!transactions) return 0;
+    const acctTxns = transactions.filter((txn) => txn.account === accountId);
+    return Math.ceil(acctTxns.length / PAGE_LENGTH);
+  };
+
+  const handleRangeChange = (v: TransactionRange) => {
+    setRange(v as TransactionRange);
+    setPage(1);
+  };
+
+  const handleViewRecurringClick = () => {
+    setViewRecurring((prev) => !prev);
+  };
+
   return (
     <SlideDrawer
       side="right"
@@ -88,9 +137,9 @@ export default function AccountDetails() {
         />
         <Flex p="sm" align="flex-end">
           <Title order={1}>
-            {accountLoading || accountPending
+            {accountLoading
               ? 'Loading...'
-              : `${account?.display_name} (...${account?.last4})`}
+              : `${account?.institution_name} ${account?.display_name} (...${account?.last4})`}
           </Title>
           <Button
             variant="transparent"
@@ -115,16 +164,29 @@ export default function AccountDetails() {
               balance={account.balance?.current?.usd / 100}
               transactions={transactions}
             />
-            <TransactionList
-              onSelect={handleSelect}
-              transactions={transactions}
-              account={account}
+            <TransactionFilters
+              viewRecurring={viewRecurring}
+              onViewRecurringClick={handleViewRecurringClick}
+              range={range}
+              rangeOnChange={handleRangeChange}
+              disabled={!transactions}
+              page={page}
+              pageOnChange={setPage}
+              paginationTotal={getPaginationTotal()}
             />
+            {!viewRecurring && (
+              <TransactionList
+                onSelect={handleSelect}
+                transactions={filteredAndPaginatedTxns[page - 1]}
+                account={account}
+              />
+            )}
+            {viewRecurring && <RecurringTransactions onSelect={handleSelect} />}
           </>
         )}
         {!transactionsLoading &&
           !transactionsPending &&
-          !transactions.length &&
+          !transactions?.length &&
           !transactionsError &&
           account?.status !== 'inactive' && (
             <Text size="xl">

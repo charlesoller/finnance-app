@@ -8,7 +8,7 @@ import stripeAPI from '../../_services/StripeAPI';
 import { useUserStore } from '../../_stores/UserStore';
 
 export const useRecurringTransactions = () => {
-  // Attempts to get traansactions from cache and then get the recurring charges
+  // Attempts to get transactions from cache and then get the recurring charges
   // If cache miss, will fetch 6 month transactions
   const { customerId, token } = useUserStore();
   const queryClient = useQueryClient();
