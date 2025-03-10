@@ -15,7 +15,6 @@ import {
   IconCalendarStats,
   IconCalendarWeek,
 } from '@tabler/icons-react';
-import { toTitleCase } from '../../_utils/utils';
 import { useChatContextStore } from '../../_stores/ChatContextStore';
 import { useRecurringTransactions } from '../../_utils/_hooks/useRecurringCharges';
 
@@ -60,9 +59,8 @@ export default function RecurringTransactions({
               <Flex p="xs" justify="space-between">
                 <Flex align="center" gap="md">
                   {getIcon(pattern)}
-                  <Title order={3}>{toTitleCase(name)}</Title>
+                  <Title order={3}>{name}</Title>
                 </Flex>
-                <Title order={3}></Title>
               </Flex>
             </AccordionControl>
             <AccordionPanel>
@@ -72,6 +70,8 @@ export default function RecurringTransactions({
                   tx={txn}
                   selected={isActiveTxnId(txn.id)}
                   onSelect={onSelect}
+                  showAccountName
+                  showDate
                 />
               ))}
             </AccordionPanel>

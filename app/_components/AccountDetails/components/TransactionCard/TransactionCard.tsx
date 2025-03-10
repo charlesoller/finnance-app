@@ -11,6 +11,7 @@ import styles from './TransactionCard.module.css';
 import { TransactionData } from '../../../../_models/TransactionData';
 import {
   capitalize,
+  formatDate,
   getBankLogoSrc,
 } from '../../../../_utils/utils';
 import {
@@ -24,6 +25,8 @@ interface TransactionCardProps {
   selected: boolean;
   onSelect: (id: string) => void;
   acct?: AccountData;
+  showAccountName?: boolean;
+  showDate?: boolean;
 }
 
 export default function TransactionCard({
@@ -31,8 +34,11 @@ export default function TransactionCard({
   selected,
   onSelect,
   acct,
+  showAccountName = false,
+  showDate = false,
 }: TransactionCardProps) {
   const institution = acct?.institution_name || tx.institution_name || '';
+  const acctName = acct?.display_name || tx.acct_display_name || '';
 
   return (
     <Paper p="sm" className={styles.card}>
@@ -58,7 +64,10 @@ export default function TransactionCard({
           <Avatar size="lg" src={getBankLogoSrc(institution)} />
           <Flex direction="column">
             <Text size="lg">{tx.description}</Text>
-            <Text c="dimmed">{institution}</Text>
+            <Text c="dimmed">
+              {institution}
+              {showAccountName && !!acctName.length && ` | ${acctName}`}
+            </Text>
           </Flex>
         </Flex>
         <Flex direction="column" justify="flex-end" align="flex-end">
@@ -71,7 +80,10 @@ export default function TransactionCard({
               fixedDecimalScale
             />
           </Text>
-          <Text c="dimmed">{capitalize(tx.status)}</Text>
+          <Text c="dimmed">
+            {capitalize(tx.status)}
+            {showDate && ` | ${formatDate(new Date(tx.transacted_at), true)}`}
+          </Text>
         </Flex>
       </Flex>
     </Paper>

@@ -160,20 +160,20 @@ const hasRecurringPattern = (
       transactions[i].transacted_at - transactions[i - 1].transacted_at;
     intervals.push(interval);
   }
-  const isWeekly = intervals.every(
-    (interval) => Math.abs(interval - WEEK_IN_SECONDS) <= WEEK_PADDING,
-  );
-  if (isWeekly) return 'weekly';
+  // const isWeekly = intervals.every(
+  //   (interval) => Math.abs(interval - WEEK_IN_SECONDS) <= WEEK_PADDING,
+  // );
+  // if (isWeekly) return 'weekly';
 
   const isMonthly = intervals.every(
     (interval) => Math.abs(interval - MONTH_IN_SECONDS) <= MONTH_PADDING,
   );
   if (isMonthly) return 'monthly';
 
-  const isYearly = intervals.every(
-    (interval) => Math.abs(interval - YEAR_IN_SECONDS) <= YEAR_PADDING,
-  );
-  if (isYearly) return 'yearly';
+  // const isYearly = intervals.every(d
+  //   (interval) => Math.abs(interval - YEAR_IN_SECONDS) <= YEAR_PADDING,
+  // );
+  // if (isYearly) return 'yearly';
 
   return null;
 };

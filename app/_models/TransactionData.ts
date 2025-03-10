@@ -6,7 +6,8 @@ export interface TransactionData {
   description: string;
   status: string;
   transacted_at: number;
-  institution_name: string;
+  institution_name?: string;
+  acct_display_name?: string;
 }
 export type TransactionRange = 'week' | 'month' | 'threeMonth' | 'sixMonth';
 export interface TransactionDataRequest {
