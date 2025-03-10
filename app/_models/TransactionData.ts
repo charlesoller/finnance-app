@@ -8,6 +8,7 @@ export interface TransactionData {
   transacted_at: number;
   institution_name?: string;
   acct_display_name?: string;
+  acct_last4?: string;
 }
 export type TransactionRange = 'week' | 'month' | 'threeMonth' | 'sixMonth';
 export interface TransactionDataRequest {

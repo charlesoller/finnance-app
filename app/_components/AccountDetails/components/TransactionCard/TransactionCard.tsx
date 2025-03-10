@@ -39,6 +39,7 @@ export default function TransactionCard({
 }: TransactionCardProps) {
   const institution = acct?.institution_name || tx.institution_name || '';
   const acctName = acct?.display_name || tx.acct_display_name || '';
+  const acctLast4 = acct?.last4 || tx.acct_last4 || '';
 
   return (
     <Paper p="sm" className={styles.card}>
@@ -66,7 +67,8 @@ export default function TransactionCard({
             <Text size="lg">{tx.description}</Text>
             <Text c="dimmed">
               {institution}
-              {showAccountName && !!acctName.length && ` | ${acctName}`}
+              {showAccountName && !!acctName.length && ` ${acctName}`}
+              {showAccountName && !!acctLast4.length && ` (...${acctLast4})`}
             </Text>
           </Flex>
         </Flex>
@@ -82,7 +84,8 @@ export default function TransactionCard({
           </Text>
           <Text c="dimmed">
             {capitalize(tx.status)}
-            {showDate && ` | ${formatDate(new Date(tx.transacted_at), true)}`}
+            {showDate &&
+              ` | ${formatDate(new Date(tx.transacted_at * 1000), true)}`}
           </Text>
         </Flex>
       </Flex>

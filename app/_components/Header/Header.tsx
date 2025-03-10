@@ -7,8 +7,12 @@ import Nav from '../Nav/Nav';
 import { usePathname } from 'next/navigation';
 import { SESSION_KEY } from '../../_utils/_hooks/_mutations/queryKeys';
 import {
-  IconDashboard,
+  IconLayoutDashboard,
+  IconLayoutDashboardFilled,
   IconMessageChatbot,
+  IconMessageChatbotFilled,
+  IconSeedling,
+  IconSeedlingFilled,
 } from '@tabler/icons-react';
 
 interface HeaderProps {
@@ -25,7 +29,7 @@ export default function Header({ opened, toggle }: HeaderProps) {
   };
   return (
     <Flex align="center" justify="space-between" h="100%" px="xl">
-      <Flex gap="md">
+      <Flex gap="md" align="centerfg">
         {/* <Burger opened={opened} onClick={toggle} hiddenFrom="sm" size="sm" /> */}
         <Link
           href={'/chat'}
@@ -39,7 +43,13 @@ export default function Header({ opened, toggle }: HeaderProps) {
         <Nav
           href="/chat"
           label="Advisor"
-          leftSection={<IconMessageChatbot size="20px" />}
+          leftSection={
+            pathname.includes('chat') || pathname === '/' ? (
+              <IconMessageChatbotFilled size="20px" />
+            ) : (
+              <IconMessageChatbot size="20px" />
+            )
+          }
           active={pathname.includes('chat') || pathname === '/'}
           onClick={handleNavigation}
           w="fit-content"
@@ -47,19 +57,31 @@ export default function Header({ opened, toggle }: HeaderProps) {
         <Nav
           href="/manage"
           label="Manage"
-          leftSection={<IconDashboard size="20px" />}
+          leftSection={
+            pathname.includes('manage') ? (
+              <IconLayoutDashboardFilled size="20px" />
+            ) : (
+              <IconLayoutDashboard size="20px" />
+            )
+          }
           active={pathname.includes('manage')}
           onClick={handleNavigation}
           w="fit-content"
         />
-        {/* <Nav
-          href="/budget"
-          label="Budget"
-          leftSection={<IconClockDollar size='20px' />}
-          active={pathname.includes('budget')}
+        <Nav
+          href="/plan"
+          label="Plan"
+          leftSection={
+            pathname.includes('plan') ? (
+              <IconSeedlingFilled />
+            ) : (
+              <IconSeedling />
+            )
+          }
+          active={pathname.includes('plan')}
           onClick={handleNavigation}
           w="fit-content"
-        /> */}
+        />
       </Flex>
       <UserInfoMenu open={userMenuOpen} toggle={toggleUserMenu} />
     </Flex>

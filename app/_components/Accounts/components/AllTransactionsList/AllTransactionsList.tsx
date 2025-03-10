@@ -1,13 +1,13 @@
 import {
-  Button,
-  Divider,
+  ActionIcon,
   Flex,
   Loader,
   Pagination,
+  Paper,
   SegmentedControl,
   Tooltip,
 } from '@mantine/core';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import { ACCOUNT_TRANSACTIONS_KEY } from '../../../../_utils/_hooks/_mutations/queryKeys';
 import stripeAPI from '../../../../_services/StripeAPI';
@@ -18,8 +18,8 @@ import {
   TransactionDataRequest,
   TransactionRange,
 } from '../../../../_models/TransactionData';
-import { getRecurringCharges } from '../../Accounts.utils';
 import RecurringTransactions from '../../../RecurringTransactions/RecurringTransactions';
+import { IconRotateClockwise2 } from '@tabler/icons-react';
 
 interface AllTransactionsListProps {
   onSelect: (id: string) => void;
@@ -34,7 +34,6 @@ export default function AllTransactionsList({
   const [range, setRange] = useState<TransactionRange>('week');
   const [page, setPage] = useState<number>(1);
   const [viewRecurring, setViewRecurring] = useState<boolean>(false);
-  const queryClient = useQueryClient();
 
   const request: TransactionDataRequest = useMemo(
     () => ({
@@ -76,89 +75,55 @@ export default function AllTransactionsList({
     setPage(1);
   };
 
-  const handleViewRecurring = () => {
-    // Get the data from the query cache for 'sixMonth' range
-    const sixMonthData = queryClient.getQueryData<TransactionData[]>([
-      ACCOUNT_TRANSACTIONS_KEY,
-      'sixMonth',
-    ]);
-
-    // If the data exists in cache, use it; otherwise fetch it
-    if (sixMonthData) {
-      const recurringCharges = getRecurringCharges(sixMonthData);
-      // Do something with the recurring charges
-      console.log('Recurring charges:', recurringCharges);
-    } else {
-      // Optionally fetch the data if not in cache
-      queryClient
-        .fetchQuery({
-          queryKey: [ACCOUNT_TRANSACTIONS_KEY, 'sixMonth'],
-          queryFn: () =>
-            stripeAPI.getCustomerTransactionData(
-              { customerId, range: 'sixMonth' },
-              token,
-            ),
-        })
-        .then((data) => {
-          if (data) {
-            const recurringCharges = getRecurringCharges(
-              data as TransactionData[],
-            );
-            // Do something with the recurring charges
-            console.log('Recurring charges:', recurringCharges);
-          }
-        });
-    }
-  };
-
   return (
     <Flex direction="column">
-      <Divider mb="md" label="Filters" labelPosition="left" />
-      <Flex gap="md" align="center">
-        <Tooltip label="View your recurring charges">
-          <Button
-            radius="md"
-            color="green"
-            variant={viewRecurring ? 'filled' : 'outline'}
-            onClick={() => {
-              setViewRecurring((prev) => !prev);
-              handleViewRecurring();
-            }}
+      <Paper withBorder p="sm" my="sm">
+        <Flex align="center" justify="space-between">
+          <Flex align="center" gap="md">
+            <Tooltip label="View your recurring charges">
+              <ActionIcon
+                radius="xl"
+                color="green"
+                variant={viewRecurring ? 'filled' : 'outline'}
+                onClick={() => setViewRecurring((prev) => !prev)}
+                size="lg"
+              >
+                <IconRotateClockwise2 />
+              </ActionIcon>
+            </Tooltip>
+            <Tooltip
+              disabled={!viewRecurring}
+              label="Date range is disabled while viewing recurring charges"
+            >
+              <SegmentedControl
+                disabled={viewRecurring}
+                value={range}
+                data={[
+                  { label: 'Week', value: 'week' },
+                  { label: 'Month', value: 'month' },
+                  { label: '3 Month', value: 'threeMonth' },
+                  { label: '6 Month', value: 'sixMonth' },
+                ]}
+                onChange={(v) => handleRangeChange(v as TransactionRange)}
+              />
+            </Tooltip>
+          </Flex>
+          <Tooltip
+            disabled={!viewRecurring}
+            label="Pages are disabled while viewing recurring charges"
           >
-            View Recurring
-          </Button>
-        </Tooltip>
-        <Tooltip
-          disabled={!viewRecurring}
-          label="Date range is disabled while viewing recurring charges"
-        >
-          <SegmentedControl
-            disabled={viewRecurring}
-            value={range}
-            data={[
-              { label: 'Week', value: 'week' },
-              { label: 'Month', value: 'month' },
-              { label: '3 Month', value: 'threeMonth' },
-              { label: '6 Month', value: 'sixMonth' },
-            ]}
-            onChange={(v) => handleRangeChange(v as TransactionRange)}
-          />
-        </Tooltip>
-        <Tooltip
-          disabled={!viewRecurring}
-          label="Pages are disabled while viewing recurring charges"
-        >
-          <Pagination
-            radius="lg"
-            value={page}
-            onChange={setPage}
-            total={getPaginationTotal()}
-            color="green"
-            siblings={1}
-            disabled={!transactions || viewRecurring}
-          />
-        </Tooltip>
-      </Flex>
+            <Pagination
+              radius="lg"
+              value={page}
+              onChange={setPage}
+              total={getPaginationTotal()}
+              color="green"
+              siblings={1}
+              disabled={!transactions || viewRecurring}
+            />
+          </Tooltip>
+        </Flex>
+      </Paper>
       {isLoading && <Loader color="green" m="auto" />}
       {!!transactions && !viewRecurring && (
         <TransactionList

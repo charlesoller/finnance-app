@@ -42,9 +42,13 @@ export default function RecurringTransactions({
     }
   };
 
-  if (loading) return <Loader color="green" m="auto" />;
+  if (loading) return <Loader color="green" m="auto" p="xl" />;
   if (!loading && !Object.keys(groupedRecurringTransactions).length) {
-    return <Text m="auto">No recurring charges found</Text>;
+    return (
+      <Text m="auto" p="xl">
+        No recurring charges found
+      </Text>
+    );
   }
 
   return (
