@@ -28,7 +28,7 @@ export const groupAccountsByType = (accounts: AccountData[]) => {
     let acctType: keyof GroupedAccounts;
     const { category, subcategory } = acct;
 
-    if (category === 'credit' && subcategory === 'line_of_credit') {
+    if (category === 'credit') {
       acctType = 'credit_card';
     } else if (category === 'investment') {
       acctType = 'savings';
@@ -68,6 +68,7 @@ export const computeTransactionData = (
 ) => {
   if (!accounts || !transactions) return;
   const filteredAccounts = accounts.filter((acct) => !omit?.includes(acct.id));
+
   const filteredTransactions = transactions.filter(
     (txn) => !omit?.includes(txn.account),
   );
@@ -80,6 +81,8 @@ export const computeTransactionData = (
   let runningTotal = currTotal;
 
   for (const transaction of filteredTransactions) {
+    if (transaction.status !== 'posted') continue;
+
     const timestamp = transaction.transacted_at || 0;
     const date = new Date(timestamp * 1000).toISOString().split('T')[0];
 
@@ -130,11 +133,47 @@ export const timeAgo = (timestamp: number): string => {
   return `${hoursAgo} hour${hoursAgo === 1 ? '' : 's'} ago`;
 };
 
+const hasRecurringPattern = (transactions: TransactionData[]): boolean => {
+  if (transactions.length < 2) return false;
+
+  // Constants for time intervals in seconds
+  const DAY_IN_SECONDS = 24 * 60 * 60;
+  const WEEK_IN_SECONDS = 7 * DAY_IN_SECONDS;
+  const MONTH_IN_SECONDS = 30 * DAY_IN_SECONDS;
+  const YEAR_IN_SECONDS = 365 * DAY_IN_SECONDS;
+
+  // Padding values in seconds
+  const WEEK_PADDING = 1 * DAY_IN_SECONDS;
+  const MONTH_PADDING = 3 * DAY_IN_SECONDS;
+  const YEAR_PADDING = 7 * DAY_IN_SECONDS;
+
+  const intervals = [];
+
+  for (let i = 1; i < transactions.length; i++) {
+    const interval =
+      transactions[i].transacted_at - transactions[i - 1].transacted_at;
+    intervals.push(interval);
+  }
+
+  // Check if all intervals correspond to one of the accepted recurring periods (with padding)
+  return intervals.every(
+    (interval) =>
+      // Weekly pattern (with 1 day padding)
+      Math.abs(interval - WEEK_IN_SECONDS) <= WEEK_PADDING ||
+      // Monthly pattern (with 3 day padding)
+      Math.abs(interval - MONTH_IN_SECONDS) <= MONTH_PADDING ||
+      // Yearly pattern (with 1 week padding)
+      Math.abs(interval - YEAR_IN_SECONDS) <= YEAR_PADDING,
+  );
+};
+
 export const getRecurringCharges = (txns: TransactionData[]) => {
   const recurringMap: Record<string, TransactionData[]> = {};
 
   txns.forEach((txn) => {
-    const key = `${txn.description}_${txn.account}_${txn.amount}`;
+    if (txn.amount > 0) return;
+
+    const key = `${txn.description}_${txn.account}`;
     if (recurringMap[key]) {
       recurringMap[key] = [...recurringMap[key], txn];
     } else {
@@ -146,7 +185,14 @@ export const getRecurringCharges = (txns: TransactionData[]) => {
 
   Object.keys(recurringMap).forEach((key) => {
     if (recurringMap[key].length >= 2) {
-      filteredRecurringMap[key] = recurringMap[key];
+      const transactions = recurringMap[key].sort(
+        (a, b) => a.transacted_at - b.transacted_at,
+      );
+
+      // Check if these transactions follow a recurring pattern
+      if (hasRecurringPattern(transactions)) {
+        filteredRecurringMap[key] = transactions;
+      }
     }
   });
 

@@ -68,7 +68,7 @@ export default function ValueTrackerChart({
               maw="400px"
             >
               <Loader color="green" />
-              <Text>{loadingQuote}</Text>
+              <Text ta="center">{loadingQuote}</Text>
             </Flex>
           ),
         }}
