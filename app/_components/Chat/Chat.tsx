@@ -81,14 +81,12 @@ function ChatContent({ showHistoryMenu, opened, toggle }: ChatContentProps) {
             left={opened ? 62 : 45}
           />
         )}
-        {(isLoading || isPending || isFetching) && (
+        {(isLoading || isPending) && (
           <Loader mx="auto" my="auto" color="green" />
         )}
-        {!messages?.length &&
-          !isLoading &&
-          !isPending &&
-          !isFetching &&
-          !error && <NoMessages />}
+        {!messages?.length && !isLoading && !isPending && !error && (
+          <NoMessages />
+        )}
         {!!messages?.length &&
           messages.map((message, index) => {
             return (
