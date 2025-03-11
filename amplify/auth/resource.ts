@@ -17,8 +17,16 @@ export const auth = defineAuth({
         },
         scopes: ['email', 'profile'],
       },
-      callbackUrls: ['http://localhost:3000/', 'https://myfinnance.com/'],
-      logoutUrls: ['http://localhost:3000/', 'https://myfinnance.com/'],
+      callbackUrls: [
+        'http://localhost:3000/',
+        'https://myfinnance.com/',
+        'https://www.myfinnance.com/',
+      ],
+      logoutUrls: [
+        'http://localhost:3000/',
+        'https://myfinnance.com/',
+        'https://www.myfinnance.com/',
+      ],
     },
   },
 });
