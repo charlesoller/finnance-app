@@ -1,7 +1,4 @@
-import {
-  Flex,
-  Loader,
-} from '@mantine/core';
+import { Flex, Loader } from '@mantine/core';
 import { useQuery } from '@tanstack/react-query';
 import { useMemo, useState } from 'react';
 import { ACCOUNT_TRANSACTIONS_KEY } from '../../../../_utils/_hooks/_mutations/queryKeys';
@@ -16,6 +13,7 @@ import {
 import RecurringTransactions from '../../../RecurringTransactions/RecurringTransactions';
 import TransactionFilters from '../../../TransactionFilters/TransactionFilters';
 import { PAGE_LENGTH } from '../../Accounts.types';
+import { useCustomerInfo } from '../../../../_utils/_hooks/useCustomerInfo';
 
 interface AllTransactionsListProps {
   onSelect: (id: string) => void;
@@ -24,6 +22,7 @@ interface AllTransactionsListProps {
 export default function AllTransactionsList({
   onSelect,
 }: AllTransactionsListProps) {
+  useCustomerInfo();
   const { token, customerId } = useUserStore();
   const [range, setRange] = useState<TransactionRange>('week');
   const [page, setPage] = useState<number>(1);
@@ -48,7 +47,6 @@ export default function AllTransactionsList({
     refetchOnWindowFocus: false,
     enabled: !!customerId && !!token,
   });
-
   const paginatedTxns = useMemo(() => {
     if (!transactions || transactions.length === 0) return [];
 

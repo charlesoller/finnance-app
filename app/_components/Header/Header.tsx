@@ -11,8 +11,6 @@ import {
   IconLayoutDashboardFilled,
   IconMessageChatbot,
   IconMessageChatbotFilled,
-  IconSeedling,
-  IconSeedlingFilled,
 } from '@tabler/icons-react';
 
 interface HeaderProps {
@@ -68,7 +66,7 @@ export default function Header({ opened, toggle }: HeaderProps) {
           onClick={handleNavigation}
           w="fit-content"
         />
-        <Nav
+        {/* <Nav
           href="/plan"
           label="Plan"
           leftSection={
@@ -81,7 +79,7 @@ export default function Header({ opened, toggle }: HeaderProps) {
           active={pathname.includes('plan')}
           onClick={handleNavigation}
           w="fit-content"
-        />
+        /> */}
       </Flex>
       <UserInfoMenu open={userMenuOpen} toggle={toggleUserMenu} />
     </Flex>
