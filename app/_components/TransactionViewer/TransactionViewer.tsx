@@ -81,6 +81,7 @@ export default function TransactionViewer({
         <TransactionList
           transactions={paginatedTxns[page - 1]}
           onSelect={onTransactionSelect}
+          showAccountName={!accountIds?.length ? true : false}
         />
       )}
       {!!transactions && viewRecurring && (

@@ -11,12 +11,16 @@ interface TransactionListProps {
   transactions: TransactionData[];
   onSelect?: (id: string) => void;
   account?: AccountData;
+  showAccountName?: boolean;
+  showDate?: boolean;
 }
 
 export default function TransactionList({
   onSelect,
   transactions,
   account,
+  showAccountName,
+  showDate,
 }: TransactionListProps) {
   const { isActiveTxnId } = useChatContextStore();
 
@@ -38,6 +42,8 @@ export default function TransactionList({
                 selected={isActiveTxnId(tx.id)}
                 onSelect={onSelect}
                 acct={account}
+                showAccountName={showAccountName}
+                showDate={showDate}
               />
             ))}
           </Flex>
