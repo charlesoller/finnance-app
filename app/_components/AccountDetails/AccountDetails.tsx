@@ -1,70 +1,34 @@
 'use client';
 
-import { Button, Flex, Loader, Text, Title } from '@mantine/core';
-import { useUserStore } from '../../_stores/UserStore';
-import { useQuery } from '@tanstack/react-query';
-import stripeAPI from '../../_services/StripeAPI';
+import { Button, Flex, Text, Title } from '@mantine/core';
 import { useParams } from 'next/navigation';
-import AccountSummary from './components/AccountSummary';
 import { ArrowLeftIcon } from '@radix-ui/react-icons';
 import Nav from '../Nav/Nav';
-import TransactionList from './components/TransactionList';
 import { useDisclosure } from '@mantine/hooks';
 import { useModalStore } from '../../_stores/ModalStore';
 import { CONFIRM_DISCONNECT_MODAL } from '../_modals';
-import { ACCOUNT_TRANSACTIONS_KEY } from '../../_utils/_hooks/_mutations/queryKeys';
 import SlideDrawer from '../SlideDrawer/SlideDrawer';
 import Chat from '../Chat/Chat';
 import { useChatContextStore } from '../../_stores/ChatContextStore';
-import { useCustomerInfo } from '../../_utils/_hooks/useCustomerInfo';
-import { useMemo, useState } from 'react';
-import {
-  TransactionData,
-  TransactionDataRequest,
-  TransactionRange,
-} from '../../_models/TransactionData';
-import { PAGE_LENGTH } from '../Accounts/Accounts.types';
-import TransactionFilters from '../TransactionFilters/TransactionFilters';
-import RecurringTransactions from '../RecurringTransactions/RecurringTransactions';
 import { useAccountData } from '../../_utils/_hooks/useAccountData';
+import TransactionViewer from '../TransactionViewer/TransactionViewer';
+import { useTransactions } from '../TransactionViewer/TransactionViewer.hooks';
+import ValueTrackerChart from '../ValueTrackerChart/ValueTrackerChart';
 
 export default function AccountDetails() {
-  useCustomerInfo();
   const { accountId } = useParams();
-  const { token, customerId } = useUserStore();
   const { openModal } = useModalStore();
   const { handleSelectTxn, selectedTransactionIds, isActiveTxnId } =
     useChatContextStore();
 
   const [opened, { toggle }] = useDisclosure();
-  const [range, setRange] = useState<TransactionRange>('week');
-  const [page, setPage] = useState<number>(1);
-  const [viewRecurring, setViewRecurring] = useState<boolean>(false);
 
   const { accountData: account, loading: accountLoading } = useAccountData(
     accountId as string,
   );
+  const { transactions } = useTransactions();
 
-  const request: TransactionDataRequest = useMemo(
-    () => ({
-      customerId,
-      range,
-    }),
-    [customerId, range],
-  );
-
-  const {
-    error: transactionsError,
-    data: transactions,
-    isLoading: transactionsLoading,
-    isPending: transactionsPending,
-  } = useQuery<TransactionData[]>({
-    queryKey: [ACCOUNT_TRANSACTIONS_KEY, range],
-    queryFn: () => stripeAPI.getCustomerTransactionData(request, token),
-    refetchOnWindowFocus: false,
-    enabled: !!customerId && !!token,
-  });
-
+  console.log('TX: ', transactions);
   const handleSelect = (id: string) => {
     if (!opened) {
       toggle();
@@ -80,32 +44,6 @@ export default function AccountDetails() {
   const handleDisconnect = () => {
     if (!accountId || typeof accountId !== 'string') return;
     openModal(CONFIRM_DISCONNECT_MODAL);
-  };
-
-  const filteredAndPaginatedTxns = useMemo(() => {
-    if (!transactions || transactions.length === 0 || !accountId) return [];
-    const filtered = transactions.filter((txn) => txn.account === accountId);
-
-    const result: TransactionData[][] = [];
-    for (let i = 0; i < filtered.length; i += PAGE_LENGTH) {
-      result.push(filtered.slice(i, i + PAGE_LENGTH));
-    }
-    return result;
-  }, [transactions, accountId]);
-
-  const getPaginationTotal = () => {
-    if (!transactions) return 0;
-    const acctTxns = transactions.filter((txn) => txn.account === accountId);
-    return Math.ceil(acctTxns.length / PAGE_LENGTH);
-  };
-
-  const handleRangeChange = (v: TransactionRange) => {
-    setRange(v as TransactionRange);
-    setPage(1);
-  };
-
-  const handleViewRecurringClick = () => {
-    setViewRecurring((prev) => !prev);
   };
 
   return (
@@ -141,49 +79,20 @@ export default function AccountDetails() {
             Unable to get transactions for inactive account.
           </Text>
         )}
-        {(transactionsLoading || transactionsPending) &&
-          account?.status !== 'inactive' && <Loader color="green" />}
-        {!!transactionsError && <Text>{transactionsError.message}</Text>}
-        {!!transactions?.length && !!account && (
-          <>
-            <AccountSummary
-              balance={account.balance?.current?.usd / 100}
-              transactions={transactions}
-            />
-            <TransactionFilters
-              viewRecurring={viewRecurring}
-              onViewRecurringClick={handleViewRecurringClick}
-              range={range}
-              rangeOnChange={handleRangeChange}
-              disabled={!transactions}
-              page={page}
-              pageOnChange={setPage}
-              paginationTotal={getPaginationTotal()}
-            />
-            {!viewRecurring && (
-              <TransactionList
-                onSelect={handleSelect}
-                transactions={filteredAndPaginatedTxns[page - 1]}
-                account={account}
-              />
-            )}
-            {viewRecurring && (
-              <RecurringTransactions
-                onSelect={handleSelect}
-                accountId={accountId as string}
-              />
-            )}
-          </>
-        )}
-        {!transactionsLoading &&
-          !transactionsPending &&
-          !transactions?.length &&
-          !transactionsError &&
-          account?.status !== 'inactive' && (
-            <Text size="xl">
-              No transaction data available for this account
-            </Text>
-          )}
+        <ValueTrackerChart
+          loading={!account}
+          totalValue={
+            account?.balance?.current?.usd
+              ? account.balance.current.usd / 100
+              : undefined
+          }
+          totalValueLabel="Current Balance"
+          accountIds={[accountId as string]}
+        />
+        <TransactionViewer
+          onTransactionSelect={handleSelect}
+          accountIds={[accountId as string]}
+        />
       </>
     </SlideDrawer>
   );

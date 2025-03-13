@@ -2,7 +2,7 @@
 
 import { Flex } from '@mantine/core';
 import BudgetTracker from '../BudgetTracker/BudgetTracker';
-import AllTransactionsList from '../Accounts/components/AllTransactionsList/AllTransactionsList';
+import TransactionViewer from '../TransactionViewer/TransactionViewer';
 
 export default function Plan() {
   return (
@@ -16,7 +16,7 @@ export default function Plan() {
       }}
     >
       <BudgetTracker />
-      <AllTransactionsList onSelect={() => {}} />
+      <TransactionViewer onTransactionSelect={() => {}} />
     </Flex>
   );
 }

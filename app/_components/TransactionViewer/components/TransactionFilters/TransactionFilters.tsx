@@ -1,13 +1,14 @@
 import {
-  ActionIcon,
+  Button,
   Flex,
+  LoadingOverlay,
   Pagination,
   Paper,
-  SegmentedControl,
+  TextInput,
   Tooltip,
 } from '@mantine/core';
-import { IconRotateClockwise2 } from '@tabler/icons-react';
-import { TransactionRange } from '../../_models/TransactionData';
+import { IconSearch } from '@tabler/icons-react';
+import { TransactionRange } from '../../../../_models/TransactionData';
 
 interface TransactionFiltersProps {
   viewRecurring: boolean;
@@ -16,8 +17,11 @@ interface TransactionFiltersProps {
   rangeOnChange: (range: TransactionRange) => void;
   disabled: boolean;
   page: number;
+  pages: number;
   pageOnChange: (val: number) => void;
-  paginationTotal: number;
+  filter: string;
+  onFilter: (query: string) => void;
+  loading?: boolean;
 }
 
 export default function TransactionFilters({
@@ -27,14 +31,23 @@ export default function TransactionFilters({
   rangeOnChange,
   disabled,
   page,
+  pages,
   pageOnChange,
-  paginationTotal,
+  filter,
+  onFilter,
+  loading = false,
 }: TransactionFiltersProps) {
   return (
-    <Paper withBorder p="sm" my="sm">
+    <Paper withBorder p="sm" my="lg" pos="relative" shadow="sm" radius="md">
+      <LoadingOverlay
+        visible={loading}
+        zIndex={1000}
+        overlayProps={{ radius: 'sm', blur: 2 }}
+        loaderProps={{ color: 'green' }}
+      />
       <Flex align="center" justify="space-between">
         <Flex align="center" gap="md">
-          <Tooltip label="View your recurring charges">
+          {/* <Tooltip label="View your recurring charges">
             <ActionIcon
               radius="xl"
               color="green"
@@ -44,8 +57,8 @@ export default function TransactionFilters({
             >
               <IconRotateClockwise2 />
             </ActionIcon>
-          </Tooltip>
-          <Tooltip
+          </Tooltip> */}
+          {/* <Tooltip
             disabled={!viewRecurring}
             label="Date range is disabled while viewing recurring charges"
           >
@@ -60,6 +73,31 @@ export default function TransactionFilters({
               ]}
               onChange={(v) => rangeOnChange(v as TransactionRange)}
             />
+          </Tooltip> */}
+          <Tooltip
+            label="Disabled while viewing recurring"
+            disabled={!viewRecurring}
+          >
+            <TextInput
+              placeholder="Transaction Name"
+              rightSection={<IconSearch size={16} />}
+              miw={300}
+              value={filter}
+              onChange={(e) => onFilter(e.target.value)}
+              disabled={viewRecurring}
+            />
+          </Tooltip>
+          <Tooltip label="Disabled while searching" disabled={!filter.length}>
+            <Button
+              radius="md"
+              color="green"
+              variant={viewRecurring ? 'filled' : 'outline'}
+              onClick={onViewRecurringClick}
+              size="sm"
+              disabled={!!filter.length}
+            >
+              View Recurring
+            </Button>
           </Tooltip>
         </Flex>
         <Tooltip
@@ -70,7 +108,7 @@ export default function TransactionFilters({
             radius="lg"
             value={page}
             onChange={pageOnChange}
-            total={paginationTotal}
+            total={pages}
             color="green"
             siblings={1}
             disabled={disabled || viewRecurring}

@@ -23,7 +23,7 @@ import { AccountData } from '../../../../_models/AccountData';
 interface TransactionCardProps {
   tx: TransactionData;
   selected: boolean;
-  onSelect: (id: string) => void;
+  onSelect?: (id: string) => void;
   acct?: AccountData;
   showAccountName?: boolean;
   showDate?: boolean;
@@ -46,21 +46,23 @@ export default function TransactionCard({
       <Flex justify="space-between">
         <Flex gap="sm" align="center">
           <div onClick={(e) => e.stopPropagation()}>
-            <Tooltip label="Ask Finn a question about this account">
-              <ActionIcon
-                size="lg"
-                variant="subtle"
-                radius="xl"
-                color="gray"
-                onClick={(e) => onSelect(tx.id)}
-              >
-                {selected ? (
-                  <IconMessageChatbotFilled />
-                ) : (
-                  <IconMessageChatbot />
-                )}
-              </ActionIcon>
-            </Tooltip>
+            {!!onSelect && (
+              <Tooltip label="Ask Finn a question about this account">
+                <ActionIcon
+                  size="lg"
+                  variant="subtle"
+                  radius="xl"
+                  color="gray"
+                  onClick={(e) => onSelect(tx.id)}
+                >
+                  {selected ? (
+                    <IconMessageChatbotFilled />
+                  ) : (
+                    <IconMessageChatbot />
+                  )}
+                </ActionIcon>
+              </Tooltip>
+            )}
           </div>
           <Avatar size="lg" src={getBankLogoSrc(institution)} />
           <Flex direction="column">

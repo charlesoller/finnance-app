@@ -8,19 +8,20 @@ import {
   Text,
   Title,
 } from '@mantine/core';
-import TransactionCard from '../AccountDetails/components/TransactionCard/TransactionCard';
 import { ValidRecurrencePattern } from './RecurringTransactions.types';
 import {
   IconCalendarMonth,
   IconCalendarStats,
   IconCalendarWeek,
 } from '@tabler/icons-react';
-import { useChatContextStore } from '../../_stores/ChatContextStore';
-import { useRecurringTransactions } from '../../_utils/_hooks/useRecurringCharges';
 import { useMemo } from 'react';
+import { useRecurringTransactions } from '../../TransactionViewer.hooks';
+import { useChatContextStore } from '../../../../_stores/ChatContextStore';
+import TransactionCard from '../TransactionCard/TransactionCard';
+import { TransactionData } from '../../../../_models/TransactionData';
 
 interface RecurringTransactionsProps {
-  onSelect: (id: string) => void;
+  onSelect?: (id: string) => void;
   accountId?: string;
 }
 
@@ -91,7 +92,7 @@ export default function RecurringTransactions({
             </AccordionControl>
             <AccordionPanel>
               {groupedAndFilteredRecurringTransactions[group].transactions.map(
-                (txn) => (
+                (txn: TransactionData) => (
                   <TransactionCard
                     key={txn.id}
                     tx={txn}

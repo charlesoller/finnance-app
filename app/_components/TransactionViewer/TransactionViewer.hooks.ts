@@ -1,11 +1,63 @@
-import { useEffect, useState } from 'react';
-import { GroupedRecurringTransactions } from '../../_components/RecurringTransactions/RecurringTransactions.types';
-import { useQueryClient } from '@tanstack/react-query';
-import { ACCOUNT_TRANSACTIONS_KEY } from './_mutations/queryKeys';
-import { TransactionData } from '../../_models/TransactionData';
-import { getRecurringCharges } from '../../_components/Accounts/Accounts.utils';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import {
+  TransactionData,
+  TransactionDataRequest,
+  TransactionRange,
+} from '../../_models/TransactionData';
+import { ACCOUNT_TRANSACTIONS_KEY } from '../../_utils/_hooks/_mutations/queryKeys';
 import stripeAPI from '../../_services/StripeAPI';
 import { useUserStore } from '../../_stores/UserStore';
+import { useEffect, useMemo, useState } from 'react';
+import { getRecurringCharges } from './TransactionViewer.utils';
+import { GroupedRecurringTransactions } from './components/RecurringTransactions/RecurringTransactions.types';
+
+export const useTransactions = (
+  range: TransactionRange = 'sixMonth',
+  accountIds?: string[],
+) => {
+  const { token, customerId } = useUserStore();
+
+  const request: TransactionDataRequest = useMemo(
+    () => ({
+      customerId,
+      range,
+    }),
+    [customerId, range],
+  );
+
+  const {
+    error,
+    data: transactions,
+    isLoading,
+    isPending,
+    isFetching,
+    isStale,
+  } = useQuery<TransactionData[]>({
+    queryKey: [ACCOUNT_TRANSACTIONS_KEY, range],
+    queryFn: () => stripeAPI.getCustomerTransactionData(request, token),
+    refetchOnWindowFocus: false,
+    enabled: !!customerId && !!token,
+    staleTime: Infinity,
+  });
+
+  const filtered = useMemo(() => {
+    if (!transactions) return [];
+
+    if (!accountIds) return transactions;
+
+    // Convert both to strings for comparison to avoid type issues
+    return transactions.filter((txn) => accountIds.includes(txn.account));
+  }, [transactions, accountIds]);
+
+  return {
+    error,
+    isLoading,
+    isPending,
+    isFetching,
+    isStale,
+    transactions: filtered,
+  };
+};
 
 export const useRecurringTransactions = () => {
   // Attempts to get transactions from cache and then get the recurring charges

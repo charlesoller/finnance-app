@@ -2,6 +2,7 @@
 
 import { LineChart } from '@mantine/charts';
 import {
+  Center,
   Flex,
   Loader,
   LoadingOverlay,
@@ -10,19 +11,21 @@ import {
   SegmentedControl,
   Text,
   Title,
+  Tooltip,
 } from '@mantine/core';
 import { LineChartDataPoint } from '../../_models/ChartData';
 import { formatCurrency } from '../../_utils/utils';
-import { useMemo, useState } from 'react';
-import { sortByDate } from './ValueTracker.utils';
+import { useEffect, useMemo, useState } from 'react';
+import { formatTransactions, sortByDateByRange } from './ValueTracker.utils';
 import AddAccountButton from '../AddAccountButton/AddAccountButton';
 import { TransactionRange } from '../../_models/TransactionData';
 import { getDomain } from '../Chart/Chart.utils';
 import { useRandomLoadingQuote } from '../../_utils/_hooks/useRandomLoadingQuote';
+import { useTransactions } from '../TransactionViewer/TransactionViewer.hooks';
 
 interface ValueTrackerChartProps {
-  data: LineChartDataPoint[];
-  totalValue: number;
+  accountIds: string[];
+  totalValue?: number;
   onRangeChange?: (range: TransactionRange) => void;
   defaultRange?: TransactionRange;
   showAddAccountButton?: boolean;
@@ -31,7 +34,7 @@ interface ValueTrackerChartProps {
 }
 
 export default function ValueTrackerChart({
-  data,
+  accountIds,
   totalValue,
   onRangeChange,
   defaultRange = 'week',
@@ -40,21 +43,116 @@ export default function ValueTrackerChart({
   loading = false,
 }: ValueTrackerChartProps) {
   const loadingQuote = useRandomLoadingQuote();
+
   const [range, setRange] = useState<TransactionRange>(defaultRange);
 
-  const selectedData = useMemo(() => {
-    return sortByDate(data, range);
-  }, [data, range]);
+  const { transactions, isPending, isLoading } = useTransactions(
+    'sixMonth',
+    accountIds,
+  );
+
+  const formattedTransactions = useMemo<
+    Record<TransactionRange, LineChartDataPoint[]>
+  >(() => {
+    if (!transactions || !totalValue)
+      return {
+        week: [],
+        month: [],
+        threeMonth: [],
+        sixMonth: [],
+      };
+
+    const formatted = formatTransactions(transactions, totalValue);
+    const sorted = sortByDateByRange(formatted);
+    return sorted;
+  }, [transactions, totalValue]);
+
+  useEffect(() => {
+    if (Object.values(formattedTransactions).every((arr) => !arr.length))
+      return;
+
+    if (!formattedTransactions.week.length) {
+      setRange('month');
+      return;
+    }
+    if (!formattedTransactions.month.length) {
+      setRange('threeMonth');
+      return;
+    }
+    if (!formattedTransactions.threeMonth.length) {
+      setRange('sixMonth');
+      return;
+    }
+  }, [formattedTransactions]);
 
   const handleRangeChange = (val: TransactionRange) => {
     onRangeChange?.(val);
     setRange(val);
   };
 
+  const segmentedControlOptions = [
+    {
+      value: 'week',
+      disabled: !formattedTransactions?.week?.length,
+      label: (
+        <Tooltip
+          label="No transaction data"
+          disabled={!!formattedTransactions?.week?.length}
+        >
+          <Center>
+            <span>Week</span>
+          </Center>
+        </Tooltip>
+      ),
+    },
+    {
+      value: 'month',
+      disabled: !formattedTransactions?.month?.length,
+      label: (
+        <Tooltip
+          label="No transaction data"
+          disabled={!!formattedTransactions?.month?.length}
+        >
+          <Center>
+            <span>Month</span>
+          </Center>
+        </Tooltip>
+      ),
+    },
+    {
+      value: 'threeMonth',
+      disabled: !formattedTransactions?.threeMonth?.length,
+      label: (
+        <Tooltip
+          label="No transaction data"
+          disabled={!!formattedTransactions?.threeMonth?.length}
+        >
+          <Center>
+            <span>3 Month</span>
+          </Center>
+        </Tooltip>
+      ),
+    },
+    {
+      value: 'sixMonth',
+      disabled: !formattedTransactions?.sixMonth?.length,
+      label: (
+        <Tooltip
+          label="No transaction data"
+          disabled={!!formattedTransactions?.sixMonth?.length}
+        >
+          <Center>
+            <span>6 Month</span>
+          </Center>
+        </Tooltip>
+      ),
+    },
+  ];
+
   return (
     <Paper shadow="sm" withBorder p="lg" radius="lg" pos="relative">
       <LoadingOverlay
-        visible={loading}
+        visible={isPending || isLoading || loading}
         zIndex={1000}
         overlayProps={{ radius: 'lg', blur: 2 }}
         loaderProps={{
@@ -93,13 +191,15 @@ export default function ValueTrackerChart({
           h={300}
           maw="95%"
           mx="auto"
-          data={selectedData}
+          data={formattedTransactions[range] || []}
           dataKey="date"
           series={[{ name: 'amount', color: 'green.6', label: 'Amount' }]}
           curveType="linear"
           valueFormatter={(val) => formatCurrency(val)}
           yAxisProps={{
-            domain: getDomain(selectedData as LineChartDataPoint[]),
+            domain: getDomain(
+              formattedTransactions[range] as LineChartDataPoint[],
+            ),
           }}
           xAxisProps={{
             tickCount: 15,
@@ -107,12 +207,7 @@ export default function ValueTrackerChart({
         />
         <SegmentedControl
           value={range}
-          data={[
-            { label: 'Week', value: 'week' },
-            { label: 'Month', value: 'month' },
-            { label: '3 Month', value: 'threeMonth' },
-            { label: '6 Month', value: 'sixMonth' },
-          ]}
+          data={segmentedControlOptions}
           onChange={(v) => handleRangeChange(v as TransactionRange)}
         />
       </Flex>

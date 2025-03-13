@@ -5626,6 +5626,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@leeoniya/ufuzzy@npm:^1.0.18":
+  version: 1.0.18
+  resolution: "@leeoniya/ufuzzy@npm:1.0.18"
+  checksum: 10c0/d8fa13373f5de666b5a65585a8d2e8f99ba24e5d2f695099194560f02c9184dbceaa0490e712fa4851f972a5dbbcdcc71569e0091afbd2e6e772d716065b200a
+  languageName: node
+  linkType: hard
+
 "@mantine/charts@npm:^7.16.2":
   version: 7.16.2
   resolution: "@mantine/charts@npm:7.16.2"
@@ -13165,6 +13172,7 @@ __metadata:
     "@aws-amplify/core": "npm:^6.9.2"
     "@aws-amplify/ui-react": "npm:^6.9.1"
     "@aws-sdk/types": "npm:^3.734.0"
+    "@leeoniya/ufuzzy": "npm:^1.0.18"
     "@mantine/charts": "npm:^7.16.2"
     "@mantine/core": "npm:^7.16.2"
     "@mantine/dropzone": "npm:^7.16.2"

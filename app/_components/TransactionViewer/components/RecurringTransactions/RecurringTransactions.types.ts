@@ -1,4 +1,4 @@
-import { TransactionData } from '../../_models/TransactionData';
+import { TransactionData } from '../../../../_models/TransactionData';
 
 export type ValidRecurrencePattern = 'weekly' | 'monthly' | 'yearly';
 export interface RecurringTransactionsData {

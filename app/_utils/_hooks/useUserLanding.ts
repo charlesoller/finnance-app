@@ -6,8 +6,10 @@ import { useModalStore } from '../../_stores/ModalStore';
 import { useUserStore } from '../../_stores/UserStore';
 import { AUTH_MODAL, getModalById } from '../../_components/_modals';
 import { usePathname, useSearchParams } from 'next/navigation';
+import { useCustomerInfo } from './useCustomerInfo';
 
 export const useUserLanding = () => {
+  useCustomerInfo();
   const { openModal } = useModalStore();
   const { setUserData, fetchToken } = useUserStore();
   const pathname = usePathname();

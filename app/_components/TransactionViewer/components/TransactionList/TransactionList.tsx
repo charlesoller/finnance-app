@@ -1,17 +1,15 @@
 import { Divider, Flex } from '@mantine/core';
-import TransactionCard from './TransactionCard/TransactionCard';
-import { TransactionData } from '../../../_models/TransactionData';
-import { useChatContextStore } from '../../../_stores/ChatContextStore';
+import { useChatContextStore } from '../../../../_stores/ChatContextStore';
 import { useMemo } from 'react';
-import {
-  GroupedTransactions,
-  groupTransactionsByDate,
-} from '../AccountDetails.utils';
-import { AccountData } from '../../../_models/AccountData';
+import { TransactionData } from '../../../../_models/TransactionData';
+import { AccountData } from '../../../../_models/AccountData';
+import TransactionCard from '../TransactionCard/TransactionCard';
+import { groupTransactionsByDate } from '../../TransactionViewer.utils';
+import { GroupedTransactions } from '../../TransactionViewer.types';
 
 interface TransactionListProps {
-  onSelect: (id: string) => void;
   transactions: TransactionData[];
+  onSelect?: (id: string) => void;
   account?: AccountData;
 }
 

@@ -1,38 +1,58 @@
 import { LineChartDataPoint } from '../../_models/ChartData';
-import { TransactionRange } from '../../_models/TransactionData';
+import { TransactionData } from '../../_models/TransactionData';
 import { formatDate } from '../../_utils/utils';
 
-export const sortByDate = (
-  data: LineChartDataPoint[],
-  range: TransactionRange,
-) => {
-  const now = new Date();
-  const msInDay = 24 * 60 * 60 * 1000;
+// export const sortByDate = (
+//   data: LineChartDataPoint[],
+//   range: TransactionRange,
+// ) => {
+//   const now = new Date();
+//   const msInDay = 24 * 60 * 60 * 1000;
 
-  return data
-    .filter((point) => {
-      const pointDate = new Date(point.date);
-      const daysDifference = (now.getTime() - pointDate.getTime()) / msInDay;
+//   return data
+//     .filter((point) => {
+//       const pointDate = new Date(point.date);
+//       const daysDifference = (now.getTime() - pointDate.getTime()) / msInDay;
 
-      if (range === 'week') {
-        return daysDifference <= 7;
-      }
-      if (range === 'month') {
-        return daysDifference <= 30;
-      }
-      if (range === 'threeMonth') {
-        return daysDifference <= 90;
-      }
-      if (range === 'sixMonth') {
-        return true;
-      }
-      return false;
-    })
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-    .map((point) => ({
-      ...point,
-      date: formatDate(new Date(point.date), true),
-    }));
+//       if (range === 'week') {
+//         return daysDifference <= 7;
+//       }
+//       if (range === 'month') {
+//         return daysDifference <= 30;
+//       }
+//       if (range === 'threeMonth') {
+//         return daysDifference <= 90;
+//       }
+//       if (range === 'sixMonth') {
+//         return true;
+//       }
+//       return false;
+//     })
+//     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+//     .map((point) => ({
+//       ...point,
+//       date: formatDate(new Date(point.date), true),
+//     }));
+// };
+
+export const formatTransactions = (
+  tx: TransactionData[],
+  balance: number,
+): LineChartDataPoint[] => {
+  let runningTotal = balance;
+
+  return tx
+    .sort((a, b) => b.transacted_at - a.transacted_at)
+    .map(({ amount, transacted_at }) => {
+      const point = {
+        date: String(new Date(transacted_at * 1000)),
+        amount: runningTotal,
+      };
+
+      runningTotal -= amount / 100;
+
+      return point;
+    });
 };
 
 export const getRandomLoadingQuote = (): string => {
@@ -60,4 +80,49 @@ export const getRandomLoadingQuote = (): string => {
   ];
 
   return quotes[Math.floor(Math.random() * quotes.length)];
+};
+
+export const sortByDateByRange = (data: LineChartDataPoint[]) => {
+  const now = new Date();
+  const msInDay = 24 * 60 * 60 * 1000;
+
+  // Helper function to process data for a specific range
+  const processDataForRange = (filteredData: LineChartDataPoint[]) => {
+    return filteredData
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+      .map((point) => ({
+        ...point,
+        date: formatDate(new Date(point.date), true),
+      }));
+  };
+
+  // Filter data for each range
+  const weekData = data.filter((point) => {
+    const pointDate = new Date(point.date);
+    const daysDifference = (now.getTime() - pointDate.getTime()) / msInDay;
+    return daysDifference <= 7;
+  });
+
+  const monthData = data.filter((point) => {
+    const pointDate = new Date(point.date);
+    const daysDifference = (now.getTime() - pointDate.getTime()) / msInDay;
+    return daysDifference <= 30;
+  });
+
+  const threeMonthData = data.filter((point) => {
+    const pointDate = new Date(point.date);
+    const daysDifference = (now.getTime() - pointDate.getTime()) / msInDay;
+    return daysDifference <= 90;
+  });
+
+  // For sixMonth, we include all data points
+  const sixMonthData = [...data];
+
+  // Return an object with processed data for each range
+  return {
+    week: processDataForRange(weekData),
+    month: processDataForRange(monthData),
+    threeMonth: processDataForRange(threeMonthData),
+    sixMonth: processDataForRange(sixMonthData),
+  };
 };

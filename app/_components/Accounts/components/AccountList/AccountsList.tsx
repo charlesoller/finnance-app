@@ -6,7 +6,6 @@ import {
   AccordionItem,
   AccordionPanel,
   Flex,
-  Loader,
   NumberFormatter,
   Text,
   Title,
@@ -29,13 +28,14 @@ import { usePollAccountBalances } from '../../../../_utils/_hooks/usePollAccount
 import { useChatContextStore } from '../../../../_stores/ChatContextStore';
 
 import {
+  IconBuildingBank,
   IconCash,
   IconCoins,
   IconCreditCard,
-  IconHome,
   IconMoneybag,
 } from '@tabler/icons-react';
 import AddAccountButton from '../../../AddAccountButton/AddAccountButton';
+import AccountsSkeleton from '../AccountsSkeleton/AccountsSkeleton';
 
 interface AccountListProps {
   onSelect: (id: string) => void;
@@ -69,8 +69,8 @@ export default function AccountsList({ onSelect }: AccountListProps) {
       return <IconCash />;
     } else if (category === 'credit_card') {
       return <IconCreditCard />;
-    } else if (category === 'mortgage') {
-      return <IconHome />;
+    } else if (category === 'loans') {
+      return <IconBuildingBank />;
     } else if (category === 'savings') {
       return <IconMoneybag />;
     } else {
@@ -80,7 +80,7 @@ export default function AccountsList({ onSelect }: AccountListProps) {
 
   return (
     <Flex direction="column">
-      {(isLoading || isPending) && <Loader color="green" m="auto" />}
+      {(isLoading || isPending) && <AccountsSkeleton />}
       {!!error && <Text>{error.message}</Text>}
       {!isLoading && !isPending && !error && !accounts?.length && (
         <Flex direction="column" m="auto" ta="center">
