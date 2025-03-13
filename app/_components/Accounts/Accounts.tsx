@@ -51,11 +51,9 @@ export default function Accounts() {
   console.log('Accts: ', accts);
   console.log('TXNS: ', txns);
 
-  const trackedAccountIds = useMemo(() => {
+  const trackedAccounts = useMemo(() => {
     if (!accts) return [];
-    return accts
-      .filter((acct) => !omittedAccounts.includes(acct.id))
-      .map((obj) => obj.id);
+    return accts.filter((acct) => !omittedAccounts.includes(acct.id));
   }, [accts, omittedAccounts]);
 
   const handleSelectAccount = (id: string) => {
@@ -91,9 +89,9 @@ export default function Accounts() {
       <>
         <Flex direction="column" gap="md">
           <ValueTrackerChart
-            totalValue={accts ? getCurrentTotal(accts) : 0}
+            totalValue={accts ? getCurrentTotal(trackedAccounts) : 0}
             showAddAccountButton
-            accountIds={trackedAccountIds}
+            accountIds={trackedAccounts.map((acct) => acct.id)}
             loading={!accts}
           />
           <SegmentedControl
