@@ -71,15 +71,24 @@ export default function ValueTrackerChart({
     if (Object.values(formattedTransactions).every((arr) => !arr.length))
       return;
 
-    if (!formattedTransactions.week.length) {
+    if (
+      !formattedTransactions.week.length ||
+      formattedTransactions.week.length < 3
+    ) {
       setRange('month');
       return;
     }
-    if (!formattedTransactions.month.length) {
+    if (
+      !formattedTransactions.month.length ||
+      formattedTransactions.month.length < 3
+    ) {
       setRange('threeMonth');
       return;
     }
-    if (!formattedTransactions.threeMonth.length) {
+    if (
+      !formattedTransactions.threeMonth.length ||
+      formattedTransactions.threeMonth.length < 3
+    ) {
       setRange('sixMonth');
       return;
     }

@@ -17,6 +17,7 @@ import { Flex, SegmentedControl } from '@mantine/core';
 import { AccountData } from '../../_models/AccountData';
 import TransactionViewer from '../TransactionViewer/TransactionViewer';
 import { useTransactions } from '../TransactionViewer/TransactionViewer.hooks';
+import { useOmittedAccounts } from '../../_utils/_hooks/useOmittedAccounts';
 
 export default function Accounts() {
   const [feedDisplay, setFeedDisplay] = useState<FeedDisplay>('accounts');
@@ -26,11 +27,12 @@ export default function Accounts() {
     handleSelectAcct,
     selectedAccountIds,
     isActiveAcctId,
-    omittedAccounts,
+    // omittedAccounts,
     handleSelectTxn,
     isActiveTxnId,
     selectedTransactionIds,
   } = useChatContextStore();
+  const { data: omittedAccounts } = useOmittedAccounts();
 
   const { token, customerId } = useUserStore();
 
@@ -53,7 +55,7 @@ export default function Accounts() {
 
   const trackedAccounts = useMemo(() => {
     if (!accts) return [];
-    return accts.filter((acct) => !omittedAccounts.includes(acct.id));
+    return accts.filter((acct) => !omittedAccounts?.includes(acct.id));
   }, [accts, omittedAccounts]);
 
   const handleSelectAccount = (id: string) => {

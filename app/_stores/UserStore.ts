@@ -13,6 +13,7 @@ interface UserData {
 interface CustomerData {
   customerId: string;
 }
+
 interface UserStore extends UserData, CustomerData {
   token: string;
   fetchToken: () => Promise<string>;

@@ -36,13 +36,15 @@ import {
 } from '@tabler/icons-react';
 import AddAccountButton from '../../../AddAccountButton/AddAccountButton';
 import AccountsSkeleton from '../AccountsSkeleton/AccountsSkeleton';
+import { useOmittedAccounts } from '../../../../_utils/_hooks/useOmittedAccounts';
 
 interface AccountListProps {
   onSelect: (id: string) => void;
 }
 
 export default function AccountsList({ onSelect }: AccountListProps) {
-  const { isActiveAcctId, isOmittedAcct } = useChatContextStore();
+  const { isActiveAcctId } = useChatContextStore();
+  const { data: omittedAccounts } = useOmittedAccounts();
   const { token, customerId } = useUserStore();
 
   const {
@@ -94,7 +96,7 @@ export default function AccountsList({ onSelect }: AccountListProps) {
       )}
       <Accordion
         multiple={true}
-        defaultValue={['cash', 'savings', 'mortgage', 'credit_card', 'other']}
+        defaultValue={['cash', 'savings', 'loans', 'credit_card', 'other']}
       >
         {ORDERED_ACCT_TYPES.map((group) => {
           if (!!groupedAccounts[group as keyof GroupedAccounts]) {
@@ -132,7 +134,7 @@ export default function AccountsList({ onSelect }: AccountListProps) {
                         acct={acct}
                         selected={isActiveAcctId(acct.id)}
                         onSelect={onSelect}
-                        omitted={isOmittedAcct(acct.id)}
+                        omitted={omittedAccounts?.includes(acct.id) || false}
                       />
                     ),
                   )}

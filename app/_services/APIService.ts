@@ -113,15 +113,15 @@ class APIService {
     }
   }
 
-  async patch<T = any>(
+  async put<T = any>(
     url: string,
     token: string,
     data: Record<string, any>,
   ): Promise<T> {
     try {
-      console.log(`PATCH to - ${this.getBaseUrl()}${url}`);
+      console.log(`PUT to - ${this.getBaseUrl()}${url}`);
       const response = await fetch(`${this.getBaseUrl()}${url}`, {
-        method: 'PATCH',
+        method: 'PUT',
         body: JSON.stringify(data),
         headers: {
           'Content-Type': 'application/json; charset=UTF-8',

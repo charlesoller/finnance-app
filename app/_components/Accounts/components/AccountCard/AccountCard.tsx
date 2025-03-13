@@ -19,6 +19,7 @@ import {
   IconMessageChatbotFilled,
 } from '@tabler/icons-react';
 import BankLogo from '../../../BankLogo/BankLogo';
+import { useOmitAccount } from '../../../../_utils/_hooks/_mutations/useOmitAccount';
 
 interface AccountCardProps {
   acct: AccountData;
@@ -33,12 +34,13 @@ export default function AccountCard({
   onSelect,
   omitted,
 }: AccountCardProps) {
-  const { clearContext, handleOmitAcct } = useChatContextStore();
+  const { clearContext } = useChatContextStore();
+  const { mutation: handleOmitAcct } = useOmitAccount();
 
   const handleOmit = (e: any) => {
     e.preventDefault();
     e.stopPropagation();
-    handleOmitAcct(acct.id);
+    handleOmitAcct.mutate(acct.id);
   };
 
   const getBalance = () => {
