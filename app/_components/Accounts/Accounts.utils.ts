@@ -24,8 +24,13 @@ export const groupAccountsByType = (accounts: AccountData[]) => {
     let acctType: keyof GroupedAccounts;
     const { category, subcategory } = acct;
 
-    if (subcategory === 'line_of_credit' || subcategory === 'mortgage') {
+    if (
+      category === 'credit' &&
+      (subcategory === 'other' || subcategory === 'mortgage')
+    ) {
       acctType = 'loans';
+    } else if (category === 'credit') {
+      acctType = 'credit_card';
     } else if (category === 'investment') {
       acctType = 'savings';
     } else {
