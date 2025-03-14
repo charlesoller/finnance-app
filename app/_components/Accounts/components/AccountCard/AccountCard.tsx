@@ -54,11 +54,16 @@ export default function AccountCard({
       return <Loader color="green" size="sm" />;
     }
 
+    const bal =
+      balance.cash?.available?.usd ||
+      balance.credit?.used?.usd ||
+      balance.current?.usd;
+
     return (
       <Text size="xl">
         <NumberFormatter
           prefix="$"
-          value={balance.current?.usd / 100 || 0}
+          value={bal / 100 || 0}
           thousandSeparator
           decimalScale={2}
           fixedDecimalScale

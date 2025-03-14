@@ -39,7 +39,7 @@ const hasRecurringPattern = (
 
   // Padding values in seconds
   const WEEK_PADDING = 1 * DAY_IN_SECONDS;
-  const MONTH_PADDING = 3 * DAY_IN_SECONDS;
+  const MONTH_PADDING = 2 * DAY_IN_SECONDS;
   const YEAR_PADDING = 7 * DAY_IN_SECONDS;
 
   const intervals = [];

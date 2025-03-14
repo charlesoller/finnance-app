@@ -9,6 +9,11 @@ type AccountSubcategory =
 type AccountStatus = 'active' | 'inactive' | 'disconnected';
 interface AccountBalance {
   as_of: number;
+  credit: {
+    used: {
+      usd: number;
+    };
+  };
   cash: {
     available: {
       usd: number;

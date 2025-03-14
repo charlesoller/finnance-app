@@ -14,6 +14,7 @@ import { useAccountData } from '../../_utils/_hooks/useAccountData';
 import TransactionViewer from '../TransactionViewer/TransactionViewer';
 import { useTransactions } from '../TransactionViewer/TransactionViewer.hooks';
 import ValueTrackerChart from '../ValueTrackerChart/ValueTrackerChart';
+import { useMemo } from 'react';
 
 export default function AccountDetails() {
   const { accountId } = useParams();
@@ -27,6 +28,15 @@ export default function AccountDetails() {
     accountId as string,
   );
   const { transactions } = useTransactions();
+
+  const balance = useMemo(() => {
+    const bal =
+      account?.balance.cash?.available?.usd ||
+      account?.balance.credit?.used?.usd ||
+      account?.balance.current?.usd;
+
+    return bal ? bal / 100 : undefined;
+  }, [account]);
 
   console.log('TX: ', transactions);
   const handleSelect = (id: string) => {
@@ -81,11 +91,7 @@ export default function AccountDetails() {
         )}
         <ValueTrackerChart
           loading={!account}
-          totalValue={
-            account?.balance?.current?.usd
-              ? account.balance.current.usd / 100
-              : undefined
-          }
+          totalValue={balance}
           totalValueLabel="Current Balance"
           accountIds={[accountId as string]}
         />
