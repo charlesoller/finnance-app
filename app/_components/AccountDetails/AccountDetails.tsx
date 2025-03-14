@@ -38,6 +38,8 @@ export default function AccountDetails() {
     return bal ? bal / 100 : undefined;
   }, [account]);
 
+  const isInactive = account?.status === 'inactive' && !transactions?.length;
+
   console.log('TX: ', transactions);
   const handleSelect = (id: string) => {
     if (!opened) {
@@ -73,7 +75,7 @@ export default function AccountDetails() {
           <Title order={1}>
             {accountLoading
               ? 'Loading...'
-              : `${account?.institution_name} ${account?.display_name} (...${account?.last4})`}
+              : `${account?.institution_name} ${account?.display_name}${!!account?.last4 ? ` (...${account?.last4})` : ''}`}
           </Title>
           <Button
             variant="transparent"
@@ -84,7 +86,7 @@ export default function AccountDetails() {
             <Text c="dimmed">Disconnect</Text>
           </Button>
         </Flex>
-        {account?.status === 'inactive' && (
+        {isInactive && (
           <Text c="red" size="xl" ml="sm">
             Unable to get transactions for inactive account.
           </Text>

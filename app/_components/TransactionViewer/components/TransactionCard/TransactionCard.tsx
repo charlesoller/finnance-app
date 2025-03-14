@@ -1,6 +1,5 @@
 import {
   ActionIcon,
-  Avatar,
   Flex,
   NumberFormatter,
   Paper,
@@ -12,13 +11,13 @@ import { TransactionData } from '../../../../_models/TransactionData';
 import {
   capitalize,
   formatDate,
-  getBankLogoSrc,
 } from '../../../../_utils/utils';
 import {
   IconMessageChatbot,
   IconMessageChatbotFilled,
 } from '@tabler/icons-react';
 import { AccountData } from '../../../../_models/AccountData';
+import BankLogo from '../../../BankLogo/BankLogo';
 
 interface TransactionCardProps {
   tx: TransactionData;
@@ -64,9 +63,9 @@ export default function TransactionCard({
               </Tooltip>
             )}
           </div>
-          <Avatar size="lg" src={getBankLogoSrc(institution)} />
+          <BankLogo name={institution} />
           <Flex direction="column">
-            <Text size="lg">{tx.description}</Text>
+            <Text size="lg">{tx.description || 'Transaction'}</Text>
             <Text c="dimmed">
               {institution}
               {showAccountName && !!acctName.length && ` ${acctName}`}

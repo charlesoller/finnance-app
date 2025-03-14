@@ -85,7 +85,10 @@ export default function TransactionViewer({
         />
       )}
       {!!transactions && viewRecurring && (
-        <RecurringTransactions onSelect={onTransactionSelect} />
+        <RecurringTransactions
+          onSelect={onTransactionSelect}
+          accountId={accountIds?.length === 1 ? accountIds[0] : undefined}
+        />
       )}
     </Flex>
   );
