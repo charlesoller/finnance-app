@@ -1,39 +1,7 @@
 import { LineChartDataPoint } from '../../_models/ChartData';
 import { TransactionData } from '../../_models/TransactionData';
-import { formatDate } from '../../_utils/utils';
-
-// export const sortByDate = (
-//   data: LineChartDataPoint[],
-//   range: TransactionRange,
-// ) => {
-//   const now = new Date();
-//   const msInDay = 24 * 60 * 60 * 1000;
-
-//   return data
-//     .filter((point) => {
-//       const pointDate = new Date(point.date);
-//       const daysDifference = (now.getTime() - pointDate.getTime()) / msInDay;
-
-//       if (range === 'week') {
-//         return daysDifference <= 7;
-//       }
-//       if (range === 'month') {
-//         return daysDifference <= 30;
-//       }
-//       if (range === 'threeMonth') {
-//         return daysDifference <= 90;
-//       }
-//       if (range === 'sixMonth') {
-//         return true;
-//       }
-//       return false;
-//     })
-//     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-//     .map((point) => ({
-//       ...point,
-//       date: formatDate(new Date(point.date), true),
-//     }));
-// };
+import { cleanDateString, formatDate } from '../../_utils/utils';
+import { groupTransactionsByDate } from '../TransactionViewer/TransactionViewer.utils';
 
 export const formatTransactions = (
   tx: TransactionData[],
@@ -41,27 +9,42 @@ export const formatTransactions = (
 ): LineChartDataPoint[] => {
   const dailyAmounts: Record<string, number> = {};
 
-  const sortedTx = [...tx].sort((a, b) => b.transacted_at - a.transacted_at);
-
-  let runningTotal = balance;
-  sortedTx.forEach(({ amount, transacted_at }) => {
-    const date = new Date(transacted_at * 1000);
-    const dateKey = date.toISOString().split('T')[0];
-
-    runningTotal -= amount / 100;
-
-    dailyAmounts[dateKey] = runningTotal;
+  const groupedTx = groupTransactionsByDate(tx);
+  const sortedDates = Object.keys(groupedTx).sort((a, b) => {
+    const dateA = new Date(a).getTime();
+    const dateB = new Date(b).getTime();
+    return dateB - dateA; // For descending order (most recent first)
   });
+  const todaysDate = new Date();
+  const today = formatDate(todaysDate);
 
-  const today = new Date().toISOString().split('T')[0];
-  if (!dailyAmounts[today]) {
-    dailyAmounts[today] = balance;
+  if (sortedDates[0] !== today) {
+    sortedDates.unshift(today);
   }
+
+  sortedDates.forEach((date, i) => {
+    const getYesterdayBal = () => {
+      if (i === 0) {
+        return balance;
+      } else {
+        const prevDate = sortedDates[i - 1];
+        return dailyAmounts[prevDate];
+      }
+    };
+
+    const yesterdayBal = getYesterdayBal();
+    const todaysTxns = groupedTx[date] || [];
+    const dayTotal = todaysTxns.reduce((acc, curr) => {
+      return acc - curr.amount / 100;
+    }, yesterdayBal);
+
+    dailyAmounts[date] = dayTotal;
+  });
 
   return Object.entries(dailyAmounts)
     .sort(([dateA], [dateB]) => dateA.localeCompare(dateB))
     .map(([date, amount]) => ({
-      date: date,
+      date: cleanDateString(date),
       amount: amount,
     }));
 };
@@ -99,6 +82,7 @@ export const sortByDateByRange = (data: LineChartDataPoint[]) => {
 
   // Helper function to process data for a specific range
   const processDataForRange = (filteredData: LineChartDataPoint[]) => {
+    console.log('ARGS: ', filteredData);
     return filteredData
       .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
       .map((point) => ({

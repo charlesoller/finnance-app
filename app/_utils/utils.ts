@@ -36,6 +36,10 @@ export const formatDate = (date: Date, short: boolean = false) => {
   return `${month} ${getOrdinalSuffix(Number(day))}, ${year}`;
 };
 
+export const cleanDateString = (dateStr: string): string => {
+  return dateStr.replace(/(\d+)(st|nd|rd|th)/, '$1'); // Remove ordinal suffix
+};
+
 export const utcToLocal = (date: Date): Date => {
   const localTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   // Convert Date to ISO string first if it's a Date object
