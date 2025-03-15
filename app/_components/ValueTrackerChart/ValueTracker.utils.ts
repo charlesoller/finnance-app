@@ -35,7 +35,7 @@ export const formatTransactions = (
     const yesterdayBal = getYesterdayBal();
     const todaysTxns = groupedTx[date] || [];
     const dayTotal = todaysTxns.reduce((acc, curr) => {
-      return acc - curr.amount / 100;
+      return acc + curr.amount / 100;
     }, yesterdayBal);
 
     dailyAmounts[date] = dayTotal;
