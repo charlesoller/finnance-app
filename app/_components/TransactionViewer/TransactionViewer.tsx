@@ -54,11 +54,11 @@ export default function TransactionViewer({
 
   const handleFilter = (v: string) => {
     setFilterQuery(v);
+    setPage(1);
   };
 
   return (
     <Flex direction="column">
-      {/* {(isLoading || isPending) && <Loader color="green" />} */}
       {!!error && <Text>{error.message}</Text>}
       {!isLoading && !isPending && !transactions?.length && !error && (
         <Text size="xl">No transaction data available for this account</Text>

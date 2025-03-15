@@ -45,7 +45,6 @@ export const useTransactions = (
 
     if (!accountIds) return transactions;
 
-    // Convert both to strings for comparison to avoid type issues
     return transactions.filter((txn) => accountIds.includes(txn.account));
   }, [transactions, accountIds]);
 

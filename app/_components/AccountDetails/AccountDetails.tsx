@@ -27,18 +27,19 @@ export default function AccountDetails() {
   const { accountData: account, loading: accountLoading } = useAccountData(
     accountId as string,
   );
-  const { transactions } = useTransactions();
+  const { transactions, isLoading: txnLoading } = useTransactions();
 
   const balance = useMemo(() => {
     const bal =
-      account?.balance.cash?.available?.usd ||
-      account?.balance.credit?.used?.usd ||
-      account?.balance.current?.usd;
+      account?.balance?.cash?.available?.usd ||
+      account?.balance?.credit?.used?.usd ||
+      account?.balance?.current?.usd;
 
     return bal ? bal / 100 : undefined;
   }, [account]);
 
-  const isInactive = account?.status === 'inactive' && !transactions?.length;
+  const isInactive =
+    account?.status === 'inactive' && !transactions?.length && !txnLoading;
 
   console.log('TX: ', transactions);
   const handleSelect = (id: string) => {

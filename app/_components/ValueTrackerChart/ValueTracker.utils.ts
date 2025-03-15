@@ -39,20 +39,31 @@ export const formatTransactions = (
   tx: TransactionData[],
   balance: number,
 ): LineChartDataPoint[] => {
+  const dailyAmounts: Record<string, number> = {};
+
+  const sortedTx = [...tx].sort((a, b) => b.transacted_at - a.transacted_at);
+
   let runningTotal = balance;
+  sortedTx.forEach(({ amount, transacted_at }) => {
+    const date = new Date(transacted_at * 1000);
+    const dateKey = date.toISOString().split('T')[0];
 
-  return tx
-    .sort((a, b) => b.transacted_at - a.transacted_at)
-    .map(({ amount, transacted_at }) => {
-      const point = {
-        date: String(new Date(transacted_at * 1000)),
-        amount: runningTotal,
-      };
+    runningTotal -= amount / 100;
 
-      runningTotal -= amount / 100;
+    dailyAmounts[dateKey] = runningTotal;
+  });
 
-      return point;
-    });
+  const today = new Date().toISOString().split('T')[0];
+  if (!dailyAmounts[today]) {
+    dailyAmounts[today] = balance;
+  }
+
+  return Object.entries(dailyAmounts)
+    .sort(([dateA], [dateB]) => dateA.localeCompare(dateB))
+    .map(([date, amount]) => ({
+      date: date,
+      amount: amount,
+    }));
 };
 
 export const getRandomLoadingQuote = (): string => {

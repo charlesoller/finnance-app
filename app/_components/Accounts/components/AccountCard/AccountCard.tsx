@@ -122,7 +122,7 @@ export default function AccountCard({
             <BankLogo name={acct.institution_name} />
             <Flex direction="column">
               <Text size="lg">
-                {acct.display_name} (...{acct.last4})
+                {`${acct?.display_name}${!!acct?.last4 ? ` (...${acct?.last4})` : ''}`}
               </Text>
               <Text c="dimmed" size="sm">
                 {acct.institution_name}

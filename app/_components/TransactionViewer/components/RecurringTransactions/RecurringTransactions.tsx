@@ -66,7 +66,10 @@ export default function RecurringTransactions({
   };
 
   if (loading) return <Loader color="green" m="auto" p="xl" />;
-  if (!loading && !Object.keys(groupedRecurringTransactions).length) {
+  if (
+    !loading &&
+    !Object.keys(groupedAndFilteredRecurringTransactions).length
+  ) {
     return (
       <Text m="auto" p="xl">
         No recurring charges found
