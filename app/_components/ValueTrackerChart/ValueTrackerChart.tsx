@@ -71,23 +71,29 @@ export default function ValueTrackerChart({
     if (Object.values(formattedTransactions).every((arr) => !arr.length))
       return;
 
-    if (
+    const weekCondition =
       !formattedTransactions.week.length ||
-      formattedTransactions.week.length < 3
-    ) {
-      setRange('month');
-    }
-    if (
+      formattedTransactions.week.length < 3;
+    const monthCondition =
       !formattedTransactions.month.length ||
-      formattedTransactions.month.length < 3
-    ) {
-      setRange('threeMonth');
-    }
-    if (
+      formattedTransactions.month.length < 3;
+    const threeMonthCondition =
       !formattedTransactions.threeMonth.length ||
-      formattedTransactions.threeMonth.length < 3
-    ) {
+      formattedTransactions.threeMonth.length < 3;
+
+    if (weekCondition && monthCondition && threeMonthCondition) {
       setRange('sixMonth');
+      return;
+    }
+
+    if (weekCondition && monthCondition) {
+      setRange('threeMonth');
+      return;
+    }
+
+    if (weekCondition) {
+      setRange('month');
+      return;
     }
   }, [formattedTransactions]);
 
