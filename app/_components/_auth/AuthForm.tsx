@@ -112,7 +112,7 @@ export default function AuthForm({ type, setType }: AuthFormProps) {
     startReq();
 
     await signIn({
-      username: 'charlesrello+demouser@gmail.com',
+      username: 'charlesrello+demouser1@gmail.com',
       password: 'DemoUser1234!',
     })
       .then(() => {
