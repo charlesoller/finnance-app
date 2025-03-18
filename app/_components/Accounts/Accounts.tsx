@@ -12,16 +12,27 @@ import { useQuery } from '@tanstack/react-query';
 import stripeAPI from '../../_services/StripeAPI';
 import { ACCOUNT_KEY } from '../../_utils/_hooks/_mutations/queryKeys';
 import { FeedDisplay } from './Accounts.types';
-import { useMemo, useState } from 'react';
-import { Flex, SegmentedControl } from '@mantine/core';
+import { useEffect, useMemo, useState } from 'react';
+import { Flex, SegmentedControl, Text, Title } from '@mantine/core';
 import { AccountData } from '../../_models/AccountData';
 import TransactionViewer from '../TransactionViewer/TransactionViewer';
 import { useTransactions } from '../TransactionViewer/TransactionViewer.hooks';
 import { useOmittedAccounts } from '../../_utils/_hooks/useOmittedAccounts';
+import AddAccountButton from '../AddAccountButton/AddAccountButton';
 
 export default function Accounts() {
   const [feedDisplay, setFeedDisplay] = useState<FeedDisplay>('accounts');
   const [opened, { toggle }] = useDisclosure();
+
+  // Temp loading code to not show empty state immediately
+  const [loadingDelay, setLoadingDelay] = useState<boolean>(true);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoadingDelay(false);
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const {
     handleSelectAcct,
@@ -78,16 +89,30 @@ export default function Accounts() {
     handleSelectTxn(id);
   };
 
-  // if (!customerId && !isLoading && isPending) {
-  //   return (
-  //     <Flex direction='column' m='auto' maw='600px' ta='center' align='center' justify='center' gap='sm' mt='xl'>
-  //       <Title>You have no financial accounts integrated yet!</Title>
-  //       <Text size='lg'>Get started by clicking the add account button below</Text>
-  //       <Text c='dimmed'>Demo accounts will be used</Text>
-  //       <AddAccountButton />
-  //     </Flex>
-  //   )
-  // }
+  if (
+    (!customerId && isPending && !loadingDelay) ||
+    (!isLoading && !isPending && !accts?.length)
+  ) {
+    return (
+      <Flex
+        direction="column"
+        m="auto"
+        maw="600px"
+        ta="center"
+        align="center"
+        justify="center"
+        gap="sm"
+        mt="xl"
+      >
+        <Title>You have no financial accounts integrated yet!</Title>
+        <Text size="lg">
+          Get started by clicking the add account button below
+        </Text>
+        <Text c="dimmed">Demo accounts will be used</Text>
+        <AddAccountButton />
+      </Flex>
+    );
+  }
 
   return (
     <SlideDrawer

@@ -34,7 +34,6 @@ import {
   IconCreditCard,
   IconMoneybag,
 } from '@tabler/icons-react';
-import AddAccountButton from '../../../AddAccountButton/AddAccountButton';
 import AccountsSkeleton from '../AccountsSkeleton/AccountsSkeleton';
 import { useOmittedAccounts } from '../../../../_utils/_hooks/useOmittedAccounts';
 
@@ -84,16 +83,6 @@ export default function AccountsList({ onSelect }: AccountListProps) {
     <Flex direction="column">
       {(isLoading || isPending) && <AccountsSkeleton />}
       {!!error && <Text>{error.message}</Text>}
-      {!isLoading && !isPending && !error && !accounts?.length && (
-        <Flex direction="column" m="auto" ta="center">
-          <Title>No Accounts Connected</Title>
-          <Text mb="lg">
-            Use the add account button below to get started with integrating
-            your accounts
-          </Text>
-          <AddAccountButton />
-        </Flex>
-      )}
       <Accordion
         multiple={true}
         defaultValue={['cash', 'savings', 'loans', 'credit_card', 'other']}

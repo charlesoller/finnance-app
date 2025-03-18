@@ -82,6 +82,8 @@ export const getTotal = (data: AccountData[]): number => {
 };
 
 export const timeAgo = (timestamp: number): string => {
+  if (typeof timestamp !== 'number') return 'Loading...';
+
   const now = Math.floor(Date.now() / 1000);
   const secondsAgo = now - timestamp;
   const hoursAgo = Math.floor(secondsAgo / 3600);

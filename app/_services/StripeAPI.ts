@@ -17,7 +17,7 @@ class StripeAPI extends APIService {
       token,
       { email },
     );
-    console.log('SECRET: ', clientSecret);
+
     await stripe.collectFinancialConnectionsAccounts({
       clientSecret,
     });
@@ -34,7 +34,7 @@ class StripeAPI extends APIService {
   }
 
   async getAccounts(customerId: string, token: string) {
-    if (!customerId || !token) return null;
+    if (!customerId || !token) return [];
     return this.get(
       `/financial-connections/accounts/customer/${customerId}`,
       token,
