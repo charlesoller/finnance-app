@@ -34,7 +34,7 @@ class StripeAPI extends APIService {
   }
 
   async getAccounts(customerId: string, token: string) {
-    if (!customerId || !token) return;
+    if (!customerId || !token) return null;
     return this.get(
       `/financial-connections/accounts/customer/${customerId}`,
       token,
@@ -56,6 +56,7 @@ class StripeAPI extends APIService {
 
   async getTransaction(transactionId: string, token: string) {
     if (!transactionId || !token) return;
+
     return this.get(
       `/financial-connections/transactions/${transactionId}`,
       token,

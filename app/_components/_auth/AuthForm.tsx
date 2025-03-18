@@ -11,6 +11,7 @@ import { AuthFormType } from './auth.types';
 import { useModalStore } from '../../_stores/ModalStore';
 import {
   confirmResetPassword,
+  confirmSignUp,
   getCurrentUser,
   resetPassword,
   signIn,
@@ -19,7 +20,6 @@ import {
 import { Dispatch, SetStateAction } from 'react';
 import { useFormState } from '../../_utils/_hooks/useFormState';
 import { useUserStore } from '../../_stores/UserStore';
-import SocialSignIn from './SocialSignIn';
 
 interface AuthFormProps {
   type: AuthFormType;
@@ -85,14 +85,11 @@ export default function AuthForm({ type, setType }: AuthFormProps) {
         .catch((e: any) => endReq(e));
     } else if (type === 'signUp') {
       await signUp({ username, password })
-        .then(() => {
-          fetchToken();
-          getCurrentUser().then(({ username, userId, signInDetails }) => {
-            const email = signInDetails?.loginId || '';
-            setUserData({ username, userId, signInDetails, email });
-          });
-          closeAllModals();
-        })
+        .then(() => setType('confirmSignUp'))
+        .catch((e: any) => endReq(e));
+    } else if (type === 'confirmSignUp') {
+      await confirmSignUp({ username, confirmationCode })
+        .then(() => setType('signIn'))
         .catch((e: any) => endReq(e));
     } else if (type === 'forgotPassword') {
       await resetPassword({ username })
@@ -111,6 +108,26 @@ export default function AuthForm({ type, setType }: AuthFormProps) {
     endReq();
   };
 
+  const handleDemoLogin = async () => {
+    startReq();
+
+    await signIn({
+      username: 'charlesrello+demouser@gmail.com',
+      password: 'DemoUser1234!',
+    })
+      .then(() => {
+        fetchToken();
+        getCurrentUser().then(({ username, userId, signInDetails }) => {
+          const email = signInDetails?.loginId || '';
+          setUserData({ username, userId, signInDetails, email });
+        });
+        closeAllModals();
+      })
+      .catch((e: any) => endReq(e));
+
+    endReq();
+  };
+
   const getTitle = () => {
     if (type === 'signIn') {
       return 'Sign In';
@@ -120,6 +137,8 @@ export default function AuthForm({ type, setType }: AuthFormProps) {
       return 'Reset Password';
     } else if (type === 'newPassword') {
       return 'Confirm New Password';
+    } else if (type === 'confirmSignUp') {
+      return 'Confirm Password';
     }
   };
 
@@ -132,6 +151,8 @@ export default function AuthForm({ type, setType }: AuthFormProps) {
       return "Forgot your password? Enter the associated email, and we'll email you a code if this account exists";
     } else if (type === 'newPassword') {
       return 'Enter the code emailed to you, along with your new password';
+    } else if (type === 'confirmSignUp') {
+      return 'Enter the code emailed to you';
     }
   };
 
@@ -143,7 +164,21 @@ export default function AuthForm({ type, setType }: AuthFormProps) {
           <Text size="sm">{getDescription()}</Text>
         </Flex>
         <Divider />
-        <SocialSignIn />
+        {/* {(type === 'signUp' || type === 'signIn') && <SocialSignIn />} */}
+        <Flex direction="column" gap="xs">
+          <Text c="dimmed" size="xs">
+            Login as a sample user to view the application without making an
+            account
+          </Text>
+          <Button
+            type="button"
+            onClick={handleDemoLogin}
+            color="green"
+            w="100%"
+          >
+            Demo Login
+          </Button>
+        </Flex>
         <Divider />
         <Flex direction="column" gap="md">
           {type !== 'newPassword' && (
@@ -151,10 +186,10 @@ export default function AuthForm({ type, setType }: AuthFormProps) {
               {...form.getInputProps('username')}
               label="Email"
               placeholder="Email"
-              disabled={loading}
+              disabled={loading || type === 'confirmSignUp'}
             />
           )}
-          {type === 'newPassword' && (
+          {(type === 'newPassword' || type === 'confirmSignUp') && (
             <TextInput
               {...form.getInputProps('confirmationCode')}
               label="One Time Code"
@@ -162,7 +197,7 @@ export default function AuthForm({ type, setType }: AuthFormProps) {
               disabled={loading}
             />
           )}
-          {type !== 'forgotPassword' && (
+          {type !== 'forgotPassword' && type !== 'confirmSignUp' && (
             <PasswordInput
               {...form.getInputProps('password')}
               label="Password"

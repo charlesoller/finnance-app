@@ -45,7 +45,7 @@ export const useTransactions = (
 
     if (!accountIds) return transactions;
 
-    return transactions.filter((txn) => accountIds.includes(txn.account));
+    return transactions?.filter((txn) => accountIds.includes(txn.account));
   }, [transactions, accountIds]);
 
   return {
@@ -82,7 +82,6 @@ export const useRecurringTransactions = () => {
         setRecurringTransactions(recurringCharges);
         setLoading(false);
         // Do something with the recurring charges
-        console.log('Recurring charges:', recurringCharges);
       } else {
         queryClient
           .fetchQuery({

@@ -4,7 +4,7 @@ import { useUserStore } from '../../../_stores/UserStore';
 import { ACCOUNT_KEY, ACCOUNT_TRANSACTIONS_KEY } from './queryKeys';
 
 export const useConnectAccounts = () => {
-  const { token, email } = useUserStore();
+  const { token, email, fetchCustomerInfo } = useUserStore();
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
@@ -12,6 +12,7 @@ export const useConnectAccounts = () => {
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: [ACCOUNT_KEY] });
       queryClient.invalidateQueries({ queryKey: [ACCOUNT_TRANSACTIONS_KEY] });
+      fetchCustomerInfo(email, token);
     },
   });
 

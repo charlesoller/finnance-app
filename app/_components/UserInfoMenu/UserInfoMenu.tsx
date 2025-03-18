@@ -6,7 +6,6 @@ import {
   Flex,
   Menu,
   Text,
-  Tooltip,
 } from '@mantine/core';
 import LightDarkToggle from '../LightDarkToggle/LightDarkToggle';
 import { useUserStore } from '../../_stores/UserStore';
@@ -14,7 +13,7 @@ import LogoutButton from '../LogoutButton/LogoutButton';
 import { trimEmail } from './UserInfoMenu.utils';
 import { useModalStore } from '../../_stores/ModalStore';
 import { USER_SETTINGS_MODAL } from '../_modals';
-import { IconSettings } from '@tabler/icons-react';
+// import { IconSettings } from '@tabler/icons-react';
 
 interface UserMenuProps {
   open: boolean;
@@ -45,27 +44,19 @@ export default function UserInfoMenu({ open, toggle }: UserMenuProps) {
             {email}
           </Text>
           <Divider my="md" />
-          <Flex align="center" justify="space-between">
+          <Flex align="center" justify="space-between" gap="md">
             <LightDarkToggle />
-            {/* <Button
-              size="sm"
-              variant="outline"
-              color="green"
-              onClick={handleOpenSettings}
-            >
-              Edit Settings
-            </Button> */}
-            <Tooltip label="Edit user settings">
+            {/* <Tooltip label="Edit user settings">
               <ActionIcon
                 size="lg"
                 variant="subtle"
                 radius="xl"
                 onClick={handleOpenSettings}
-                color="gray"
+                color="white"
               >
                 <IconSettings />
               </ActionIcon>
-            </Tooltip>
+            </Tooltip> */}
             <LogoutButton />
           </Flex>
         </Flex>

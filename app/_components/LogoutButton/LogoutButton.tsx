@@ -1,4 +1,4 @@
-import { ActionIcon, Loader, Tooltip } from '@mantine/core';
+import { Button, Flex, Loader, Text, Tooltip } from '@mantine/core';
 import { signOut } from 'aws-amplify/auth';
 import { useUserStore } from '../../_stores/UserStore';
 import { useModalStore } from '../../_stores/ModalStore';
@@ -27,9 +27,12 @@ export default function LogoutButton() {
 
   return (
     <Tooltip label="Logout">
-      <ActionIcon size="lg" radius="md" color="red" onClick={handleLogout}>
-        {loading ? <Loader color="gray" size="sm" /> : <IconLogout />}
-      </ActionIcon>
+      <Button radius="md" color="red" onClick={handleLogout}>
+        <Flex gap="xs" align="center">
+          <Text fw="bold">Logout</Text>
+          {loading ? <Loader color="white" size="sm" /> : <IconLogout />}
+        </Flex>
+      </Button>
     </Tooltip>
   );
 }

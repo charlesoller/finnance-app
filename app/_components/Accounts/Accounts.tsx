@@ -27,7 +27,6 @@ export default function Accounts() {
     handleSelectAcct,
     selectedAccountIds,
     isActiveAcctId,
-    // omittedAccounts,
     handleSelectTxn,
     isActiveTxnId,
     selectedTransactionIds,
@@ -39,8 +38,8 @@ export default function Accounts() {
   const {
     error: acctError,
     data: accts,
-    isFetching: acctFetching,
-    isPending: acctPending,
+    isLoading,
+    isPending,
   } = useQuery<AccountData[]>({
     queryKey: [ACCOUNT_KEY],
     queryFn: () => stripeAPI.getAccounts(customerId, token),
@@ -49,9 +48,6 @@ export default function Accounts() {
   });
 
   const { transactions: txns } = useTransactions();
-
-  console.log('Accts: ', accts);
-  console.log('TXNS: ', txns);
 
   const trackedAccounts = useMemo(() => {
     if (!accts) return [];
@@ -82,6 +78,17 @@ export default function Accounts() {
     handleSelectTxn(id);
   };
 
+  // if (!customerId && !isLoading && isPending) {
+  //   return (
+  //     <Flex direction='column' m='auto' maw='600px' ta='center' align='center' justify='center' gap='sm' mt='xl'>
+  //       <Title>You have no financial accounts integrated yet!</Title>
+  //       <Text size='lg'>Get started by clicking the add account button below</Text>
+  //       <Text c='dimmed'>Demo accounts will be used</Text>
+  //       <AddAccountButton />
+  //     </Flex>
+  //   )
+  // }
+
   return (
     <SlideDrawer
       opened={opened}
@@ -94,7 +101,7 @@ export default function Accounts() {
             totalValue={accts ? getCurrentTotal(trackedAccounts) : 0}
             showAddAccountButton
             accountIds={trackedAccounts.map((acct) => acct.id)}
-            loading={!accts}
+            loading={isLoading || isPending}
           />
           <SegmentedControl
             value={feedDisplay}

@@ -57,12 +57,16 @@ export default function TransactionViewer({
     setPage(1);
   };
 
+  if (!isLoading && !isPending && !transactions?.length && !error)
+    return (
+      <Flex m="auto" p="lg">
+        <Text size="xl">No transaction data available for this account</Text>
+      </Flex>
+    );
+
   return (
     <Flex direction="column">
       {!!error && <Text>{error.message}</Text>}
-      {!isLoading && !isPending && !transactions?.length && !error && (
-        <Text size="xl">No transaction data available for this account</Text>
-      )}
       <TransactionFilters
         viewRecurring={viewRecurring}
         onViewRecurringClick={handleViewRecurringClick}

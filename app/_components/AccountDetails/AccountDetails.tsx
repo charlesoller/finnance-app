@@ -41,7 +41,6 @@ export default function AccountDetails() {
   const isInactive =
     account?.status === 'inactive' && !transactions?.length && !txnLoading;
 
-  console.log('TX: ', transactions);
   const handleSelect = (id: string) => {
     if (!opened) {
       toggle();

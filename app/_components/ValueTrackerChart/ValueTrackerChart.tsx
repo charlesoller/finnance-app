@@ -66,7 +66,7 @@ export default function ValueTrackerChart({
     const sorted = sortByDateByRange(formatted);
     return sorted;
   }, [transactions, totalValue]);
-  console.log('FMT: ', formattedTransactions);
+
   useEffect(() => {
     if (Object.values(formattedTransactions).every((arr) => !arr.length))
       return;
